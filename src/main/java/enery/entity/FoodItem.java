@@ -1,9 +1,13 @@
 package enery.entity;
 
+import java.util.Locale;
+
 /**
  * Represents the nutritional information for one food item.
  *
- * This entity is independent of any particular external API.
+ * <p>This entity is independent of any particular external API. A value of
+ * {@link Double#NaN} means that a nutrition value was unavailable from the
+ * selected data source.</p>
  */
 public final class FoodItem {
 
@@ -17,6 +21,19 @@ public final class FoodItem {
     private final double sugarInGrams;
     private final double sodiumInMilligrams;
 
+    /**
+     * Creates a food item.
+     *
+     * @param name food name
+     * @param servingSizeInGrams serving size in grams
+     * @param calories energy in kilocalories
+     * @param proteinInGrams protein in grams
+     * @param carbohydratesInGrams carbohydrates in grams
+     * @param fatInGrams fat in grams
+     * @param fiberInGrams fiber in grams
+     * @param sugarInGrams sugar in grams
+     * @param sodiumInMilligrams sodium in milligrams
+     */
     public FoodItem(
             String name,
             double servingSizeInGrams,
@@ -43,7 +60,9 @@ public final class FoodItem {
         return name;
     }
 
-    public double getServingSizeInGrams() { return servingSizeInGrams; }
+    public double getServingSizeInGrams() {
+        return servingSizeInGrams;
+    }
 
     public double getCalories() {
         return calories;
@@ -73,13 +92,99 @@ public final class FoodItem {
         return sodiumInMilligrams;
     }
 
+    /**
+     * Reports whether calorie information is available.
+     *
+     * @return true when calories contain a usable number
+     */
+    public boolean hasCalories() {
+        return !Double.isNaN(calories);
+    }
+
+    /**
+     * Reports whether protein information is available.
+     *
+     * @return true when protein contains a usable number
+     */
+    public boolean hasProtein() {
+        return !Double.isNaN(proteinInGrams);
+    }
+
+    /**
+     * Formats a nutrition value for Swing labels.
+     *
+     * @param value value to display
+     * @param unit measurement unit
+     * @return formatted number or "Unavailable"
+     */
+    public static String formatNutritionValue(
+            double value,
+            String unit) {
+
+        if (Double.isNaN(value)) {
+            return "Unavailable";
+        }
+
+        return String.format(
+                Locale.US,
+                "%.1f %s",
+                value,
+                unit
+        );
+    }
+
+    /**
+     * Converts an all-uppercase API description into readable title case.
+     *
+     * @param text original description
+     * @return readable description
+     */
+    private static String formatName(String text) {
+        if (text == null || text.isBlank()) {
+            return "Unknown food";
+        }
+
+        if (!text.equals(text.toUpperCase(java.util.Locale.US))) {
+            return text;
+        }
+
+        final String[] words =
+                text.toLowerCase(
+                        java.util.Locale.US).split(" ");
+
+        final StringBuilder result =
+                new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isBlank()) {
+                if (!result.isEmpty()) {
+                    result.append(' ');
+                }
+
+                result.append(
+                        Character.toUpperCase(
+                                word.charAt(0)));
+
+                result.append(word.substring(1));
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Returns the text displayed by Swing combo boxes.
+     *
+     * @return short food description
+     */
     @Override
     public String toString() {
-        return name
-                + " — "
-                + servingSizeInGrams
-                + " g, "
-                + calories
-                + " kcal";
+        return String.format(
+                java.util.Locale.US,
+                "%s — nutrients per %.1f g, %.1f kcal",
+                formatName(name),
+                servingSizeInGrams,
+                calories
+        );
     }
 }

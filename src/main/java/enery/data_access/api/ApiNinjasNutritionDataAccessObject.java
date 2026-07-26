@@ -17,12 +17,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Retrieves food nutrition information from the API Ninjas Nutrition API.
+ * Retrieves nutrition information from API Ninjas.
  *
- * <p>This class is an adapter between an external web service and the
- * application-owned {@link NutritionDataAccessInterface}. Other use cases
- * should depend on that interface rather than depending directly on this
- * concrete API implementation.</p>
+ * <p>This adapter implements an application-owned interface, so the rest of
+ * the program does not depend directly on API Ninjas, OkHttp, or JSON. Another
+ * provider can replace this implementation without changing the food-search
+ * interactor.</p>
  */
 public final class ApiNinjasNutritionDataAccessObject
         implements NutritionDataAccessInterface {
@@ -33,11 +33,14 @@ public final class ApiNinjasNutritionDataAccessObject
     private static final String API_KEY_HEADER =
             "X-Api-Key";
 
+    private static final double DEFAULT_SERVING_SIZE =
+            100.0;
+
     private final OkHttpClient httpClient;
     private final String apiKey;
 
     /**
-     * Creates a nutrition API adapter.
+     * Creates the API adapter.
      *
      * @param httpClient reusable HTTP client
      * @param apiKey API Ninjas key
@@ -61,13 +64,22 @@ public final class ApiNinjasNutritionDataAccessObject
     }
 
     /**
-     * Searches for nutrition data matching a natural-language query.
+     * Searches for food nutrition information.
      *
-     * @param query food description, optionally including quantity
-     * @return converted application food entities
+     * <p>The query may include a quantity, for example {@code 1 cup rice} or
+     * {@code 250 g chicken breast}. Without a quantity, the service commonly
+     * returns nutrition values scaled to 100 grams.</p>
+     *
+     * @param query natural-language food query
+     * @return matching food items
      */
     @Override
     public List<FoodItem> search(String query) {
+        if (query == null || query.isBlank()) {
+            throw new IllegalArgumentException(
+                    "A food query is required.");
+        }
+
         final HttpUrl baseUrl = HttpUrl.parse(BASE_URL);
 
         if (baseUrl == null) {
@@ -76,7 +88,7 @@ public final class ApiNinjasNutritionDataAccessObject
         }
 
         final HttpUrl requestUrl = baseUrl.newBuilder()
-                .addQueryParameter("query", query)
+                .addQueryParameter("query", query.trim())
                 .build();
 
         final Request request = new Request.Builder()
@@ -112,16 +124,18 @@ public final class ApiNinjasNutritionDataAccessObject
     }
 
     /**
-     * Converts API JSON into the application's FoodItem entities.
+     * Converts external JSON objects into FoodItem entities.
      *
-     * <p>{@code optDouble} is used because some fields may be unavailable
-     * depending on the API account or response. Missing values default to
-     * zero instead of crashing the entire search.</p>
+     * <p>Missing calories or protein values are represented using
+     * {@link Double#NaN}. This prevents an unavailable premium value from
+     * appearing to be a real zero.</p>
      *
-     * @param json JSON response returned by the service
+     * @param json JSON response
      * @return parsed food items
      */
-    private static List<FoodItem> parseResults(String json) {
+    private static List<FoodItem> parseResults(
+            String json) {
+
         try {
             final JSONArray responseArray =
                     new JSONArray(json);
@@ -133,35 +147,35 @@ public final class ApiNinjasNutritionDataAccessObject
                  index < responseArray.length();
                  index++) {
 
-                final JSONObject item =
+                final JSONObject object =
                         responseArray.getJSONObject(index);
 
                 results.add(new FoodItem(
-                        item.optString(
+                        object.optString(
                                 "name",
                                 "Unknown food"),
-                        item.optDouble(
+                        object.optDouble(
                                 "serving_size_g",
-                                100.0),
-                        item.optDouble(
-                                "calories",
-                                0.0),
-                        item.optDouble(
-                                "protein_g",
-                                0.0),
-                        item.optDouble(
+                                DEFAULT_SERVING_SIZE),
+                        getOptionalDouble(
+                                object,
+                                "calories"),
+                        getOptionalDouble(
+                                object,
+                                "protein_g"),
+                        object.optDouble(
                                 "carbohydrates_total_g",
                                 0.0),
-                        item.optDouble(
+                        object.optDouble(
                                 "fat_total_g",
                                 0.0),
-                        item.optDouble(
+                        object.optDouble(
                                 "fiber_g",
                                 0.0),
-                        item.optDouble(
+                        object.optDouble(
                                 "sugar_g",
                                 0.0),
-                        item.optDouble(
+                        object.optDouble(
                                 "sodium_mg",
                                 0.0)
                 ));
@@ -174,5 +188,28 @@ public final class ApiNinjasNutritionDataAccessObject
                     "Nutrition API returned invalid JSON.",
                     exception);
         }
+    }
+
+    /**
+     * Reads an optional numeric JSON property.
+     *
+     * @param object JSON object
+     * @param propertyName property to read
+     * @return property value, or NaN when unavailable
+     */
+    private static double getOptionalDouble(
+            JSONObject object,
+            String propertyName) {
+
+        if (!object.has(propertyName)
+                || object.isNull(propertyName)) {
+
+            return Double.NaN;
+        }
+
+        return object.optDouble(
+                propertyName,
+                Double.NaN
+        );
     }
 }

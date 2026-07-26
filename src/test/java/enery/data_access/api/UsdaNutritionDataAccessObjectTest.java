@@ -11,30 +11,31 @@ import okhttp3.OkHttpClient;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ApiNinjasNutritionDataAccessObjectTest {
+class UsdaNutritionDataAccessObjectTest {
 
     @Test
     @EnabledIfEnvironmentVariable(
-            named = "API_NINJAS_KEY",
+            named = "USDA_API_KEY",
             matches = ".+")
-    void searchesNutritionApi() {
-        final ApiNinjasNutritionDataAccessObject dataAccessObject =
-                new ApiNinjasNutritionDataAccessObject(
+    void searchesUsdaFoodDataCentral() {
+        final UsdaNutritionDataAccessObject dataAccessObject =
+                new UsdaNutritionDataAccessObject(
                         new OkHttpClient(),
-                        System.getenv("API_NINJAS_KEY")
+                        System.getenv("USDA_API_KEY")
                 );
 
         final List<FoodItem> results =
-                dataAccessObject.search("1 apple");
+                dataAccessObject.search("rice");
 
         assertFalse(results.isEmpty());
 
-        for (FoodItem foodItem : results) {
-            assertFalse(foodItem.getName().isBlank());
+        for (FoodItem food : results) {
+            assertFalse(food.getName().isBlank());
             assertTrue(
-                    foodItem.getServingSizeInGrams() > 0.0);
+                    food.getServingSizeInGrams() > 0.0);
+            assertTrue(food.getCalories() >= 0.0);
             assertTrue(
-                    foodItem.getCalories() >= 0.0);
+                    food.getProteinInGrams() >= 0.0);
         }
     }
 }
