@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+*.java text
+*.xml text
+*.md text
+*.properties text
+*.gitignore text
