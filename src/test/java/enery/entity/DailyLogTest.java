@@ -17,6 +17,7 @@ class DailyLogTest {
 
         final FoodItem rice = new FoodItem(
                 "Rice",
+                100.0,
                 200.0,
                 4.0,
                 45.0,
@@ -28,6 +29,7 @@ class DailyLogTest {
 
         final FoodItem chicken = new FoodItem(
                 "Chicken breast",
+                100.0,
                 250.0,
                 40.0,
                 0.0,

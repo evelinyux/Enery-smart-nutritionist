@@ -10,6 +10,7 @@ class FoodItemTest {
     void storesNutritionValues() {
         final FoodItem apple = new FoodItem(
                 "Apple",
+                100.0,
                 95.0,
                 0.5,
                 25.0,
@@ -27,5 +28,7 @@ class FoodItemTest {
         assertEquals(4.4, apple.getFiberInGrams());
         assertEquals(19.0, apple.getSugarInGrams());
         assertEquals(2.0, apple.getSodiumInMilligrams());
+        assertEquals(100.0, apple.getServingSizeInGrams()
+        );
     }
 }

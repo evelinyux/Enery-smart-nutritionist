@@ -1,0 +1,41 @@
+[33mcommit 8adddd26dae93ab9dc4fbf1f7f31e3e96ca7a753[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32methan-exercise-logging[m[33m, [m[1;31morigin/ethan-exercise-logging[m[33m)[m
+Author: RibKiller <ethan.fys07@gmail.com>
+Commit: RibKiller <ethan.fys07@gmail.com>
+
+    Implement API-backed exercise search and logging
+
+[33mcommit deaab49a3fd2a9f811dfbb609e980a42e127a43d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/ethan-domain-model[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32methan-domain-model[m[33m)[m
+Author: RibKiller <ethan.fys07@gmail.com>
+Commit: RibKiller <ethan.fys07@gmail.com>
+
+    .gitattributes file adding
+
+[33mcommit 1409787999ce1e018894da95aefb7b68af73a235[m
+Author: RibKiller <ethan.fys07@gmail.com>
+Commit: RibKiller <ethan.fys07@gmail.com>
+
+    Implement shared domain model and meal logging also the structure refine
+
+[33mcommit 60348fa1900cd2290bd52ca5646712c0e9df559c[m
+Author: ethan_feng <ethan.feng@mail.utoronto.ca>
+Commit: ethan_feng <ethan.feng@mail.utoronto.ca>
+
+    Check the folders visibility with .gitkeep files
+
+[33mcommit 5b92e58a0c7c4f8fc01dcddba2f1ec1493e79e9e[m
+Author: ethan_feng <ethan.feng@mail.utoronto.ca>
+Commit: ethan_feng <ethan.feng@mail.utoronto.ca>
+
+    Set up project architecture from HW5 starter
+
+[33mcommit ac433e07a19ca88c6ff325bc66a3cdef9720394e[m
+Author: ethan_feng <ethan.feng@mail.utoronto.ca>
+Commit: ethan_feng <ethan.feng@mail.utoronto.ca>
+
+    Update .gitignore
+
+[33mcommit 8ff8e0258153e5423a0283b6576e0ee8a5272df1[m
+Author: EthanFeng-uoft <ethan.feng@mail.utoronto.ca>
+Commit: GitHub <noreply@github.com>
+
+    Initial commit

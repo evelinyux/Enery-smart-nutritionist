@@ -23,6 +23,7 @@ class LogMealPresenterTest {
 
         final FoodItem apple = new FoodItem(
                 "Apple",
+                100.0,
                 95.0,
                 0.5,
                 25.0,

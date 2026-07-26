@@ -23,6 +23,7 @@ public class Main {
                                             .addChangePasswordUseCase()
                                             .addLogoutUseCase()
                                             .addLogMealUseCase()
+                                            .addSearchFoodUseCase()
                                             .addSearchExerciseUseCase()
                                             .addLogExerciseUseCase()
                                             .build();
