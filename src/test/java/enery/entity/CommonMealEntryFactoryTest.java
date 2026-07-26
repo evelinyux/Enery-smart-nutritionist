@@ -12,6 +12,7 @@ class CommonMealEntryFactoryTest {
     void createsMealEntry() {
         final FoodItem food = new FoodItem(
                 "Apple",
+                100.0,
                 95.0,
                 0.5,
                 25.0,

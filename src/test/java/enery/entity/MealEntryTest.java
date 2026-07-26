@@ -12,13 +12,14 @@ class MealEntryTest {
     void calculatesNutritionForMultipleServings() {
         final FoodItem apple = new FoodItem(
                 "Apple",
-                95.0,
-                0.5,
-                25.0,
-                0.3,
-                4.4,
-                19.0,
-                2.0
+                100.0, // serving size
+                95.0,  // calories
+                0.5,   // protein
+                25.0,  // carbohydrates
+                0.3,   // fat
+                4.4,   // fiber
+                19.0,  // sugar
+                2.0    // sodium
         );
 
         final LocalDateTime time =

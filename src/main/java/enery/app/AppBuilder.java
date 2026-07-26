@@ -8,6 +8,14 @@ import javax.swing.WindowConstants;
 
 import okhttp3.OkHttpClient;
 
+import enery.data_access.api.ApiNinjasNutritionDataAccessObject;
+import enery.interface_adapter.search_food.SearchFoodController;
+import enery.interface_adapter.search_food.SearchFoodPresenter;
+import enery.interface_adapter.search_food.SearchFoodViewModel;
+import enery.use_case.search_food.NutritionDataAccessInterface;
+import enery.use_case.search_food.SearchFoodInputBoundary;
+import enery.use_case.search_food.SearchFoodInteractor;
+import enery.use_case.search_food.SearchFoodOutputBoundary;
 import enery.data_access.InMemoryExerciseDataAccessObject;
 import enery.data_access.InMemoryMealDataAccessObject;
 import enery.data_access.InMemoryUserDataAccessObject;
@@ -113,9 +121,15 @@ public final class AppBuilder {
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
 
-    // Meal-logging components.
+    //Food-Search and Meal-logging components.
     private LogMealView logMealView;
     private LogMealViewModel logMealViewModel;
+    private SearchFoodViewModel searchFoodViewModel;
+
+    // Exercise-search and exercise-logging components.
+    private LogExerciseView logExerciseView;
+    private LogExerciseViewModel logExerciseViewModel;
+    private SearchExerciseViewModel searchExerciseViewModel;
 
     // Exercise-search and exercise-logging components.
     private LogExerciseView logExerciseView;
@@ -172,12 +186,20 @@ public final class AppBuilder {
      */
     public AppBuilder addLogMealView() {
         logMealViewModel = new LogMealViewModel();
+        searchFoodViewModel = new SearchFoodViewModel();
+
         logMealView = new LogMealView(
                 logMealViewModel,
+                searchFoodViewModel,
                 viewManagerModel,
                 loggedInViewModel
         );
-        cardPanel.add(logMealView, logMealView.getViewName());
+
+        cardPanel.add(
+                logMealView,
+                logMealView.getViewName()
+        );
+
         return this;
     }
 
@@ -313,8 +335,7 @@ public final class AppBuilder {
                         mealEntryFactory
                 );
 
-        logMealView.setController(
-                new LogMealController(interactor));
+        logMealView.setLogMealController(new LogMealController(interactor));
         return this;
     }
 
@@ -412,5 +433,40 @@ public final class AppBuilder {
         }
 
         return value;
+    }
+
+    /**
+     * Wires the reusable API-backed food-search use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addSearchFoodUseCase() {
+        final String apiKey =
+                getRequiredEnvironmentVariable(
+                        "API_NINJAS_KEY");
+
+        final NutritionDataAccessInterface dataAccessObject =
+                new ApiNinjasNutritionDataAccessObject(
+                        httpClient,
+                        apiKey
+                );
+
+        final SearchFoodOutputBoundary presenter =
+                new SearchFoodPresenter(
+                        searchFoodViewModel
+                );
+
+        final SearchFoodInputBoundary interactor =
+                new SearchFoodInteractor(
+                        dataAccessObject,
+                        presenter
+                );
+
+        final SearchFoodController controller =
+                new SearchFoodController(interactor);
+
+        logMealView.setSearchFoodController(controller);
+
+        return this;
     }
 }

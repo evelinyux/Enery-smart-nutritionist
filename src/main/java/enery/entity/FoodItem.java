@@ -8,6 +8,7 @@ package enery.entity;
 public final class FoodItem {
 
     private final String name;
+    private final double servingSizeInGrams;
     private final double calories;
     private final double proteinInGrams;
     private final double carbohydratesInGrams;
@@ -18,6 +19,7 @@ public final class FoodItem {
 
     public FoodItem(
             String name,
+            double servingSizeInGrams,
             double calories,
             double proteinInGrams,
             double carbohydratesInGrams,
@@ -27,6 +29,7 @@ public final class FoodItem {
             double sodiumInMilligrams) {
 
         this.name = name;
+        this.servingSizeInGrams = servingSizeInGrams;
         this.calories = calories;
         this.proteinInGrams = proteinInGrams;
         this.carbohydratesInGrams = carbohydratesInGrams;
@@ -39,6 +42,8 @@ public final class FoodItem {
     public String getName() {
         return name;
     }
+
+    public double getServingSizeInGrams() { return servingSizeInGrams; }
 
     public double getCalories() {
         return calories;
@@ -66,5 +71,15 @@ public final class FoodItem {
 
     public double getSodiumInMilligrams() {
         return sodiumInMilligrams;
+    }
+
+    @Override
+    public String toString() {
+        return name
+                + " — "
+                + servingSizeInGrams
+                + " g, "
+                + calories
+                + " kcal";
     }
 }
