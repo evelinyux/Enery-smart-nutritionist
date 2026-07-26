@@ -16,6 +16,7 @@ import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseViewModel;
 import enery.interface_adapter.log_meal.LogMealViewModel;
 import enery.interface_adapter.logout.LogoutController;
+import enery.interface_adapter.tracking.TrackingViewModel;
 
 /**
  * Main navigation screen displayed after a successful login.
@@ -39,7 +40,7 @@ public final class HomeView extends JPanel
     private ChangePasswordController changePasswordController;
 
     /**
-     * Creates the home screen.
+     * Creates the home screen and connects its navigation buttons.
      *
      * @param loggedInViewModel view model containing the active username
      * @param viewManagerModel model used to switch between application screens
@@ -57,15 +58,17 @@ public final class HomeView extends JPanel
                 new JLabel("ENERY Smart Nutritionist");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // These features are not connected yet.
+        // The profile feature has not been connected yet.
         profileButton.setEnabled(false);
-        trackingButton.setEnabled(false);
 
         mealButton.addActionListener(event ->
                 switchView(LogMealViewModel.VIEW_NAME));
 
         exerciseButton.addActionListener(event ->
                 switchView(LogExerciseViewModel.VIEW_NAME));
+
+        trackingButton.addActionListener(event ->
+                switchView(TrackingViewModel.VIEW_NAME));
 
         logoutButton.addActionListener(event -> {
             final LoggedInState state =
@@ -136,9 +139,9 @@ public final class HomeView extends JPanel
     /**
      * Sets the change-password controller.
      *
-     * <p>The current home-screen layout does not yet expose a change-password
-     * button, but the controller is retained for the existing authentication
-     * feature.</p>
+     * <p>The current home screen does not yet display a change-password
+     * button, but this setter preserves the existing authentication use case
+     * wiring.</p>
      *
      * @param controller change-password controller
      */

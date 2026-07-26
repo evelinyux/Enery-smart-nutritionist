@@ -18,6 +18,7 @@ public class Main {
                                             .addHomeView()
                                             .addLogMealView()
                                             .addLogExerciseView()
+                                            .addTrackingView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
                                             .addChangePasswordUseCase()
@@ -26,6 +27,7 @@ public class Main {
                                             .addSearchFoodUseCase()
                                             .addSearchExerciseUseCase()
                                             .addLogExerciseUseCase()
+                                            .addTrackingUseCase()
                                             .build();
 
         application.pack();

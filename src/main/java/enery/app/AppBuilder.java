@@ -8,18 +8,12 @@ import javax.swing.WindowConstants;
 
 import okhttp3.OkHttpClient;
 
-import enery.data_access.api.ApiNinjasNutritionDataAccessObject;
-import enery.interface_adapter.search_food.SearchFoodController;
-import enery.interface_adapter.search_food.SearchFoodPresenter;
-import enery.interface_adapter.search_food.SearchFoodViewModel;
-import enery.use_case.search_food.NutritionDataAccessInterface;
-import enery.use_case.search_food.SearchFoodInputBoundary;
-import enery.use_case.search_food.SearchFoodInteractor;
-import enery.use_case.search_food.SearchFoodOutputBoundary;
+import enery.data_access.DailyTrackingDataAccessObject;
 import enery.data_access.InMemoryExerciseDataAccessObject;
 import enery.data_access.InMemoryMealDataAccessObject;
 import enery.data_access.InMemoryUserDataAccessObject;
 import enery.data_access.api.ApiNinjasCaloriesBurnedDataAccessObject;
+import enery.data_access.api.UsdaNutritionDataAccessObject;
 import enery.entity.CommonExerciseEntryFactory;
 import enery.entity.CommonMealEntryFactory;
 import enery.entity.CommonUserFactory;
@@ -44,9 +38,15 @@ import enery.interface_adapter.logout.LogoutPresenter;
 import enery.interface_adapter.search_exercise.SearchExerciseController;
 import enery.interface_adapter.search_exercise.SearchExercisePresenter;
 import enery.interface_adapter.search_exercise.SearchExerciseViewModel;
+import enery.interface_adapter.search_food.SearchFoodController;
+import enery.interface_adapter.search_food.SearchFoodPresenter;
+import enery.interface_adapter.search_food.SearchFoodViewModel;
 import enery.interface_adapter.signup.SignupController;
 import enery.interface_adapter.signup.SignupPresenter;
 import enery.interface_adapter.signup.SignupViewModel;
+import enery.interface_adapter.tracking.TrackingController;
+import enery.interface_adapter.tracking.TrackingPresenter;
+import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.use_case.change_password.ChangePasswordInputBoundary;
 import enery.use_case.change_password.ChangePasswordInteractor;
 import enery.use_case.change_password.ChangePasswordOutputBoundary;
@@ -66,25 +66,36 @@ import enery.use_case.search_exercise.CaloriesBurnedDataAccessInterface;
 import enery.use_case.search_exercise.SearchExerciseInputBoundary;
 import enery.use_case.search_exercise.SearchExerciseInteractor;
 import enery.use_case.search_exercise.SearchExerciseOutputBoundary;
+import enery.use_case.search_food.NutritionDataAccessInterface;
+import enery.use_case.search_food.SearchFoodInputBoundary;
+import enery.use_case.search_food.SearchFoodInteractor;
+import enery.use_case.search_food.SearchFoodOutputBoundary;
 import enery.use_case.signup.SignupInputBoundary;
 import enery.use_case.signup.SignupInteractor;
 import enery.use_case.signup.SignupOutputBoundary;
+import enery.use_case.tracking.TrackingDataAccessInterface;
+import enery.use_case.tracking.TrackingInputBoundary;
+import enery.use_case.tracking.TrackingInteractor;
+import enery.use_case.tracking.TrackingOutputBoundary;
 import enery.view.HomeView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
 import enery.view.SignupView;
+import enery.view.TrackingView;
 import enery.view.ViewManager;
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
  *
- * <p>This class contains the application composition logic for the Clean
- * Architecture layers. It creates views, view models, controllers, presenters,
- * interactors, factories, and data-access objects.</p>
+ * <p>This class is the composition root of the application. It creates the
+ * concrete views, view models, controllers, presenters, interactors,
+ * repositories, API adapters, and factories used by the Clean Architecture
+ * layers.</p>
  *
- * <p>Each view must be added before its corresponding use case because the
- * use-case method attaches a controller to an existing view.</p>
+ * <p>Each {@code add...View()} method must be called before the related
+ * {@code add...UseCase()} method because the use-case method attaches a
+ * controller to an existing view.</p>
  */
 public final class AppBuilder {
 
@@ -102,7 +113,7 @@ public final class AppBuilder {
     private final ExerciseEntryFactory exerciseEntryFactory =
             new CommonExerciseEntryFactory();
 
-    // Shared data-access objects.
+    // Shared application repositories.
     private final InMemoryUserDataAccessObject userDataAccessObject =
             new InMemoryUserDataAccessObject();
     private final InMemoryMealDataAccessObject mealDataAccessObject =
@@ -110,7 +121,7 @@ public final class AppBuilder {
     private final InMemoryExerciseDataAccessObject exerciseDataAccessObject =
             new InMemoryExerciseDataAccessObject();
 
-    // Shared HTTP client for external API requests.
+    // Shared HTTP client for API Ninjas requests.
     private final OkHttpClient httpClient = new OkHttpClient();
 
     // Authentication and home components.
@@ -121,7 +132,7 @@ public final class AppBuilder {
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
 
-    //Food-Search and Meal-logging components.
+    // Food-search and meal-logging components.
     private LogMealView logMealView;
     private LogMealViewModel logMealViewModel;
     private SearchFoodViewModel searchFoodViewModel;
@@ -131,13 +142,12 @@ public final class AppBuilder {
     private LogExerciseViewModel logExerciseViewModel;
     private SearchExerciseViewModel searchExerciseViewModel;
 
-    // Exercise-search and exercise-logging components.
-    private LogExerciseView logExerciseView;
-    private LogExerciseViewModel logExerciseViewModel;
-    private SearchExerciseViewModel searchExerciseViewModel;
+    // Daily-tracking components.
+    private TrackingView trackingView;
+    private TrackingViewModel trackingViewModel;
 
     /**
-     * Creates the application builder and configures the card panel.
+     * Creates the builder and configures the shared card panel.
      */
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -180,7 +190,7 @@ public final class AppBuilder {
     }
 
     /**
-     * Creates and registers the meal-logging view.
+     * Creates and registers the combined food-search and meal-logging view.
      *
      * @return this builder
      */
@@ -195,11 +205,7 @@ public final class AppBuilder {
                 loggedInViewModel
         );
 
-        cardPanel.add(
-                logMealView,
-                logMealView.getViewName()
-        );
-
+        cardPanel.add(logMealView, logMealView.getViewName());
         return this;
     }
 
@@ -225,7 +231,25 @@ public final class AppBuilder {
     }
 
     /**
-     * Wires the signup use case and attaches its controller to the signup view.
+     * Creates and registers the daily-tracking view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addTrackingView() {
+        trackingViewModel = new TrackingViewModel();
+
+        trackingView = new TrackingView(
+                trackingViewModel,
+                viewManagerModel,
+                loggedInViewModel
+        );
+
+        cardPanel.add(trackingView, trackingView.getViewName());
+        return this;
+    }
+
+    /**
+     * Wires the signup use case.
      *
      * @return this builder
      */
@@ -250,7 +274,7 @@ public final class AppBuilder {
     }
 
     /**
-     * Wires the login use case and attaches its controller to the login view.
+     * Wires the login use case.
      *
      * @return this builder
      */
@@ -274,8 +298,7 @@ public final class AppBuilder {
     }
 
     /**
-     * Wires the change-password use case and attaches its controller to the
-     * home view.
+     * Wires the change-password use case.
      *
      * @return this builder
      */
@@ -296,7 +319,7 @@ public final class AppBuilder {
     }
 
     /**
-     * Wires the logout use case and attaches its controller to the home view.
+     * Wires the logout use case.
      *
      * @return this builder
      */
@@ -335,7 +358,36 @@ public final class AppBuilder {
                         mealEntryFactory
                 );
 
-        logMealView.setLogMealController(new LogMealController(interactor));
+        logMealView.setLogMealController(
+                new LogMealController(interactor));
+        return this;
+    }
+
+    /**
+     * Wires the reusable USDA-backed food-search use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addSearchFoodUseCase() {
+        final NutritionDataAccessInterface dataAccessObject =
+                new UsdaNutritionDataAccessObject(
+                        httpClient,
+                        getRequiredEnvironmentVariable(
+                                "USDA_API_KEY")
+                );
+
+        final SearchFoodOutputBoundary presenter =
+                new SearchFoodPresenter(searchFoodViewModel);
+
+        final SearchFoodInputBoundary interactor =
+                new SearchFoodInteractor(
+                        dataAccessObject,
+                        presenter
+                );
+
+        logMealView.setSearchFoodController(
+                new SearchFoodController(interactor));
+
         return this;
     }
 
@@ -346,13 +398,11 @@ public final class AppBuilder {
      * @throws IllegalStateException if {@code API_NINJAS_KEY} is missing
      */
     public AppBuilder addSearchExerciseUseCase() {
-        final String apiKey =
-                getRequiredEnvironmentVariable("API_NINJAS_KEY");
-
         final CaloriesBurnedDataAccessInterface dataAccessObject =
                 new ApiNinjasCaloriesBurnedDataAccessObject(
                         httpClient,
-                        apiKey
+                        getRequiredEnvironmentVariable(
+                                "API_NINJAS_KEY")
                 );
 
         final SearchExerciseOutputBoundary presenter =
@@ -395,8 +445,34 @@ public final class AppBuilder {
     }
 
     /**
-     * Creates the main application window and selects the signup screen as the
-     * initial view.
+     * Wires the daily-tracking use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addTrackingUseCase() {
+        final TrackingDataAccessInterface dataAccessObject =
+                new DailyTrackingDataAccessObject(
+                        mealDataAccessObject,
+                        exerciseDataAccessObject
+                );
+
+        final TrackingOutputBoundary presenter =
+                new TrackingPresenter(trackingViewModel);
+
+        final TrackingInputBoundary interactor =
+                new TrackingInteractor(
+                        dataAccessObject,
+                        presenter
+                );
+
+        trackingView.setTrackingController(
+                new TrackingController(interactor));
+        return this;
+    }
+
+    /**
+     * Creates the main application window and selects signup as the initial
+     * screen.
      *
      * @return the constructed application window
      */
@@ -417,9 +493,9 @@ public final class AppBuilder {
     /**
      * Reads a required environment variable.
      *
-     * @param variableName name of the environment variable
-     * @return the configured value
-     * @throws IllegalStateException if the value is missing or blank
+     * @param variableName environment-variable name
+     * @return configured value
+     * @throws IllegalStateException if the variable is absent or blank
      */
     private static String getRequiredEnvironmentVariable(
             String variableName) {
@@ -433,40 +509,5 @@ public final class AppBuilder {
         }
 
         return value;
-    }
-
-    /**
-     * Wires the reusable API-backed food-search use case.
-     *
-     * @return this builder
-     */
-    public AppBuilder addSearchFoodUseCase() {
-        final String apiKey =
-                getRequiredEnvironmentVariable(
-                        "API_NINJAS_KEY");
-
-        final NutritionDataAccessInterface dataAccessObject =
-                new ApiNinjasNutritionDataAccessObject(
-                        httpClient,
-                        apiKey
-                );
-
-        final SearchFoodOutputBoundary presenter =
-                new SearchFoodPresenter(
-                        searchFoodViewModel
-                );
-
-        final SearchFoodInputBoundary interactor =
-                new SearchFoodInteractor(
-                        dataAccessObject,
-                        presenter
-                );
-
-        final SearchFoodController controller =
-                new SearchFoodController(interactor);
-
-        logMealView.setSearchFoodController(controller);
-
-        return this;
     }
 }
