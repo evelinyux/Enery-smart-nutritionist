@@ -1,4 +1,4 @@
-package use_case.logout;
+package enery.use_case.logout;
 
 /**
  * The Logout Interactor.
@@ -25,3 +25,4 @@ public class LogoutInteractor implements LogoutInputBoundary {
         logoutPresenter.prepareSuccessView(logoutOutputData);
     }
 }
+

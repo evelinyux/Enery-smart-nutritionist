@@ -1,4 +1,4 @@
-package view;
+package enery.view;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -15,9 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
+import enery.interface_adapter.login.LoginController;
+import enery.interface_adapter.login.LoginState;
+import enery.interface_adapter.login.LoginViewModel;
 
 /**
  * The View for when the user is logging into the program.
@@ -158,3 +158,4 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.loginController = loginController;
     }
 }
+

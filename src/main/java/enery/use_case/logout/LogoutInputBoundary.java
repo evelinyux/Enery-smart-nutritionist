@@ -1,4 +1,4 @@
-package use_case.logout;
+package enery.use_case.logout;
 
 /**
  * Input Boundary for actions which are related to logging in.
@@ -11,3 +11,4 @@ public interface LogoutInputBoundary {
      */
     void execute(LogoutInputData LogoutInputData);
 }
+

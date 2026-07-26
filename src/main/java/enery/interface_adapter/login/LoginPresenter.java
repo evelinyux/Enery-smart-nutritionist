@@ -1,10 +1,10 @@
-package interface_adapter.login;
+package enery.interface_adapter.login;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInState;
-import interface_adapter.change_password.LoggedInViewModel;
-import use_case.login.LoginOutputBoundary;
-import use_case.login.LoginOutputData;
+import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.change_password.LoggedInState;
+import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.use_case.login.LoginOutputBoundary;
+import enery.use_case.login.LoginOutputData;
 
 /**
  * The Presenter for the Login Use Case.
@@ -25,15 +25,16 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void prepareSuccessView(LoginOutputData response) {
-        // On success, switch to the logged in view.
+        final LoggedInState loggedInState =
+                loggedInViewModel.getState();
 
-        final LoggedInState loggedInState = loggedInViewModel.getState();
         loggedInState.setUsername(response.getUsername());
-        this.loggedInViewModel.setState(loggedInState);
-        this.loggedInViewModel.firePropertyChanged();
+        loggedInViewModel.setState(loggedInState);
+        loggedInViewModel.firePropertyChanged();
 
-        this.viewManagerModel.setState(loggedInViewModel.getViewName());
-        this.viewManagerModel.firePropertyChanged();
+        viewManagerModel.setState(
+                loggedInViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
     }
 
     @Override
@@ -43,3 +44,4 @@ public class LoginPresenter implements LoginOutputBoundary {
         loginViewModel.firePropertyChanged();
     }
 }
+

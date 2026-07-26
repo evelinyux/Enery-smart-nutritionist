@@ -1,7 +1,7 @@
-package interface_adapter.logout;
+package enery.interface_adapter.logout;
 
-import use_case.logout.LogoutInputBoundary;
-import use_case.logout.LogoutInputData;
+import enery.use_case.logout.LogoutInputBoundary;
+import enery.use_case.logout.LogoutInputData;
 
 /**
  * The controller for the Logout Use Case.
@@ -23,3 +23,4 @@ public class LogoutController {
         logoutUseCaseInteractor.execute(logoutInputData);
     }
 }
+

@@ -1,4 +1,4 @@
-package interface_adapter;
+package enery.interface_adapter;
 
 /**
  * Model for the View Manager. Its state is the name of the View which
@@ -12,3 +12,4 @@ public class ViewManagerModel extends ViewModel<String> {
     }
 
 }
+

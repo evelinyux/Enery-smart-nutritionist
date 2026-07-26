@@ -1,13 +1,13 @@
-package data_access;
+package enery.data_access;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import entity.User;
-import use_case.change_password.ChangePasswordUserDataAccessInterface;
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.logout.LogoutUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
+import enery.entity.User;
+import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
+import enery.use_case.login.LoginUserDataAccessInterface;
+import enery.use_case.logout.LogoutUserDataAccessInterface;
+import enery.use_case.signup.SignupUserDataAccessInterface;
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
@@ -53,3 +53,4 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         return currentUsername;
     }
 }
+

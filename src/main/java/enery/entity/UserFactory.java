@@ -1,4 +1,4 @@
-package entity;
+package enery.entity;
 
 /**
  * Factory for creating users.

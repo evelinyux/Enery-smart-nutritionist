@@ -1,7 +1,7 @@
-package use_case.change_password;
+package enery.use_case.change_password;
 
-import entity.User;
-import entity.UserFactory;
+import enery.entity.User;
+import enery.entity.UserFactory;
 
 /**
  * The Change Password Interactor.
@@ -30,3 +30,4 @@ public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
         userPresenter.prepareSuccessView(changePasswordOutputData);
     }
 }
+

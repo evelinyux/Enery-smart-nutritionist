@@ -1,4 +1,4 @@
-package use_case.login;
+package enery.use_case.login;
 
 /**
  * The output boundary for the Login Use Case.
@@ -16,3 +16,4 @@ public interface LoginOutputBoundary {
      */
     void prepareFailView(String errorMessage);
 }
+

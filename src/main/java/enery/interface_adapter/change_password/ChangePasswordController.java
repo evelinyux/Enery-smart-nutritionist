@@ -1,7 +1,7 @@
-package interface_adapter.change_password;
+package enery.interface_adapter.change_password;
 
-import use_case.change_password.ChangePasswordInputBoundary;
-import use_case.change_password.ChangePasswordInputData;
+import enery.use_case.change_password.ChangePasswordInputBoundary;
+import enery.use_case.change_password.ChangePasswordInputData;
 
 /**
  * Controller for the Change Password Use Case.
@@ -24,3 +24,4 @@ public class ChangePasswordController {
         userChangePasswordUseCaseInteractor.execute(changePasswordInputData);
     }
 }
+

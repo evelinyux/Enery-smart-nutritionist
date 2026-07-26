@@ -1,6 +1,6 @@
-package use_case.signup;
+package enery.use_case.signup;
 
-import entity.User;
+import enery.entity.User;
 
 /**
  * DAO for the Signup Use Case.
@@ -20,3 +20,4 @@ public interface SignupUserDataAccessInterface {
      */
     void save(User user);
 }
+

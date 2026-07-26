@@ -1,4 +1,4 @@
-package interface_adapter;
+package enery.interface_adapter;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -62,3 +62,4 @@ public class ViewModel<T> {
         this.support.addPropertyChangeListener(listener);
     }
 }
+

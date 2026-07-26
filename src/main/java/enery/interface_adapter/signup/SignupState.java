@@ -1,4 +1,4 @@
-package interface_adapter.signup;
+package enery.interface_adapter.signup;
 
 /**
  * The state for the Signup View Model.
@@ -68,3 +68,4 @@ public class SignupState {
                 + '}';
     }
 }
+

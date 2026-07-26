@@ -1,4 +1,4 @@
-package view;
+package enery.view;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,3 +13,4 @@ class LabelTextPanel extends JPanel {
         this.add(textField);
     }
 }
+

@@ -1,4 +1,4 @@
-package view;
+package enery.view;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -16,9 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
+import enery.interface_adapter.signup.SignupController;
+import enery.interface_adapter.signup.SignupState;
+import enery.interface_adapter.signup.SignupViewModel;
 
 /**
  * The View for the Signup Use Case.
@@ -197,3 +197,4 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         this.signupController = controller;
     }
 }
+

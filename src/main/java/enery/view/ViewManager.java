@@ -1,4 +1,4 @@
-package view;
+package enery.view;
 
 import java.awt.CardLayout;
 import java.beans.PropertyChangeEvent;
@@ -6,7 +6,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
-import interface_adapter.ViewManagerModel;
+import enery.interface_adapter.ViewManagerModel;
 
 /**
  * The View Manager for the program. It listens for property change events
@@ -32,3 +32,4 @@ public class ViewManager implements PropertyChangeListener {
         }
     }
 }
+

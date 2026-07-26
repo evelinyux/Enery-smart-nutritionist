@@ -1,10 +1,10 @@
-package interface_adapter.signup;
+package enery.interface_adapter.signup;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
-import use_case.signup.SignupOutputBoundary;
-import use_case.signup.SignupOutputData;
+import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.login.LoginState;
+import enery.interface_adapter.login.LoginViewModel;
+import enery.use_case.signup.SignupOutputBoundary;
+import enery.use_case.signup.SignupOutputData;
 
 /**
  * The Presenter for the Signup Use Case.
@@ -48,3 +48,4 @@ public class SignupPresenter implements SignupOutputBoundary {
         viewManagerModel.firePropertyChanged();
     }
 }
+

@@ -1,7 +1,7 @@
-package use_case.signup;
+package enery.use_case.signup;
 
-import entity.User;
-import entity.UserFactory;
+import enery.entity.User;
+import enery.entity.UserFactory;
 
 /**
  * The Signup Interactor.
@@ -41,3 +41,4 @@ public class SignupInteractor implements SignupInputBoundary {
         userPresenter.switchToLoginView();
     }
 }
+

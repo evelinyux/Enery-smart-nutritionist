@@ -1,12 +1,12 @@
-package interface_adapter.logout;
+package enery.interface_adapter.logout;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInState;
-import interface_adapter.change_password.LoggedInViewModel;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
-import use_case.logout.LogoutOutputBoundary;
-import use_case.logout.LogoutOutputData;
+import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.change_password.LoggedInState;
+import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.interface_adapter.login.LoginState;
+import enery.interface_adapter.login.LoginViewModel;
+import enery.use_case.logout.LogoutOutputBoundary;
+import enery.use_case.logout.LogoutOutputData;
 
 /**
  * The Presenter for the Logout Use Case.
@@ -55,3 +55,4 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         // Thought question: is this a reasonable assumption?
     }
 }
+

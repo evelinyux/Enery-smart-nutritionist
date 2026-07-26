@@ -1,7 +1,7 @@
-package interface_adapter.signup;
+package enery.interface_adapter.signup;
 
-import use_case.signup.SignupInputBoundary;
-import use_case.signup.SignupInputData;
+import enery.use_case.signup.SignupInputBoundary;
+import enery.use_case.signup.SignupInputData;
 
 /**
  * Controller for the Signup Use Case.
@@ -34,3 +34,4 @@ public class SignupController {
         userSignupUseCaseInteractor.switchToLoginView();
     }
 }
+

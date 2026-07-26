@@ -1,4 +1,4 @@
-package use_case.logout;
+package enery.use_case.logout;
 
 /**
  * Output Data for the Logout Use Case.
@@ -21,3 +21,4 @@ public class LogoutOutputData {
         return useCaseFailed;
     }
 }
+

@@ -1,6 +1,6 @@
-package use_case.login;
+package enery.use_case.login;
 
-import entity.User;
+import enery.entity.User;
 
 /**
  * DAO for the Login Use Case.
@@ -42,3 +42,4 @@ public interface LoginUserDataAccessInterface {
      */
     String getCurrentUsername();
 }
+

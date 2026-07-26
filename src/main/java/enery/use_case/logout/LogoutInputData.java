@@ -1,4 +1,4 @@
-package use_case.logout;
+package enery.use_case.logout;
 
 /**
  * The Input Data for the Logout Use Case.
@@ -19,3 +19,4 @@ public class LogoutInputData {
         return username;
     }
 }
+

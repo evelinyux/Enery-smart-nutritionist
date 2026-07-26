@@ -1,4 +1,4 @@
-package data_access;
+package enery.data_access;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import entity.User;
-import entity.UserFactory;
-import use_case.change_password.ChangePasswordUserDataAccessInterface;
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.logout.LogoutUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
+import enery.entity.User;
+import enery.entity.UserFactory;
+import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
+import enery.use_case.login.LoginUserDataAccessInterface;
+import enery.use_case.logout.LogoutUserDataAccessInterface;
+import enery.use_case.signup.SignupUserDataAccessInterface;
 
 /**
  * DAO for user data implemented using a File to persist the data.
@@ -118,3 +118,4 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
         save();
     }
 }
+

@@ -1,15 +1,16 @@
-package interface_adapter.change_password;
+package enery.interface_adapter.change_password;
 
-import interface_adapter.ViewModel;
+import enery.interface_adapter.ViewModel;
 
 /**
- * The View Model for the Logged In View.
+ * View model for the home screen displayed after login.
  */
 public class LoggedInViewModel extends ViewModel<LoggedInState> {
 
+    public static final String VIEW_NAME = "home";
+
     public LoggedInViewModel() {
-        super("logged in");
+        super(VIEW_NAME);
         setState(new LoggedInState());
     }
-
 }

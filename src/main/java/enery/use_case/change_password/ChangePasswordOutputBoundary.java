@@ -1,4 +1,4 @@
-package use_case.change_password;
+package enery.use_case.change_password;
 
 /**
  * The output boundary for the Change Password Use Case.
@@ -16,3 +16,4 @@ public interface ChangePasswordOutputBoundary {
      */
     void prepareFailView(String errorMessage);
 }
+

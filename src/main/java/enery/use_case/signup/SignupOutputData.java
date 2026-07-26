@@ -1,4 +1,4 @@
-package use_case.signup;
+package enery.use_case.signup;
 
 /**
  * Output Data for the Signup Use Case.
@@ -22,3 +22,4 @@ public class SignupOutputData {
         return useCaseFailed;
     }
 }
+
