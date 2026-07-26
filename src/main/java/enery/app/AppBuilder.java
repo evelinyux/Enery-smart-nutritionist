@@ -131,6 +131,11 @@ public final class AppBuilder {
     private LogExerciseViewModel logExerciseViewModel;
     private SearchExerciseViewModel searchExerciseViewModel;
 
+    // Exercise-search and exercise-logging components.
+    private LogExerciseView logExerciseView;
+    private LogExerciseViewModel logExerciseViewModel;
+    private SearchExerciseViewModel searchExerciseViewModel;
+
     /**
      * Creates the application builder and configures the card panel.
      */
