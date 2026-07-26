@@ -3,26 +3,33 @@ package enery.use_case.tracking;
 import java.time.LocalDate;
 
 /**
- * Input data for viewing a user's daily nutrition and exercise totals.
+ * Input data for requesting a tracking summary.
  */
 public final class TrackingInputData {
 
     private final String username;
-    private final LocalDate date;
+    private final LocalDate selectedDate;
+    private final TrackingPeriod period;
 
     public TrackingInputData(
             String username,
-            LocalDate date) {
+            LocalDate selectedDate,
+            TrackingPeriod period) {
 
         this.username = username;
-        this.date = date;
+        this.selectedDate = selectedDate;
+        this.period = period;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getSelectedDate() {
+        return selectedDate;
+    }
+
+    public TrackingPeriod getPeriod() {
+        return period;
     }
 }

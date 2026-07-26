@@ -1,27 +1,61 @@
 package enery.interface_adapter.tracking;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import enery.use_case.tracking.DailyTrackingSummary;
+import enery.use_case.tracking.TrackingPeriod;
 
 /**
- * Stores the data currently displayed by the tracking screen.
+ * Stores the information displayed by the tracking screen.
  */
 public final class TrackingState {
 
-    private LocalDate date = LocalDate.now();
+    private TrackingPeriod period = TrackingPeriod.DAILY;
+    private LocalDate startDate = LocalDate.now();
+    private LocalDate endDate = LocalDate.now();
+
     private double caloriesConsumed;
     private double caloriesBurned;
     private double netCalories;
+
     private double proteinInGrams;
     private double carbohydratesInGrams;
     private double fatInGrams;
+
+    private double averageCaloriesConsumed;
+    private double averageCaloriesBurned;
+    private double averageNetCalories;
+
+    private List<DailyTrackingSummary> dailySummaries =
+            new ArrayList<>();
+
     private String errorMessage = "";
 
-    public LocalDate getDate() {
-        return date;
+    public TrackingPeriod getPeriod() {
+        return period;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setPeriod(TrackingPeriod period) {
+        this.period = period;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public double getCaloriesConsumed() {
@@ -73,6 +107,51 @@ public final class TrackingState {
 
     public void setFatInGrams(double fatInGrams) {
         this.fatInGrams = fatInGrams;
+    }
+
+    public double getAverageCaloriesConsumed() {
+        return averageCaloriesConsumed;
+    }
+
+    public void setAverageCaloriesConsumed(
+            double averageCaloriesConsumed) {
+
+        this.averageCaloriesConsumed =
+                averageCaloriesConsumed;
+    }
+
+    public double getAverageCaloriesBurned() {
+        return averageCaloriesBurned;
+    }
+
+    public void setAverageCaloriesBurned(
+            double averageCaloriesBurned) {
+
+        this.averageCaloriesBurned =
+                averageCaloriesBurned;
+    }
+
+    public double getAverageNetCalories() {
+        return averageNetCalories;
+    }
+
+    public void setAverageNetCalories(
+            double averageNetCalories) {
+
+        this.averageNetCalories =
+                averageNetCalories;
+    }
+
+    public List<DailyTrackingSummary> getDailySummaries() {
+        return Collections.unmodifiableList(
+                dailySummaries);
+    }
+
+    public void setDailySummaries(
+            List<DailyTrackingSummary> dailySummaries) {
+
+        this.dailySummaries =
+                new ArrayList<>(dailySummaries);
     }
 
     public String getErrorMessage() {

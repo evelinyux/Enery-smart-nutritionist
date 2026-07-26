@@ -6,22 +6,29 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.tracking.TrackingController;
 import enery.interface_adapter.tracking.TrackingState;
 import enery.interface_adapter.tracking.TrackingViewModel;
+import enery.use_case.tracking.DailyTrackingSummary;
+import enery.use_case.tracking.TrackingPeriod;
 
 /**
- * Displays a user's nutrition and exercise summary for one day.
+ * Displays daily or weekly nutrition and exercise summaries.
  */
 public final class TrackingView extends JPanel
         implements PropertyChangeListener {
@@ -37,22 +44,45 @@ public final class TrackingView extends JPanel
     private final JTextField dateField =
             new JTextField(LocalDate.now().toString(), 12);
 
-    private final JLabel dateLabel = new JLabel("-");
-    private final JLabel caloriesConsumedLabel = new JLabel("0.0 kcal");
-    private final JLabel caloriesBurnedLabel = new JLabel("0.0 kcal");
-    private final JLabel netCaloriesLabel = new JLabel("0.0 kcal");
-    private final JLabel proteinLabel = new JLabel("0.0 g");
-    private final JLabel carbohydratesLabel = new JLabel("0.0 g");
-    private final JLabel fatLabel = new JLabel("0.0 g");
+    private final JComboBox<TrackingPeriod> periodBox =
+            new JComboBox<>(TrackingPeriod.values());
+
+    private final JLabel periodLabel = new JLabel("-");
+    private final JLabel caloriesConsumedLabel = new JLabel("-");
+    private final JLabel caloriesBurnedLabel = new JLabel("-");
+    private final JLabel netCaloriesLabel = new JLabel("-");
+    private final JLabel proteinLabel = new JLabel("-");
+    private final JLabel carbohydratesLabel = new JLabel("-");
+    private final JLabel fatLabel = new JLabel("-");
+
+    private final JLabel averageConsumedLabel = new JLabel("-");
+    private final JLabel averageBurnedLabel = new JLabel("-");
+    private final JLabel averageNetLabel = new JLabel("-");
+
     private final JLabel statusLabel = new JLabel();
 
-    /**
-     * Creates the daily tracking screen.
-     *
-     * @param trackingViewModel tracking screen state
-     * @param viewManagerModel application navigation model
-     * @param loggedInViewModel currently logged-in user state
-     */
+    private final DefaultTableModel tableModel =
+            new DefaultTableModel(
+                    new Object[] {
+                            "Date",
+                            "Consumed",
+                            "Burned",
+                            "Net"
+                    },
+                    0
+            ) {
+                @Override
+                public boolean isCellEditable(
+                        int row,
+                        int column) {
+
+                    return false;
+                }
+            };
+
+    private final JTable dailyTable =
+            new JTable(tableModel);
+
     public TrackingView(
             TrackingViewModel trackingViewModel,
             ViewManagerModel viewManagerModel,
@@ -64,6 +94,13 @@ public final class TrackingView extends JPanel
 
         trackingViewModel.addPropertyChangeListener(this);
 
+        configureView();
+    }
+
+    /**
+     * Creates and arranges the tracking screen.
+     */
+    private void configureView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(
                 15,
@@ -73,42 +110,53 @@ public final class TrackingView extends JPanel
         ));
 
         final JLabel title =
-                new JLabel("Daily Tracking Summary");
+                new JLabel("Nutrition and Exercise Tracking");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        final JPanel datePanel =
-                new JPanel(new GridLayout(1, 3, 5, 5));
+        final JPanel controls =
+                new JPanel(new GridLayout(0, 2, 5, 5));
+
+        controls.add(new JLabel("Date (YYYY-MM-DD)"));
+        controls.add(dateField);
+
+        controls.add(new JLabel("Summary period"));
+        controls.add(periodBox);
+
+        final JPanel totals =
+                new JPanel(new GridLayout(0, 2, 5, 5));
+
+        totals.add(new JLabel("Displayed period"));
+        totals.add(periodLabel);
+
+        totals.add(new JLabel("Calories consumed"));
+        totals.add(caloriesConsumedLabel);
+
+        totals.add(new JLabel("Calories burned"));
+        totals.add(caloriesBurnedLabel);
+
+        totals.add(new JLabel("Net calories"));
+        totals.add(netCaloriesLabel);
+
+        totals.add(new JLabel("Protein"));
+        totals.add(proteinLabel);
+
+        totals.add(new JLabel("Carbohydrates"));
+        totals.add(carbohydratesLabel);
+
+        totals.add(new JLabel("Fat"));
+        totals.add(fatLabel);
+
+        totals.add(new JLabel("Daily average consumed"));
+        totals.add(averageConsumedLabel);
+
+        totals.add(new JLabel("Daily average burned"));
+        totals.add(averageBurnedLabel);
+
+        totals.add(new JLabel("Daily average net"));
+        totals.add(averageNetLabel);
 
         final JButton loadButton =
                 new JButton("Load Summary");
-
-        datePanel.add(new JLabel("Date (YYYY-MM-DD)"));
-        datePanel.add(dateField);
-        datePanel.add(loadButton);
-
-        final JPanel summaryPanel =
-                new JPanel(new GridLayout(0, 2, 5, 5));
-
-        summaryPanel.add(new JLabel("Date"));
-        summaryPanel.add(dateLabel);
-
-        summaryPanel.add(new JLabel("Calories consumed"));
-        summaryPanel.add(caloriesConsumedLabel);
-
-        summaryPanel.add(new JLabel("Calories burned"));
-        summaryPanel.add(caloriesBurnedLabel);
-
-        summaryPanel.add(new JLabel("Net calories"));
-        summaryPanel.add(netCaloriesLabel);
-
-        summaryPanel.add(new JLabel("Protein"));
-        summaryPanel.add(proteinLabel);
-
-        summaryPanel.add(new JLabel("Carbohydrates"));
-        summaryPanel.add(carbohydratesLabel);
-
-        summaryPanel.add(new JLabel("Fat"));
-        summaryPanel.add(fatLabel);
 
         final JButton todayButton =
                 new JButton("Today");
@@ -117,11 +165,11 @@ public final class TrackingView extends JPanel
                 new JButton("Back to Home");
 
         loadButton.addActionListener(event ->
-                loadSelectedDate());
+                loadSelectedSummary());
 
         todayButton.addActionListener(event -> {
             dateField.setText(LocalDate.now().toString());
-            loadSelectedDate();
+            loadSelectedSummary();
         });
 
         backButton.addActionListener(event -> {
@@ -130,17 +178,19 @@ public final class TrackingView extends JPanel
         });
 
         add(title);
-        add(datePanel);
-        add(summaryPanel);
+        add(controls);
+        add(loadButton);
         add(todayButton);
+        add(totals);
+        add(new JScrollPane(dailyTable));
         add(backButton);
         add(statusLabel);
     }
 
     /**
-     * Requests tracking data for the date entered by the user.
+     * Requests either a daily or weekly tracking summary.
      */
-    private void loadSelectedDate() {
+    private void loadSelectedSummary() {
         if (trackingController == null) {
             statusLabel.setText(
                     "Tracking controller is not configured.");
@@ -149,14 +199,22 @@ public final class TrackingView extends JPanel
 
         try {
             final LocalDate date =
-                    LocalDate.parse(dateField.getText().trim());
+                    LocalDate.parse(
+                            dateField.getText().trim());
+
+            final TrackingPeriod period =
+                    (TrackingPeriod) periodBox.getSelectedItem();
 
             final String username =
                     loggedInViewModel
                             .getState()
                             .getUsername();
 
-            trackingController.execute(username, date);
+            trackingController.execute(
+                    username,
+                    date,
+                    period
+            );
         }
         catch (DateTimeParseException exception) {
             statusLabel.setText(
@@ -164,13 +222,10 @@ public final class TrackingView extends JPanel
         }
     }
 
-    /**
-     * Updates the displayed totals when tracking state changes.
-     *
-     * @param event tracking view-model event
-     */
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
+    public void propertyChange(
+            PropertyChangeEvent event) {
+
         if (!"state".equals(event.getPropertyName())) {
             return;
         }
@@ -184,38 +239,114 @@ public final class TrackingView extends JPanel
             return;
         }
 
-        dateLabel.setText(state.getDate().toString());
-        caloriesConsumedLabel.setText(
-                state.getCaloriesConsumed() + " kcal");
-        caloriesBurnedLabel.setText(
-                state.getCaloriesBurned() + " kcal");
-        netCaloriesLabel.setText(
-                state.getNetCalories() + " kcal");
-        proteinLabel.setText(
-                state.getProteinInGrams() + " g");
-        carbohydratesLabel.setText(
-                state.getCarbohydratesInGrams() + " g");
-        fatLabel.setText(
-                state.getFatInGrams() + " g");
+        updateSummaryLabels(state);
+        updateDailyTable(state);
 
         statusLabel.setText(
                 "Tracking summary loaded.");
     }
 
     /**
-     * Returns this view's CardLayout name.
-     *
-     * @return tracking view name
+     * Updates summary totals and averages.
      */
+    private void updateSummaryLabels(
+            TrackingState state) {
+
+        periodLabel.setText(
+                state.getStartDate()
+                        + " to "
+                        + state.getEndDate());
+
+        caloriesConsumedLabel.setText(
+                formatNumber(
+                        state.getCaloriesConsumed(),
+                        "kcal"));
+
+        caloriesBurnedLabel.setText(
+                formatNumber(
+                        state.getCaloriesBurned(),
+                        "kcal"));
+
+        netCaloriesLabel.setText(
+                formatNumber(
+                        state.getNetCalories(),
+                        "kcal"));
+
+        proteinLabel.setText(
+                formatNumber(
+                        state.getProteinInGrams(),
+                        "g"));
+
+        carbohydratesLabel.setText(
+                formatNumber(
+                        state.getCarbohydratesInGrams(),
+                        "g"));
+
+        fatLabel.setText(
+                formatNumber(
+                        state.getFatInGrams(),
+                        "g"));
+
+        averageConsumedLabel.setText(
+                formatNumber(
+                        state.getAverageCaloriesConsumed(),
+                        "kcal"));
+
+        averageBurnedLabel.setText(
+                formatNumber(
+                        state.getAverageCaloriesBurned(),
+                        "kcal"));
+
+        averageNetLabel.setText(
+                formatNumber(
+                        state.getAverageNetCalories(),
+                        "kcal"));
+    }
+
+    /**
+     * Displays one table row for every day in the selected period.
+     */
+    private void updateDailyTable(
+            TrackingState state) {
+
+        tableModel.setRowCount(0);
+
+        for (DailyTrackingSummary summary
+                : state.getDailySummaries()) {
+
+            tableModel.addRow(
+                    new Object[] {
+                            summary.getDate(),
+                            formatNumber(
+                                    summary.getCaloriesConsumed(),
+                                    "kcal"),
+                            formatNumber(
+                                    summary.getCaloriesBurned(),
+                                    "kcal"),
+                            formatNumber(
+                                    summary.getNetCalories(),
+                                    "kcal")
+                    }
+            );
+        }
+    }
+
+    private static String formatNumber(
+            double value,
+            String unit) {
+
+        return String.format(
+                Locale.US,
+                "%.1f %s",
+                value,
+                unit
+        );
+    }
+
     public String getViewName() {
         return VIEW_NAME;
     }
 
-    /**
-     * Sets the tracking controller.
-     *
-     * @param controller tracking controller
-     */
     public void setTrackingController(
             TrackingController controller) {
 

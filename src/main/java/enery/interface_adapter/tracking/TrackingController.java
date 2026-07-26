@@ -4,9 +4,10 @@ import java.time.LocalDate;
 
 import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInputData;
+import enery.use_case.tracking.TrackingPeriod;
 
 /**
- * Controller for requesting daily tracking information.
+ * Controller for daily and weekly tracking.
  */
 public final class TrackingController {
 
@@ -18,20 +19,16 @@ public final class TrackingController {
         this.interactor = interactor;
     }
 
-    /**
-     * Requests the tracking summary for one user and date.
-     *
-     * @param username active username
-     * @param date date to summarize
-     */
     public void execute(
             String username,
-            LocalDate date) {
+            LocalDate selectedDate,
+            TrackingPeriod period) {
 
         interactor.execute(
                 new TrackingInputData(
                         username,
-                        date
+                        selectedDate,
+                        period
                 )
         );
     }

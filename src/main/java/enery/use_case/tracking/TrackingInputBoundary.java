@@ -1,7 +1,7 @@
 package enery.use_case.tracking;
 
 /**
- * Input boundary for viewing daily tracking information.
+ * Input boundary for requesting tracking information.
  */
 public interface TrackingInputBoundary {
 
