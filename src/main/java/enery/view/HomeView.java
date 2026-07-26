@@ -13,11 +13,12 @@ import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.LoggedInState;
 import enery.interface_adapter.change_password.LoggedInViewModel;
-import enery.interface_adapter.logout.LogoutController;
+import enery.interface_adapter.log_exercise.LogExerciseViewModel;
 import enery.interface_adapter.log_meal.LogMealViewModel;
+import enery.interface_adapter.logout.LogoutController;
 
 /**
- * The main screen displayed after a user successfully logs in.
+ * Main navigation screen displayed after a successful login.
  */
 public final class HomeView extends JPanel
         implements PropertyChangeListener {
@@ -28,10 +29,21 @@ public final class HomeView extends JPanel
     private final ViewManagerModel viewManagerModel;
 
     private final JLabel usernameLabel = new JLabel();
+    private final JButton profileButton = new JButton("Profile");
+    private final JButton mealButton = new JButton("Log Meal");
+    private final JButton exerciseButton = new JButton("Log Exercise");
+    private final JButton trackingButton = new JButton("View Progress");
+    private final JButton logoutButton = new JButton("Log Out");
 
     private LogoutController logoutController;
     private ChangePasswordController changePasswordController;
 
+    /**
+     * Creates the home screen.
+     *
+     * @param loggedInViewModel view model containing the active username
+     * @param viewManagerModel model used to switch between application screens
+     */
     public HomeView(
             LoggedInViewModel loggedInViewModel,
             ViewManagerModel viewManagerModel) {
@@ -41,32 +53,26 @@ public final class HomeView extends JPanel
 
         loggedInViewModel.addPropertyChangeListener(this);
 
-        final JLabel title = new JLabel("ENERY Smart Nutritionist");
+        final JLabel title =
+                new JLabel("ENERY Smart Nutritionist");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        final JButton profileButton = new JButton("Profile");
-        final JButton loggingButton = new JButton("Log Food and Exercise");
-        final JButton trackingButton = new JButton("View Progress");
-        final JButton logoutButton = new JButton("Log Out");
-
-        /*
-         * These buttons are temporarily disabled until their corresponding
-         * views and view models are implemented.
-         */
+        // These features are not connected yet.
         profileButton.setEnabled(false);
-        loggingButton.setEnabled(true);
         trackingButton.setEnabled(false);
 
-        loggingButton.addActionListener(event -> {
-            viewManagerModel.setState(LogMealViewModel.VIEW_NAME);
-            viewManagerModel.firePropertyChanged();
-        });
+        mealButton.addActionListener(event ->
+                switchView(LogMealViewModel.VIEW_NAME));
+
+        exerciseButton.addActionListener(event ->
+                switchView(LogExerciseViewModel.VIEW_NAME));
 
         logoutButton.addActionListener(event -> {
-            final LoggedInState currentState = loggedInViewModel.getState();
+            final LoggedInState state =
+                    loggedInViewModel.getState();
 
             if (logoutController != null) {
-                logoutController.execute(currentState.getUsername());
+                logoutController.execute(state.getUsername());
             }
         });
 
@@ -75,11 +81,27 @@ public final class HomeView extends JPanel
         add(title);
         add(usernameLabel);
         add(profileButton);
-        add(loggingButton);
+        add(mealButton);
+        add(exerciseButton);
         add(trackingButton);
         add(logoutButton);
     }
 
+    /**
+     * Changes the currently displayed card.
+     *
+     * @param viewName name of the view to display
+     */
+    private void switchView(String viewName) {
+        viewManagerModel.setState(viewName);
+        viewManagerModel.firePropertyChanged();
+    }
+
+    /**
+     * Updates the welcome label when the logged-in state changes.
+     *
+     * @param event property-change event from the logged-in view model
+     */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if ("state".equals(event.getPropertyName())) {
@@ -91,17 +113,38 @@ public final class HomeView extends JPanel
         }
     }
 
+    /**
+     * Returns the unique CardLayout name of this view.
+     *
+     * @return home view name
+     */
     public String getViewName() {
         return VIEW_NAME;
     }
 
+    /**
+     * Sets the logout controller.
+     *
+     * @param controller logout controller
+     */
     public void setLogoutController(
-            LogoutController logoutController) {
-        this.logoutController = logoutController;
+            LogoutController controller) {
+
+        this.logoutController = controller;
     }
 
+    /**
+     * Sets the change-password controller.
+     *
+     * <p>The current home-screen layout does not yet expose a change-password
+     * button, but the controller is retained for the existing authentication
+     * feature.</p>
+     *
+     * @param controller change-password controller
+     */
     public void setChangePasswordController(
-            ChangePasswordController changePasswordController) {
-        this.changePasswordController = changePasswordController;
+            ChangePasswordController controller) {
+
+        this.changePasswordController = controller;
     }
 }
