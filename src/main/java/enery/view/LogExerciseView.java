@@ -122,6 +122,7 @@ public final class LogExerciseView extends JPanel
         resultsBox.addActionListener(event ->
                 updateSelectedResult());
 
+
         add(title);
         add(searchPanel);
         add(caloriesLabel);

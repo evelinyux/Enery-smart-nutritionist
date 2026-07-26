@@ -1,6 +1,7 @@
 package enery.data_access;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import enery.entity.ExerciseEntry;
@@ -8,7 +9,11 @@ import enery.entity.MealEntry;
 import enery.use_case.tracking.TrackingDataAccessInterface;
 
 /**
- * Combines the meal and exercise repositories for daily tracking.
+ * Combines meal and exercise repositories for tracking.
+ *
+ * <p>The existing repositories retrieve one date at a time. This adapter loops
+ * through the requested date range so the tracking interactor can support both
+ * daily and weekly summaries.</p>
  */
 public final class DailyTrackingDataAccessObject
         implements TrackingDataAccessInterface {
@@ -22,27 +27,56 @@ public final class DailyTrackingDataAccessObject
             InMemoryExerciseDataAccessObject exerciseDataAccessObject) {
 
         this.mealDataAccessObject = mealDataAccessObject;
-        this.exerciseDataAccessObject =
-                exerciseDataAccessObject;
+        this.exerciseDataAccessObject = exerciseDataAccessObject;
     }
 
     @Override
     public List<MealEntry> getMeals(
             String username,
-            LocalDate date) {
+            LocalDate startDate,
+            LocalDate endDate) {
 
-        return mealDataAccessObject.getMeals(
-                username,
-                date);
+        final List<MealEntry> results =
+                new ArrayList<>();
+
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            results.addAll(
+                    mealDataAccessObject.getMeals(
+                            username,
+                            currentDate
+                    )
+            );
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return List.copyOf(results);
     }
 
     @Override
     public List<ExerciseEntry> getExercises(
             String username,
-            LocalDate date) {
+            LocalDate startDate,
+            LocalDate endDate) {
 
-        return exerciseDataAccessObject.getExercises(
-                username,
-                date);
+        final List<ExerciseEntry> results =
+                new ArrayList<>();
+
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            results.addAll(
+                    exerciseDataAccessObject.getExercises(
+                            username,
+                            currentDate
+                    )
+            );
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return List.copyOf(results);
     }
 }

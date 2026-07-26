@@ -4,7 +4,7 @@ import enery.use_case.tracking.TrackingOutputBoundary;
 import enery.use_case.tracking.TrackingOutputData;
 
 /**
- * Converts tracking use-case output into view-model state.
+ * Converts tracking output into view-model state.
  */
 public final class TrackingPresenter
         implements TrackingOutputBoundary {
@@ -24,19 +24,34 @@ public final class TrackingPresenter
         final TrackingState state =
                 viewModel.getState();
 
-        state.setDate(outputData.getDate());
+        state.setPeriod(outputData.getPeriod());
+        state.setStartDate(outputData.getStartDate());
+        state.setEndDate(outputData.getEndDate());
+
         state.setCaloriesConsumed(
                 outputData.getCaloriesConsumed());
         state.setCaloriesBurned(
                 outputData.getCaloriesBurned());
         state.setNetCalories(
                 outputData.getNetCalories());
+
         state.setProteinInGrams(
                 outputData.getProteinInGrams());
         state.setCarbohydratesInGrams(
                 outputData.getCarbohydratesInGrams());
         state.setFatInGrams(
                 outputData.getFatInGrams());
+
+        state.setAverageCaloriesConsumed(
+                outputData.getAverageCaloriesConsumed());
+        state.setAverageCaloriesBurned(
+                outputData.getAverageCaloriesBurned());
+        state.setAverageNetCalories(
+                outputData.getAverageNetCalories());
+
+        state.setDailySummaries(
+                outputData.getDailySummaries());
+
         state.setErrorMessage("");
 
         viewModel.setState(state);
