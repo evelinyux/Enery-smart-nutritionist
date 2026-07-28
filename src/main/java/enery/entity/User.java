@@ -1,5 +1,8 @@
 package enery.entity;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 /**
  * The representation of a user in our program.
  */
@@ -38,4 +41,15 @@ public interface User {
      * Sets the NutritionGoal of the user.
      */
     void setNutritionGoal(NutritionGoal nutritionGoal);
+
+    /**
+     * Retrieves the DailyLog for a specific date.
+     * If no log exists for that date, creates a new one.
+     */
+    DailyLog getDailyLog(LocalDate date);
+
+    /**
+     * Returns all recorded daily logs indexed by date.
+     */
+    Map<LocalDate, DailyLog> getDailyLogs();
 }
