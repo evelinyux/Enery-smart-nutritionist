@@ -1,5 +1,10 @@
 package enery.entity;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A simple implementation of the User interface.
  */
@@ -10,6 +15,7 @@ public class CommonUser implements User {
 
     private UserProfile userProfile;
     private NutritionGoal nutritionGoal;
+    private final Map<LocalDate, DailyLog> dailyLogs = new HashMap<>();
 
     public CommonUser(String name, String password) {
         this.name = name;
@@ -46,4 +52,17 @@ public class CommonUser implements User {
         this.nutritionGoal = nutritionGoal;
     }
 
+    @Override
+    public DailyLog getDailyLog(LocalDate date) {
+        // computeIfAbsent checks if a log for 'date' exists in the map.
+        // If it doesn't, it automatically creates a new DailyLog(date) and stores it
+        return dailyLogs.computeIfAbsent(date, DailyLog::new);
+    }
+
+    @Override
+    public Map<LocalDate, DailyLog> getDailyLogs() {
+        return Collections.unmodifiableMap(dailyLogs);
+    }
 }
+
+
