@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import enery.entity.Sex;
 import enery.entity.ActivityLevel;
 import enery.entity.HealthGoal;
+import enery.entity.Sex;
 
 /**
  * The Input Data for the Profile Use Case.
@@ -16,6 +16,8 @@ public class ProfileInputData {
     private final int age;
     private final double heightInCentimetres;
     private final double weightInKilograms;
+    private final double targetWeightInKilograms;
+    private final int durationDays;
     private final Sex sex;
     private final ActivityLevel activityLevel;
     private final HealthGoal healthGoal;
@@ -25,6 +27,8 @@ public class ProfileInputData {
             int age,
             double heightInCentimetres,
             double weightInKilograms,
+            double targetWeightInKilograms,
+            int durationDays,
             Sex sex,
             ActivityLevel activityLevel,
             HealthGoal healthGoal,
@@ -33,6 +37,9 @@ public class ProfileInputData {
         this.age = age;
         this.heightInCentimetres = heightInCentimetres;
         this.weightInKilograms = weightInKilograms;
+        this.targetWeightInKilograms =
+                targetWeightInKilograms;
+        this.durationDays = durationDays;
         this.sex = sex;
         this.activityLevel = activityLevel;
         this.healthGoal = healthGoal;
@@ -50,6 +57,14 @@ public class ProfileInputData {
 
     public double getWeightInKilograms() {
         return weightInKilograms;
+    }
+
+    public double getTargetWeightInKilograms() {
+        return targetWeightInKilograms;
+    }
+
+    public int getDurationDays() {
+        return durationDays;
     }
 
     public Sex getSex() {

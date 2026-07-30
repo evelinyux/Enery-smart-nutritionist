@@ -15,10 +15,22 @@ public final class UserProfile {
     private Sex sex;
     private ActivityLevel activityLevel;
     private HealthGoal healthGoal;
-    private Double dailyCalorieGoal;
+
+    private WeightGoalPlan activePlan;
+
     private final List<String> dietaryRestrictions;
 
-
+    /**
+     * Creates a user profile.
+     *
+     * @param age the user's age
+     * @param heightInCentimetres the user's height
+     * @param weightInKilograms the user's current weight
+     * @param sex the user's selected sex option
+     * @param activityLevel the user's activity level
+     * @param healthGoal the user's health goal
+     * @param dietaryRestrictions the user's dietary restrictions
+     */
     public UserProfile(
             int age,
             double heightInCentimetres,
@@ -34,6 +46,7 @@ public final class UserProfile {
         this.sex = sex;
         this.activityLevel = activityLevel;
         this.healthGoal = healthGoal;
+
         this.dietaryRestrictions =
                 new ArrayList<>(dietaryRestrictions);
     }
@@ -43,7 +56,7 @@ public final class UserProfile {
      *
      * @param age the user's age
      * @param heightInCentimetres the user's height
-     * @param weightInKilograms the user's weight
+     * @param weightInKilograms the user's current weight
      * @param activityLevel the user's activity level
      * @param healthGoal the user's health goal
      * @param dietaryRestrictions the user's dietary restrictions
@@ -126,23 +139,23 @@ public final class UserProfile {
     }
 
     /**
-     * Returns the estimated daily calorie goal.
+     * Returns the user's current active weight-goal plan.
      *
-     * @return estimated calories per day, or null if unavailable
+     * @return active plan, or null if no plan has been created
      */
-    public Double getDailyCalorieGoal() {
-        return dailyCalorieGoal;
+    public WeightGoalPlan getActivePlan() {
+        return activePlan;
     }
 
     /**
-     * Sets the estimated daily calorie goal.
+     * Sets the user's current active weight-goal plan.
      *
-     * @param dailyCalorieGoal estimated calories per day
+     * @param activePlan the active weight-goal plan
      */
-    public void setDailyCalorieGoal(
-            Double dailyCalorieGoal) {
+    public void setActivePlan(
+            WeightGoalPlan activePlan) {
 
-        this.dailyCalorieGoal = dailyCalorieGoal;
+        this.activePlan = activePlan;
     }
 
     public List<String> getDietaryRestrictions() {

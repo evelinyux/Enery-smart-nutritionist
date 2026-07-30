@@ -2,9 +2,9 @@ package enery.interface_adapter.profile;
 
 import java.util.List;
 
-import enery.entity.Sex;
 import enery.entity.ActivityLevel;
 import enery.entity.HealthGoal;
+import enery.entity.Sex;
 import enery.use_case.profile.ProfileInputBoundary;
 import enery.use_case.profile.ProfileInputData;
 
@@ -26,7 +26,10 @@ public class ProfileController {
      *
      * @param age the user's age
      * @param heightInCentimetres the user's height
-     * @param weightInKilograms the user's weight
+     * @param weightInKilograms the user's current weight
+     * @param targetWeightInKilograms the user's target weight
+     * @param durationDays the number of days in the plan
+     * @param sex the user's selected sex option
      * @param activityLevel the user's activity level
      * @param healthGoal the user's health goal
      * @param dietaryRestrictions the user's dietary restrictions
@@ -35,6 +38,8 @@ public class ProfileController {
             int age,
             double heightInCentimetres,
             double weightInKilograms,
+            double targetWeightInKilograms,
+            int durationDays,
             Sex sex,
             ActivityLevel activityLevel,
             HealthGoal healthGoal,
@@ -45,6 +50,8 @@ public class ProfileController {
                         age,
                         heightInCentimetres,
                         weightInKilograms,
+                        targetWeightInKilograms,
+                        durationDays,
                         sex,
                         activityLevel,
                         healthGoal,
