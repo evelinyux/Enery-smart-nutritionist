@@ -20,6 +20,9 @@ import enery.entity.CommonUserFactory;
 import enery.entity.ExerciseEntryFactory;
 import enery.entity.MealEntryFactory;
 import enery.entity.UserFactory;
+import enery.interface_adapter.profile.ProfileController;
+import enery.interface_adapter.profile.ProfilePresenter;
+import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.ChangePasswordPresenter;
@@ -50,6 +53,9 @@ import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.use_case.change_password.ChangePasswordInputBoundary;
 import enery.use_case.change_password.ChangePasswordInteractor;
 import enery.use_case.change_password.ChangePasswordOutputBoundary;
+import enery.use_case.profile.ProfileInputBoundary;
+import enery.use_case.profile.ProfileInteractor;
+import enery.use_case.profile.ProfileOutputBoundary;
 import enery.use_case.log_exercise.LogExerciseInputBoundary;
 import enery.use_case.log_exercise.LogExerciseInteractor;
 import enery.use_case.log_exercise.LogExerciseOutputBoundary;
@@ -78,6 +84,7 @@ import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
 import enery.view.HomeView;
+import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
@@ -131,6 +138,10 @@ public final class AppBuilder {
     private LoginViewModel loginViewModel;
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
+
+    // Profile components.
+    private ProfileView profileView;
+    private ProfileViewModel profileViewModel;
 
     // Food-search and meal-logging components.
     private LogMealView logMealView;
@@ -186,6 +197,23 @@ public final class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         homeView = new HomeView(loggedInViewModel, viewManagerModel);
         cardPanel.add(homeView, homeView.getViewName());
+        return this;
+    }
+
+    /**
+     * Creates and registers the profile view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProfileView() {
+        profileViewModel = new ProfileViewModel();
+        profileView = new ProfileView(profileViewModel);
+
+        cardPanel.add(
+                profileView,
+                profileView.getViewName()
+        );
+
         return this;
     }
 
@@ -283,7 +311,8 @@ public final class AppBuilder {
                 new LoginPresenter(
                         viewManagerModel,
                         loggedInViewModel,
-                        loginViewModel
+                        loginViewModel,
+                        signupViewModel
                 );
 
         final LoginInputBoundary interactor =
@@ -339,6 +368,30 @@ public final class AppBuilder {
 
         homeView.setLogoutController(
                 new LogoutController(interactor));
+        return this;
+    }
+
+    /**
+     * Wires the profile use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProfileUseCase() {
+        final ProfileOutputBoundary presenter =
+                new ProfilePresenter(
+                        viewManagerModel,
+                        profileViewModel
+                );
+
+        final ProfileInputBoundary interactor =
+                new ProfileInteractor(
+                        userDataAccessObject,
+                        presenter
+                );
+
+        profileView.setProfileController(
+                new ProfileController(interactor));
+
         return this;
     }
 

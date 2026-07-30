@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import enery.entity.User;
+import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;
@@ -16,7 +17,8 @@ import enery.use_case.signup.SignupUserDataAccessInterface;
 public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
-        LogoutUserDataAccessInterface {
+        LogoutUserDataAccessInterface,
+        ProfileUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
 
