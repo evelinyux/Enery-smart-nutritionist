@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_meal;
 
-import enery.entity.MealEntry;
+import enery.entity.meal.MealEntry;
 import enery.use_case.log_meal.LogMealOutputBoundary;
 import enery.use_case.log_meal.LogMealOutputData;
 

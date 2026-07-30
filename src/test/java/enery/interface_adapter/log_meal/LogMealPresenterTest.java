@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.FoodItem;
-import enery.entity.MealEntry;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 import enery.use_case.log_meal.LogMealOutputData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

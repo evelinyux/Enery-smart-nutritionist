@@ -2,6 +2,9 @@ package enery.entity;
 
 import java.time.LocalDateTime;
 
+import enery.entity.exercise.CommonExerciseEntryFactory;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntryFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

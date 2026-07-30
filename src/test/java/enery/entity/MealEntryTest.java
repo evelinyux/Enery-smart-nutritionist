@@ -2,6 +2,9 @@ package enery.entity;
 
 import java.time.LocalDateTime;
 
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

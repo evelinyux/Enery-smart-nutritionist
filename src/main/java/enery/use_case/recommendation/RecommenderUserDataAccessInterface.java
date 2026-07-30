@@ -1,10 +1,10 @@
 package enery.use_case.recommendation;
 
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
-import enery.entity.User;
-import enery.entity.UserProfile;
+import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.recipe.Recipe;
+import enery.entity.user.User;
+
 import java.util.List;
 
 public interface RecommenderUserDataAccessInterface {

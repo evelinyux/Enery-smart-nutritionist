@@ -16,9 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import enery.entity.ActivityLevel;
-import enery.entity.HealthGoal;
-import enery.entity.Sex;
+import enery.entity.user.ActivityLevel;
+import enery.entity.user.HealthGoal;
+import enery.entity.user.Sex;
 import enery.interface_adapter.profile.ProfileController;
 import enery.interface_adapter.profile.ProfileState;
 import enery.interface_adapter.profile.ProfileViewModel;

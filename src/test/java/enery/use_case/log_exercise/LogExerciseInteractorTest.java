@@ -7,9 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import enery.data_access.InMemoryExerciseDataAccessObject;
-import enery.entity.CommonExerciseEntryFactory;
-import enery.entity.ExerciseEntry;
-import enery.entity.ExerciseEntryFactory;
+import enery.entity.exercise.CommonExerciseEntryFactory;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntryFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

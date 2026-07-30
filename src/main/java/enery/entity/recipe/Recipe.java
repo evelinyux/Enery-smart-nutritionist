@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.recipe;
 
 import java.util.ArrayList;
 import java.util.Collections;

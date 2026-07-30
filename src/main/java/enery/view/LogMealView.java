@@ -17,8 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_meal.LogMealController;

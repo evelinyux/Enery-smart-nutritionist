@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntry;
 import enery.use_case.log_exercise.LogExerciseOutputData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

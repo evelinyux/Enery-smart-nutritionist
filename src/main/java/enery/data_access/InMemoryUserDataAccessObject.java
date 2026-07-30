@@ -3,7 +3,7 @@ package enery.data_access;
 import java.util.HashMap;
 import java.util.Map;
 
-import enery.entity.User;
+import enery.entity.user.User;
 import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;

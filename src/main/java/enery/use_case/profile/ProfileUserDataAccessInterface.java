@@ -1,6 +1,6 @@
 package enery.use_case.profile;
 
-import enery.entity.User;
+import enery.entity.user.User;
 
 /**
  * DAO for the Profile Use Case.

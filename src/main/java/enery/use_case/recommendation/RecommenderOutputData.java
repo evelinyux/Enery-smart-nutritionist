@@ -1,7 +1,7 @@
 package enery.use_case.recommendation;
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
+import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.recipe.Recipe;
 
 import java.util.List;
 

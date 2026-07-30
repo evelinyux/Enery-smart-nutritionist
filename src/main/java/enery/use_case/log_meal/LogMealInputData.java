@@ -2,8 +2,8 @@ package enery.use_case.log_meal;
 
 import java.time.LocalDateTime;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 
 /**
  * Input data for logging a meal.

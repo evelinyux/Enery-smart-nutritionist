@@ -1,7 +1,7 @@
 package enery.use_case.log_exercise;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.ExerciseEntryFactory;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntryFactory;
 
 /**
  * Interactor for logging an exercise activity.

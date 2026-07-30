@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.user;
 
 import java.time.LocalDate;
 

@@ -1,6 +1,6 @@
 package enery.use_case.log_meal;
 
-import enery.entity.MealEntry;
+import enery.entity.meal.MealEntry;
 
 /**
  * Output data for a successfully logged meal.

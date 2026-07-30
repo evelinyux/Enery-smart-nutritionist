@@ -3,6 +3,11 @@ package enery.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
+import enery.entity.tracking.DailyLog;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

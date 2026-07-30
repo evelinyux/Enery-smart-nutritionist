@@ -7,7 +7,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 import enery.use_case.search_exercise.CaloriesBurnedDataAccessInterface;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;

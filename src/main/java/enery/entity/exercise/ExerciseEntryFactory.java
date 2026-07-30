@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.exercise;
 
 import java.time.LocalDateTime;
 

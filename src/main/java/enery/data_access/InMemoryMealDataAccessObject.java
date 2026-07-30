@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import enery.entity.MealEntry;
+import enery.entity.meal.MealEntry;
 import enery.use_case.log_meal.LogMealUserDataAccessInterface;
 
 /**

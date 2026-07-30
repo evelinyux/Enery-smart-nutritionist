@@ -1,7 +1,7 @@
 package enery.interface_adapter.profile;
 
-import enery.entity.UserProfile;
-import enery.entity.WeightGoalPlan;
+import enery.entity.user.UserProfile;
+import enery.entity.user.WeightGoalPlan;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.use_case.profile.ProfileOutputBoundary;

@@ -1,6 +1,6 @@
 package enery.use_case.log_exercise;
 
-import enery.entity.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntry;
 
 /**
  * Output data for a successfully logged exercise.

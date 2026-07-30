@@ -6,8 +6,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.MealEntry;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.MealEntry;
 
 /**
  * Calculates daily or weekly nutrition and exercise totals.

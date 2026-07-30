@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseController;

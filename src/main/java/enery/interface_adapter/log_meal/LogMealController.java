@@ -2,8 +2,8 @@ package enery.interface_adapter.log_meal;
 
 import java.time.LocalDateTime;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 import enery.use_case.log_meal.LogMealInputBoundary;
 import enery.use_case.log_meal.LogMealInputData;
 

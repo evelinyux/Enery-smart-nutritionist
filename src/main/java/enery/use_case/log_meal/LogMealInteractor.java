@@ -1,7 +1,7 @@
 package enery.use_case.log_meal;
 
-import enery.entity.MealEntry;
-import enery.entity.MealEntryFactory;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealEntryFactory;
 
 /**
  * Interactor for logging a meal.

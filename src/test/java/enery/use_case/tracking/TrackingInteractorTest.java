@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.FoodItem;
-import enery.entity.MealEntry;
-import enery.entity.MealType;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
