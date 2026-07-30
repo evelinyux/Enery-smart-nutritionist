@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import enery.entity.Sex;
 import enery.entity.ActivityLevel;
 import enery.entity.HealthGoal;
+import enery.entity.Sex;
 
 /**
  * The state for the Profile View Model.
@@ -14,12 +14,23 @@ import enery.entity.HealthGoal;
 public class ProfileState {
 
     private String username = "";
+
     private int age;
     private double heightInCentimetres;
     private double weightInKilograms;
+
     private Sex sex;
     private ActivityLevel activityLevel;
     private HealthGoal healthGoal;
+
+    private double targetWeightInKilograms;
+    private int durationDays;
+
+    private String startDate = "";
+    private String endDate = "";
+
+    private Double dailyCalorieGoal;
+
     private List<String> dietaryRestrictions =
             new ArrayList<>();
 
@@ -92,6 +103,58 @@ public class ProfileState {
         this.healthGoal = healthGoal;
     }
 
+    public double getTargetWeightInKilograms() {
+        return targetWeightInKilograms;
+    }
+
+    public void setTargetWeightInKilograms(
+            double targetWeightInKilograms) {
+
+        this.targetWeightInKilograms =
+                targetWeightInKilograms;
+    }
+
+    public int getDurationDays() {
+        return durationDays;
+    }
+
+    public void setDurationDays(
+            int durationDays) {
+
+        this.durationDays = durationDays;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(
+            String startDate) {
+
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(
+            String endDate) {
+
+        this.endDate = endDate;
+    }
+
+    public Double getDailyCalorieGoal() {
+        return dailyCalorieGoal;
+    }
+
+    public void setDailyCalorieGoal(
+            Double dailyCalorieGoal) {
+
+        this.dailyCalorieGoal =
+                dailyCalorieGoal;
+    }
+
     public List<String> getDietaryRestrictions() {
         return Collections.unmodifiableList(
                 dietaryRestrictions);
@@ -108,7 +171,9 @@ public class ProfileState {
         return profileError;
     }
 
-    public void setProfileError(String profileError) {
+    public void setProfileError(
+            String profileError) {
+
         this.profileError = profileError;
     }
 
@@ -119,6 +184,7 @@ public class ProfileState {
     public void setSuccessMessage(
             String successMessage) {
 
-        this.successMessage = successMessage;
+        this.successMessage =
+                successMessage;
     }
 }

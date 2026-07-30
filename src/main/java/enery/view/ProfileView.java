@@ -24,7 +24,7 @@ import enery.interface_adapter.profile.ProfileState;
 import enery.interface_adapter.profile.ProfileViewModel;
 
 /**
- * Displays and edits the current user's profile.
+ * Displays and edits the current user's profile and weight-goal plan.
  */
 public final class ProfileView extends JPanel
         implements PropertyChangeListener {
@@ -42,6 +42,12 @@ public final class ProfileView extends JPanel
             new JTextField(10);
 
     private final JTextField weightField =
+            new JTextField(10);
+
+    private final JTextField targetWeightField =
+            new JTextField(10);
+
+    private final JTextField durationDaysField =
             new JTextField(10);
 
     private final JComboBox<Sex> sexBox =
@@ -67,6 +73,15 @@ public final class ProfileView extends JPanel
 
     private final JCheckBox halalBox =
             new JCheckBox("Halal");
+
+    private final JLabel startDateLabel =
+            new JLabel("Not created");
+
+    private final JLabel endDateLabel =
+            new JLabel("Not created");
+
+    private final JLabel dailyGoalLabel =
+            new JLabel("Not calculated");
 
     private final JLabel statusLabel =
             new JLabel();
@@ -100,7 +115,7 @@ public final class ProfileView extends JPanel
         ));
 
         final JLabel title =
-                new JLabel("Profile Setup");
+                new JLabel("Profile and Plan Setup");
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -113,8 +128,20 @@ public final class ProfileView extends JPanel
         profileFields.add(new JLabel("Height (cm)"));
         profileFields.add(heightField);
 
-        profileFields.add(new JLabel("Weight (kg)"));
+        profileFields.add(new JLabel("Current Weight (kg)"));
         profileFields.add(weightField);
+
+        profileFields.add(new JLabel("Target Weight (kg)"));
+        profileFields.add(targetWeightField);
+
+        profileFields.add(new JLabel("Plan Duration (days)"));
+        profileFields.add(durationDaysField);
+
+        profileFields.add(new JLabel("Plan Start Date"));
+        profileFields.add(startDateLabel);
+
+        profileFields.add(new JLabel("Plan End Date"));
+        profileFields.add(endDateLabel);
 
         profileFields.add(new JLabel("Sex"));
         profileFields.add(sexBox);
@@ -124,6 +151,11 @@ public final class ProfileView extends JPanel
 
         profileFields.add(new JLabel("Health Goal"));
         profileFields.add(healthGoalBox);
+
+        profileFields.add(
+                new JLabel("Estimated Daily Calorie Goal"));
+
+        profileFields.add(dailyGoalLabel);
 
         final JPanel dietaryPanel =
                 new JPanel(new GridLayout(0, 1));
@@ -139,7 +171,7 @@ public final class ProfileView extends JPanel
         dietaryPanel.add(halalBox);
 
         final JButton saveButton =
-                new JButton("Save Profile");
+                new JButton("Save Profile and Plan");
 
         final JButton backButton =
                 new JButton("Back to Home");
@@ -181,6 +213,14 @@ public final class ProfileView extends JPanel
                     Double.parseDouble(
                             weightField.getText().trim());
 
+            final double targetWeight =
+                    Double.parseDouble(
+                            targetWeightField.getText().trim());
+
+            final int durationDays =
+                    Integer.parseInt(
+                            durationDaysField.getText().trim());
+
             final Sex sex =
                     (Sex) sexBox.getSelectedItem();
 
@@ -199,6 +239,8 @@ public final class ProfileView extends JPanel
                     age,
                     height,
                     weight,
+                    targetWeight,
+                    durationDays,
                     sex,
                     activityLevel,
                     healthGoal,
@@ -207,7 +249,8 @@ public final class ProfileView extends JPanel
         }
         catch (NumberFormatException exception) {
             statusLabel.setText(
-                    "Age, height, and weight must be valid numbers.");
+                    "Age and plan duration must be whole numbers, "
+                            + "and height and weights must be valid numbers.");
         }
     }
 
@@ -289,7 +332,7 @@ public final class ProfileView extends JPanel
     }
 
     /**
-     * Displays the profile information stored in the state.
+     * Displays the profile and plan information stored in the state.
      *
      * @param state current profile state
      */
@@ -313,6 +356,20 @@ public final class ProfileView extends JPanel
                             state.getWeightInKilograms()));
         }
 
+        if (state.getTargetWeightInKilograms() > 0) {
+            targetWeightField.setText(
+                    Double.toString(
+                            state.getTargetWeightInKilograms()));
+        }
+
+        if (state.getDurationDays() > 0) {
+            durationDaysField.setText(
+                    Integer.toString(
+                            state.getDurationDays()));
+        }
+
+        updatePlanDateLabels(state);
+
         if (state.getSex() != null) {
             sexBox.setSelectedItem(
                     state.getSex());
@@ -328,8 +385,62 @@ public final class ProfileView extends JPanel
                     state.getHealthGoal());
         }
 
+        updateDailyGoalLabel(
+                state.getDailyCalorieGoal());
+
         updateDietaryRestrictions(
                 state.getDietaryRestrictions());
+    }
+
+    /**
+     * Updates the plan start and end date labels.
+     *
+     * @param state current profile state
+     */
+    private void updatePlanDateLabels(
+            ProfileState state) {
+
+        if (state.getStartDate() == null
+                || state.getStartDate().isBlank()) {
+
+            startDateLabel.setText(
+                    "Not created");
+        }
+        else {
+            startDateLabel.setText(
+                    state.getStartDate());
+        }
+
+        if (state.getEndDate() == null
+                || state.getEndDate().isBlank()) {
+
+            endDateLabel.setText(
+                    "Not created");
+        }
+        else {
+            endDateLabel.setText(
+                    state.getEndDate());
+        }
+    }
+
+    /**
+     * Updates the estimated daily calorie goal display.
+     *
+     * @param dailyCalorieGoal estimated calories per day
+     */
+    private void updateDailyGoalLabel(
+            Double dailyCalorieGoal) {
+
+        if (dailyCalorieGoal == null) {
+            dailyGoalLabel.setText(
+                    "Not calculated");
+        }
+        else {
+            dailyGoalLabel.setText(
+                    String.format(
+                            "%.0f kcal/day (estimated)",
+                            dailyCalorieGoal));
+        }
     }
 
     /**

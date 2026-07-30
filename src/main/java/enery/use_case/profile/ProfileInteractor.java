@@ -1,7 +1,12 @@
 package enery.use_case.profile;
 
+import java.time.LocalDate;
+
+import enery.entity.HealthGoal;
 import enery.entity.User;
 import enery.entity.UserProfile;
+import enery.entity.WeightGoalPlan;
+import enery.entity.strategy.DailyCalorieGoalCalculator;
 
 /**
  * The Profile Interactor.
@@ -11,29 +16,49 @@ public class ProfileInteractor implements ProfileInputBoundary {
     private final ProfileUserDataAccessInterface userDataAccessObject;
     private final ProfileOutputBoundary profilePresenter;
 
+    private final DailyCalorieGoalCalculator dailyGoalCalculator =
+            new DailyCalorieGoalCalculator();
+
     public ProfileInteractor(
             ProfileUserDataAccessInterface profileDataAccessInterface,
             ProfileOutputBoundary profileOutputBoundary) {
 
         this.userDataAccessObject =
                 profileDataAccessInterface;
+
         this.profilePresenter =
                 profileOutputBoundary;
     }
 
     @Override
-    public void execute(ProfileInputData profileInputData) {
+    public void execute(
+            ProfileInputData profileInputData) {
+
         if (profileInputData.getAge() <= 0) {
             profilePresenter.prepareFailView(
                     "Age must be greater than zero.");
         }
-        else if (profileInputData.getHeightInCentimetres() <= 0) {
+        else if (profileInputData
+                .getHeightInCentimetres() <= 0) {
+
             profilePresenter.prepareFailView(
                     "Height must be greater than zero.");
         }
-        else if (profileInputData.getWeightInKilograms() <= 0) {
+        else if (profileInputData
+                .getWeightInKilograms() <= 0) {
+
             profilePresenter.prepareFailView(
-                    "Weight must be greater than zero.");
+                    "Current weight must be greater than zero.");
+        }
+        else if (profileInputData
+                .getTargetWeightInKilograms() <= 0) {
+
+            profilePresenter.prepareFailView(
+                    "Target weight must be greater than zero.");
+        }
+        else if (profileInputData.getDurationDays() <= 0) {
+            profilePresenter.prepareFailView(
+                    "Plan duration must be greater than zero.");
         }
         else if (profileInputData.getSex() == null) {
             profilePresenter.prepareFailView(
@@ -47,11 +72,35 @@ public class ProfileInteractor implements ProfileInputBoundary {
             profilePresenter.prepareFailView(
                     "Please select a health goal.");
         }
+        else if (profileInputData.getAge() < 18
+                && profileInputData.getHealthGoal()
+                != HealthGoal.MAINTAIN_WEIGHT) {
+
+            profilePresenter.prepareFailView(
+                    "Users under 18 can only create "
+                            + "a maintenance plan.");
+        }
+        else if (profileInputData.getAge() < 18
+                && Double.compare(
+                profileInputData
+                        .getWeightInKilograms(),
+                profileInputData
+                        .getTargetWeightInKilograms()) != 0) {
+
+            profilePresenter.prepareFailView(
+                    "For users under 18, target weight "
+                            + "must equal current weight.");
+        }
         else {
             saveProfile(profileInputData);
         }
     }
 
+    /**
+     * Creates and saves the user's profile and plan.
+     *
+     * @param profileInputData profile and plan input
+     */
     private void saveProfile(
             ProfileInputData profileInputData) {
 
@@ -61,46 +110,81 @@ public class ProfileInteractor implements ProfileInputBoundary {
         if (username == null) {
             profilePresenter.prepareFailView(
                     "No user is currently logged in.");
+            return;
         }
-        else {
-            final User user =
-                    userDataAccessObject.get(username);
 
-            if (user == null) {
-                profilePresenter.prepareFailView(
-                        "The current user could not be found.");
-            }
-            else {
-                final UserProfile userProfile =
-                        new UserProfile(
-                                profileInputData.getAge(),
-                                profileInputData
-                                        .getHeightInCentimetres(),
-                                profileInputData
-                                        .getWeightInKilograms(),
-                                profileInputData.getSex(),
-                                profileInputData
-                                        .getActivityLevel(),
-                                profileInputData
-                                        .getHealthGoal(),
-                                profileInputData
-                                        .getDietaryRestrictions()
-                        );
+        final User user =
+                userDataAccessObject.get(username);
 
-                user.setUserProfile(userProfile);
-                userDataAccessObject.save(user);
-
-                final ProfileOutputData outputData =
-                        new ProfileOutputData(
-                                username,
-                                userProfile,
-                                false
-                        );
-
-                profilePresenter.prepareSuccessView(
-                        outputData);
-            }
+        if (user == null) {
+            profilePresenter.prepareFailView(
+                    "The current user could not be found.");
+            return;
         }
+
+        try {
+            final UserProfile userProfile =
+                    createUserProfile(profileInputData);
+
+            final double dailyCalorieGoal =
+                    dailyGoalCalculator.calculate(
+                            userProfile);
+
+            final WeightGoalPlan weightGoalPlan =
+                    new WeightGoalPlan(
+                            LocalDate.now(),
+                            profileInputData.getDurationDays(),
+                            profileInputData
+                                    .getWeightInKilograms(),
+                            profileInputData
+                                    .getTargetWeightInKilograms(),
+                            profileInputData.getHealthGoal(),
+                            dailyCalorieGoal
+                    );
+
+            userProfile.setActivePlan(
+                    weightGoalPlan);
+
+            user.setUserProfile(userProfile);
+            userDataAccessObject.save(user);
+
+            final ProfileOutputData outputData =
+                    new ProfileOutputData(
+                            username,
+                            userProfile,
+                            false
+                    );
+
+            profilePresenter.prepareSuccessView(
+                    outputData);
+        }
+        catch (IllegalArgumentException exception) {
+            profilePresenter.prepareFailView(
+                    exception.getMessage());
+        }
+    }
+
+    /**
+     * Creates the UserProfile entity from the input data.
+     *
+     * @param profileInputData profile input
+     * @return newly created user profile
+     */
+    private UserProfile createUserProfile(
+            ProfileInputData profileInputData) {
+
+        return new UserProfile(
+                profileInputData.getAge(),
+                profileInputData
+                        .getHeightInCentimetres(),
+                profileInputData
+                        .getWeightInKilograms(),
+                profileInputData.getSex(),
+                profileInputData.getActivityLevel(),
+                profileInputData.getHealthGoal(),
+                profileInputData
+                        .getDietaryRestrictions()
+        );
     }
 
     @Override
