@@ -1,0 +1,378 @@
+package enery.view;
+
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import enery.entity.ActivityLevel;
+import enery.entity.HealthGoal;
+import enery.entity.Sex;
+import enery.interface_adapter.profile.ProfileController;
+import enery.interface_adapter.profile.ProfileState;
+import enery.interface_adapter.profile.ProfileViewModel;
+
+/**
+ * Displays and edits the current user's profile.
+ */
+public final class ProfileView extends JPanel
+        implements PropertyChangeListener {
+
+    public static final String VIEW_NAME = "profile";
+
+    private final ProfileViewModel profileViewModel;
+
+    private ProfileController profileController;
+
+    private final JTextField ageField =
+            new JTextField(10);
+
+    private final JTextField heightField =
+            new JTextField(10);
+
+    private final JTextField weightField =
+            new JTextField(10);
+
+    private final JComboBox<Sex> sexBox =
+            new JComboBox<>(Sex.values());
+
+    private final JComboBox<ActivityLevel> activityLevelBox =
+            new JComboBox<>(ActivityLevel.values());
+
+    private final JComboBox<HealthGoal> healthGoalBox =
+            new JComboBox<>(HealthGoal.values());
+
+    private final JCheckBox vegetarianBox =
+            new JCheckBox("Vegetarian");
+
+    private final JCheckBox veganBox =
+            new JCheckBox("Vegan");
+
+    private final JCheckBox glutenFreeBox =
+            new JCheckBox("Gluten Free");
+
+    private final JCheckBox dairyFreeBox =
+            new JCheckBox("Dairy Free");
+
+    private final JCheckBox halalBox =
+            new JCheckBox("Halal");
+
+    private final JLabel statusLabel =
+            new JLabel();
+
+    /**
+     * Creates the profile screen.
+     *
+     * @param profileViewModel view model for the profile screen
+     */
+    public ProfileView(
+            ProfileViewModel profileViewModel) {
+
+        this.profileViewModel = profileViewModel;
+
+        profileViewModel.addPropertyChangeListener(this);
+
+        configureView();
+    }
+
+    /**
+     * Creates and arranges the profile screen.
+     */
+    private void configureView() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        setBorder(BorderFactory.createEmptyBorder(
+                15,
+                15,
+                15,
+                15
+        ));
+
+        final JLabel title =
+                new JLabel("Profile Setup");
+
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel profileFields =
+                new JPanel(new GridLayout(0, 2, 5, 5));
+
+        profileFields.add(new JLabel("Age"));
+        profileFields.add(ageField);
+
+        profileFields.add(new JLabel("Height (cm)"));
+        profileFields.add(heightField);
+
+        profileFields.add(new JLabel("Weight (kg)"));
+        profileFields.add(weightField);
+
+        profileFields.add(new JLabel("Sex"));
+        profileFields.add(sexBox);
+
+        profileFields.add(new JLabel("Activity Level"));
+        profileFields.add(activityLevelBox);
+
+        profileFields.add(new JLabel("Health Goal"));
+        profileFields.add(healthGoalBox);
+
+        final JPanel dietaryPanel =
+                new JPanel(new GridLayout(0, 1));
+
+        dietaryPanel.setBorder(
+                BorderFactory.createTitledBorder(
+                        "Dietary Restrictions"));
+
+        dietaryPanel.add(vegetarianBox);
+        dietaryPanel.add(veganBox);
+        dietaryPanel.add(glutenFreeBox);
+        dietaryPanel.add(dairyFreeBox);
+        dietaryPanel.add(halalBox);
+
+        final JButton saveButton =
+                new JButton("Save Profile");
+
+        final JButton backButton =
+                new JButton("Back to Home");
+
+        saveButton.addActionListener(event ->
+                saveProfile());
+
+        backButton.addActionListener(event ->
+                switchToHomeView());
+
+        add(title);
+        add(profileFields);
+        add(dietaryPanel);
+        add(saveButton);
+        add(backButton);
+        add(statusLabel);
+    }
+
+    /**
+     * Reads the form data and executes the profile use case.
+     */
+    private void saveProfile() {
+        if (profileController == null) {
+            statusLabel.setText(
+                    "Profile controller is not configured.");
+            return;
+        }
+
+        try {
+            final int age =
+                    Integer.parseInt(
+                            ageField.getText().trim());
+
+            final double height =
+                    Double.parseDouble(
+                            heightField.getText().trim());
+
+            final double weight =
+                    Double.parseDouble(
+                            weightField.getText().trim());
+
+            final Sex sex =
+                    (Sex) sexBox.getSelectedItem();
+
+            final ActivityLevel activityLevel =
+                    (ActivityLevel)
+                            activityLevelBox.getSelectedItem();
+
+            final HealthGoal healthGoal =
+                    (HealthGoal)
+                            healthGoalBox.getSelectedItem();
+
+            final List<String> dietaryRestrictions =
+                    getSelectedDietaryRestrictions();
+
+            profileController.execute(
+                    age,
+                    height,
+                    weight,
+                    sex,
+                    activityLevel,
+                    healthGoal,
+                    dietaryRestrictions
+            );
+        }
+        catch (NumberFormatException exception) {
+            statusLabel.setText(
+                    "Age, height, and weight must be valid numbers.");
+        }
+    }
+
+    /**
+     * Returns the dietary restrictions selected by the user.
+     *
+     * @return selected dietary restrictions
+     */
+    private List<String> getSelectedDietaryRestrictions() {
+        final List<String> restrictions =
+                new ArrayList<>();
+
+        if (vegetarianBox.isSelected()) {
+            restrictions.add("Vegetarian");
+        }
+
+        if (veganBox.isSelected()) {
+            restrictions.add("Vegan");
+        }
+
+        if (glutenFreeBox.isSelected()) {
+            restrictions.add("Gluten Free");
+        }
+
+        if (dairyFreeBox.isSelected()) {
+            restrictions.add("Dairy Free");
+        }
+
+        if (halalBox.isSelected()) {
+            restrictions.add("Halal");
+        }
+
+        return restrictions;
+    }
+
+    /**
+     * Switches from the profile screen to the home screen.
+     */
+    private void switchToHomeView() {
+        if (profileController == null) {
+            statusLabel.setText(
+                    "Profile controller is not configured.");
+            return;
+        }
+
+        profileController.switchToHomeView();
+    }
+
+    /**
+     * Updates the screen after the Profile View Model changes.
+     *
+     * @param event property-change event
+     */
+    @Override
+    public void propertyChange(
+            PropertyChangeEvent event) {
+
+        if (!"state".equals(event.getPropertyName())) {
+            return;
+        }
+
+        final ProfileState state =
+                profileViewModel.getState();
+
+        if (state.getProfileError() != null
+                && !state.getProfileError().isBlank()) {
+
+            statusLabel.setText(
+                    state.getProfileError());
+            return;
+        }
+
+        updateProfileFields(state);
+
+        if (state.getSuccessMessage() != null) {
+            statusLabel.setText(
+                    state.getSuccessMessage());
+        }
+    }
+
+    /**
+     * Displays the profile information stored in the state.
+     *
+     * @param state current profile state
+     */
+    private void updateProfileFields(
+            ProfileState state) {
+
+        if (state.getAge() > 0) {
+            ageField.setText(
+                    Integer.toString(state.getAge()));
+        }
+
+        if (state.getHeightInCentimetres() > 0) {
+            heightField.setText(
+                    Double.toString(
+                            state.getHeightInCentimetres()));
+        }
+
+        if (state.getWeightInKilograms() > 0) {
+            weightField.setText(
+                    Double.toString(
+                            state.getWeightInKilograms()));
+        }
+
+        if (state.getSex() != null) {
+            sexBox.setSelectedItem(
+                    state.getSex());
+        }
+
+        if (state.getActivityLevel() != null) {
+            activityLevelBox.setSelectedItem(
+                    state.getActivityLevel());
+        }
+
+        if (state.getHealthGoal() != null) {
+            healthGoalBox.setSelectedItem(
+                    state.getHealthGoal());
+        }
+
+        updateDietaryRestrictions(
+                state.getDietaryRestrictions());
+    }
+
+    /**
+     * Updates the dietary restriction checkboxes.
+     *
+     * @param restrictions saved dietary restrictions
+     */
+    private void updateDietaryRestrictions(
+            List<String> restrictions) {
+
+        vegetarianBox.setSelected(
+                restrictions.contains("Vegetarian"));
+
+        veganBox.setSelected(
+                restrictions.contains("Vegan"));
+
+        glutenFreeBox.setSelected(
+                restrictions.contains("Gluten Free"));
+
+        dairyFreeBox.setSelected(
+                restrictions.contains("Dairy Free"));
+
+        halalBox.setSelected(
+                restrictions.contains("Halal"));
+    }
+
+    /**
+     * Returns the CardLayout name of this view.
+     *
+     * @return profile view name
+     */
+    public String getViewName() {
+        return VIEW_NAME;
+    }
+
+    /**
+     * Sets the controller for the Profile Use Case.
+     *
+     * @param controller profile controller
+     */
+    public void setProfileController(
+            ProfileController controller) {
+
+        this.profileController = controller;
+    }
+}

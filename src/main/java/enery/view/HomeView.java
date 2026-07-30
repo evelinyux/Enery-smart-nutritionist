@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.LoggedInState;
@@ -58,8 +59,8 @@ public final class HomeView extends JPanel
                 new JLabel("ENERY Smart Nutritionist");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // The profile feature has not been connected yet.
-        profileButton.setEnabled(false);
+        profileButton.addActionListener(event ->
+                switchView(ProfileViewModel.VIEW_NAME));
 
         mealButton.addActionListener(event ->
                 switchView(LogMealViewModel.VIEW_NAME));
