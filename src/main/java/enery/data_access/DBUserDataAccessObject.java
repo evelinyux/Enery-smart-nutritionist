@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import enery.entity.User;
-import enery.entity.UserFactory;
+import enery.entity.user.User;
+import enery.entity.user.UserFactory;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

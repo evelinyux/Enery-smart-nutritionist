@@ -1,6 +1,6 @@
-package enery.entity;
+package enery.entity.exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Creates exercise entries.
@@ -11,6 +11,6 @@ public interface ExerciseEntryFactory {
             String exerciseName,
             int durationInMinutes,
             double caloriesBurned,
-            LocalDateTime dateTime
+            LocalDate date
     );
 }

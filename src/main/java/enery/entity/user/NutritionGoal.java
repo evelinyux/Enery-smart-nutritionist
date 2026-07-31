@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.user;
 
 /**
  * Represents a user's daily nutrition targets.

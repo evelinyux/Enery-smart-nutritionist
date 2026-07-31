@@ -1,7 +1,7 @@
 package enery.interface_adapter.log_meal;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 
 /**
  * Stores the current state of the log-meal view.

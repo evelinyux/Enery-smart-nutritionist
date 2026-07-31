@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.user;
 
 /**
  * Represents the sex option stored in a user profile.

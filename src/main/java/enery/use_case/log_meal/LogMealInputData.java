@@ -1,9 +1,9 @@
 package enery.use_case.log_meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 
 /**
  * Input data for logging a meal.
@@ -14,20 +14,20 @@ public final class LogMealInputData {
     private final FoodItem foodItem;
     private final MealType mealType;
     private final double servings;
-    private final LocalDateTime dateTime;
+    private final LocalDate date;
 
     public LogMealInputData(
             String username,
             FoodItem foodItem,
             MealType mealType,
             double servings,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         this.username = username;
         this.foodItem = foodItem;
         this.mealType = mealType;
         this.servings = servings;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 
     public String getUsername() {
@@ -46,7 +46,7 @@ public final class LogMealInputData {
         return servings;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 }

@@ -1,7 +1,4 @@
-package enery.entity;
-
-import enery.entity.Recipe;
-import enery.entity.UserProfile;
+package enery.entity.recipe;
 
 import java.util.List;
 

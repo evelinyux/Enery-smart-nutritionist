@@ -1,9 +1,8 @@
 package enery.entity.strategy;
 
-import enery.entity.ActivityLevel;
-import enery.entity.HealthGoal;
-import enery.entity.Sex;
-import enery.entity.UserProfile;
+import enery.entity.user.ActivityLevel;
+import enery.entity.user.HealthGoal;
+import enery.entity.user.UserProfile;
 
 /**
  * Calculates an estimated daily calorie goal from a user profile.

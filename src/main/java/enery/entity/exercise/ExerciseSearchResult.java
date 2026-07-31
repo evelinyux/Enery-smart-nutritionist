@@ -1,4 +1,4 @@
-package enery.entity;
+package enery.entity.exercise;
 
 /**
  * Represents one exercise result returned by a calories-burned search.
@@ -41,7 +41,7 @@ public final class ExerciseSearchResult {
     @Override
     public String toString() {
         return exerciseName
-                + " — "
+                + " - "
                 + totalCalories
                 + " calories";
     }

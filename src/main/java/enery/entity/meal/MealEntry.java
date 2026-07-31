@@ -1,6 +1,6 @@
-package enery.entity;
+package enery.entity.meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Represents one food item logged as part of a meal.
@@ -10,18 +10,18 @@ public final class MealEntry {
     private final FoodItem foodItem;
     private final MealType mealType;
     private final double servings;
-    private final LocalDateTime dateTime;
+    private final LocalDate date;
 
     public MealEntry(
             FoodItem foodItem,
             MealType mealType,
             double servings,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         this.foodItem = foodItem;
         this.mealType = mealType;
         this.servings = servings;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 
     public FoodItem getFoodItem() {
@@ -36,8 +36,8 @@ public final class MealEntry {
         return servings;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 
     public double getTotalCalories() {
@@ -55,4 +55,10 @@ public final class MealEntry {
     public double getTotalFatInGrams() {
         return foodItem.getFatInGrams() * servings;
     }
+
+    public double getTotalFiberInGrams() { return foodItem.getFiberInGrams() * servings; }
+
+    public double getTotalSugarInGrams() { return foodItem.getSugarInGrams() * servings; }
+
+    public double getTotalSodiumInMilligrams() { return foodItem.getSodiumInMilligrams() * servings; }
 }

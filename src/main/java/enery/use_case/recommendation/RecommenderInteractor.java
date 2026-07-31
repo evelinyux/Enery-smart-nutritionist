@@ -1,13 +1,11 @@
 package enery.use_case.recommendation;
 
-import enery.entity.DailyLog;
-import enery.entity.ExerciseEntry;
-import enery.entity.ExerciseSearchResult;
-import enery.entity.MealEntry;
-import enery.entity.NutritionGoal;
-import enery.entity.Recipe;
-import enery.entity.User;
-import enery.entity.UserProfile;
+import enery.entity.tracking.DailyLog;
+import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.user.NutritionGoal;
+import enery.entity.recipe.Recipe;
+import enery.entity.user.User;
+import enery.entity.user.UserProfile;
 
 import java.time.LocalDate;
 import java.util.List;

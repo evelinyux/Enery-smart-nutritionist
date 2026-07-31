@@ -1,4 +1,7 @@
-package enery.entity;
+package enery.entity.tracking;
+
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.MealEntry;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
