@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import enery.use_case.log_exercise.LogExerciseInputBoundary;
 import enery.use_case.log_exercise.LogExerciseInputData;
@@ -25,14 +25,14 @@ public final class LogExerciseController {
      * @param exerciseName selected exercise name
      * @param durationInMinutes exercise duration
      * @param caloriesBurned calculated calories burned
-     * @param dateTime time of the exercise entry
+     * @param date time of the exercise entry
      */
     public void execute(
             String username,
             String exerciseName,
             int durationInMinutes,
             double caloriesBurned,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         final LogExerciseInputData inputData =
                 new LogExerciseInputData(
@@ -40,7 +40,7 @@ public final class LogExerciseController {
                         exerciseName,
                         durationInMinutes,
                         caloriesBurned,
-                        dateTime
+                        date
                 );
 
         interactor.execute(inputData);

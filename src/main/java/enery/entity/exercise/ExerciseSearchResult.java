@@ -41,7 +41,7 @@ public final class ExerciseSearchResult {
     @Override
     public String toString() {
         return exerciseName
-                + " — "
+                + " - "
                 + totalCalories
                 + " calories";
     }

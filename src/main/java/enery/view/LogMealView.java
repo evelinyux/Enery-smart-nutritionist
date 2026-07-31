@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -328,7 +328,7 @@ public final class LogMealView extends JPanel
                     selected,
                     mealType,
                     servings,
-                    LocalDateTime.now()
+                    LocalDate.now()
             );
         }
         catch (IllegalArgumentException exception) {

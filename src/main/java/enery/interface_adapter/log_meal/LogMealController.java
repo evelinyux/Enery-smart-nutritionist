@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import enery.entity.meal.FoodItem;
 import enery.entity.meal.MealType;
@@ -25,7 +25,7 @@ public final class LogMealController {
             FoodItem foodItem,
             MealType mealType,
             double servings,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         final LogMealInputData inputData =
                 new LogMealInputData(
@@ -33,7 +33,7 @@ public final class LogMealController {
                         foodItem,
                         mealType,
                         servings,
-                        dateTime
+                        date
                 );
 
         logMealInteractor.execute(inputData);

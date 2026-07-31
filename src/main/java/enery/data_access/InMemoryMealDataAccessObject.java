@@ -47,8 +47,8 @@ public final class InMemoryMealDataAccessObject
                 new ArrayList<>();
 
         for (MealEntry meal : meals) {
-            if (meal.getDateTime()
-                    .toLocalDate()
+            if (meal.getDate()
+
                     .equals(date)) {
 
                 matchingMeals.add(meal);

@@ -53,7 +53,7 @@ public final class LogExerciseInteractor
             return;
         }
 
-        if (inputData.getDateTime() == null) {
+        if (inputData.getDate() == null) {
             presenter.prepareFailView(
                     "A date and time are required.");
             return;
@@ -64,7 +64,7 @@ public final class LogExerciseInteractor
                         inputData.getExerciseName(),
                         inputData.getDurationInMinutes(),
                         inputData.getCaloriesBurned(),
-                        inputData.getDateTime()
+                        inputData.getDate()
                 );
 
         dataAccessObject.saveExercise(

@@ -47,8 +47,8 @@ public final class InMemoryExerciseDataAccessObject
                 new ArrayList<>();
 
         for (ExerciseEntry exercise : exercises) {
-            if (exercise.getDateTime()
-                    .toLocalDate()
+            if (exercise.getDate()
+                    
                     .equals(date)) {
 
                 matchingExercises.add(exercise);

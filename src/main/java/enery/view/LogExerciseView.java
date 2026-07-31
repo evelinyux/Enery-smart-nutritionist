@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -187,7 +187,7 @@ public final class LogExerciseView extends JPanel
                 selected.getExerciseName(),
                 selected.getDurationInMinutes(),
                 selected.getTotalCalories(),
-                LocalDateTime.now()
+                LocalDate.now()
         );
     }
 

@@ -1,7 +1,7 @@
 package enery.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import enery.entity.exercise.ExerciseEntry;
 import enery.entity.meal.FoodItem;
@@ -48,21 +48,21 @@ class DailyLogTest {
                 rice,
                 MealType.LUNCH,
                 1.5,
-                LocalDateTime.of(2026, 7, 26, 12, 0)
+                LocalDate.of(2026, 7, 26)
         ));
 
         dailyLog.addMealEntry(new MealEntry(
                 chicken,
                 MealType.DINNER,
                 1.0,
-                LocalDateTime.of(2026, 7, 26, 18, 0)
+                LocalDate.of(2026, 7, 26)
         ));
 
         dailyLog.addExerciseEntry(new ExerciseEntry(
                 "Cycling",
                 45,
                 300.0,
-                LocalDateTime.of(2026, 7, 26, 16, 0)
+                LocalDate.of(2026, 7, 26)
         ));
 
         assertEquals(550.0, dailyLog.getTotalCaloriesConsumed());

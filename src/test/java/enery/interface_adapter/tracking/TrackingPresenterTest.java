@@ -46,6 +46,9 @@ class TrackingPresenterTest {
                         120.0,
                         250.0,
                         65.0,
+                        30.0,   // fiber
+                        40.0,   // sugar
+                        1500.0, // sodium
                         2000.0 / 7.0,
                         300.0 / 7.0,
                         1700.0 / 7.0,
@@ -104,6 +107,18 @@ class TrackingPresenterTest {
         assertEquals(
                 "",
                 state.getErrorMessage());
+
+        assertEquals(
+                30.0,
+                state.getFiberInGrams());
+
+        assertEquals(
+                40.0,
+                state.getSugarInGrams());
+
+        assertEquals(
+                1500.0,
+                state.getSodiumInMilligrams());
     }
 
     @Test

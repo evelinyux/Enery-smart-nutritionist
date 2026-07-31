@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ class LogMealPresenterTest {
                 apple,
                 MealType.BREAKFAST,
                 1.0,
-                LocalDateTime.now()
+                LocalDate.now()
         );
 
         presenter.prepareSuccessView(

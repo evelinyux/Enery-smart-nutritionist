@@ -1,7 +1,7 @@
 package enery.use_case.log_exercise;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -22,8 +22,8 @@ class LogExerciseInteractorTest {
         final InMemoryExerciseDataAccessObject repository =
                 new InMemoryExerciseDataAccessObject();
 
-        final LocalDateTime time =
-                LocalDateTime.of(2026, 7, 26, 18, 0);
+        final LocalDate time =
+                LocalDate.of(2026, 7, 26);
 
         final LogExerciseInputData inputData =
                 new LogExerciseInputData(
@@ -104,7 +104,7 @@ class LogExerciseInteractorTest {
                         "Cycling",
                         0,
                         300.0,
-                        LocalDateTime.now()
+                        LocalDate.now()
                 );
 
         final LogExerciseOutputBoundary presenter =

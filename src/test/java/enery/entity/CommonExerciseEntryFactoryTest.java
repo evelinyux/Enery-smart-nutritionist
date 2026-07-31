@@ -1,6 +1,6 @@
 package enery.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import enery.entity.exercise.CommonExerciseEntryFactory;
 import enery.entity.exercise.ExerciseEntry;
@@ -13,8 +13,8 @@ class CommonExerciseEntryFactoryTest {
 
     @Test
     void createsExerciseEntry() {
-        final LocalDateTime time =
-                LocalDateTime.of(2026, 7, 26, 18, 0);
+        final LocalDate time =
+                LocalDate.of(2026, 7, 26);
 
         final ExerciseEntryFactory factory =
                 new CommonExerciseEntryFactory();
@@ -29,6 +29,6 @@ class CommonExerciseEntryFactoryTest {
         assertEquals("Cycling", entry.getExerciseName());
         assertEquals(45, entry.getDurationInMinutes());
         assertEquals(300.0, entry.getCaloriesBurned());
-        assertEquals(time, entry.getDateTime());
+        assertEquals(time, entry.getDate());
     }
 }

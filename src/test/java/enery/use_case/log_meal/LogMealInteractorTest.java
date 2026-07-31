@@ -1,7 +1,7 @@
 package enery.use_case.log_meal;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,13 +36,11 @@ class LogMealInteractorTest {
                 2.0    // sodium
         );
 
-        final LocalDateTime time =
-                LocalDateTime.of(
+        final LocalDate time =
+                LocalDate.of(
                         2026,
                         7,
-                        26,
-                        8,
-                        30
+                        26
                 );
 
         final LogMealInputData inputData =
@@ -137,7 +135,7 @@ class LogMealInteractorTest {
                         apple,
                         MealType.BREAKFAST,
                         0.0,
-                        LocalDateTime.now()
+                        LocalDate.now()
                 );
 
         final LogMealOutputBoundary presenter =

@@ -1,6 +1,6 @@
 package enery.entity.meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Creates meal entries.
@@ -11,6 +11,6 @@ public interface MealEntryFactory {
             FoodItem foodItem,
             MealType mealType,
             double servings,
-            LocalDateTime dateTime
+            LocalDate date
     );
 }

@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ class LogExercisePresenterTest {
                         "Cycling",
                         45,
                         300.0,
-                        LocalDateTime.now()
+                        LocalDate.now()
                 );
 
         presenter.prepareSuccessView(

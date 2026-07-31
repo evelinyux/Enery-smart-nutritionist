@@ -50,7 +50,7 @@ public final class LogMealInteractor
             return;
         }
 
-        if (inputData.getDateTime() == null) {
+        if (inputData.getDate() == null) {
             presenter.prepareFailView(
                     "A date and time are required.");
             return;
@@ -60,7 +60,7 @@ public final class LogMealInteractor
                 inputData.getFoodItem(),
                 inputData.getMealType(),
                 inputData.getServings(),
-                inputData.getDateTime()
+                inputData.getDate()
         );
 
         dataAccessObject.saveMeal(

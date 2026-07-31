@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +36,8 @@ class LogMealControllerTest {
                 2.0
         );
 
-        final LocalDateTime time =
-                LocalDateTime.of(2026, 7, 26, 8, 30);
+        final LocalDate time =
+                LocalDate.of(2026, 7, 26);
 
         controller.execute(
                 "Paul",
@@ -54,6 +54,6 @@ class LogMealControllerTest {
                 receivedInput[0].getMealType()
         );
         assertEquals(2.0, receivedInput[0].getServings());
-        assertEquals(time, receivedInput[0].getDateTime());
+        assertEquals(time, receivedInput[0].getDate());
     }
 }

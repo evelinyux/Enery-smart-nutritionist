@@ -86,13 +86,19 @@ public final class TrackingInteractor
         double protein = 0.0;
         double carbohydrates = 0.0;
         double fat = 0.0;
+        double fiber = 0.0;
+        double sugar = 0.0;
+        double sodium = 0.0;
 
         for (MealEntry meal : meals) {
             caloriesConsumed += meal.getTotalCalories();
             protein += meal.getTotalProteinInGrams();
-            carbohydrates +=
-                    meal.getTotalCarbohydratesInGrams();
+            carbohydrates += meal.getTotalCarbohydratesInGrams();
             fat += meal.getTotalFatInGrams();
+
+            fiber += meal.getTotalFiberInGrams();
+            sugar += meal.getTotalSugarInGrams();
+            sodium += meal.getTotalSodiumInMilligrams();
         }
 
         double caloriesBurned = 0.0;
@@ -120,6 +126,9 @@ public final class TrackingInteractor
                         protein,
                         carbohydrates,
                         fat,
+                        fiber,
+                        sugar,
+                        sodium,
                         caloriesConsumed / numberOfDays,
                         caloriesBurned / numberOfDays,
                         netCalories / numberOfDays,
@@ -145,7 +154,7 @@ public final class TrackingInteractor
     }
 
     /**
-     * Calculates the final day of the requested period.
+     * Calculates the final day of the requested peritod.
      */
     private static LocalDate calculateEndDate(
             LocalDate startDate,
@@ -160,6 +169,12 @@ public final class TrackingInteractor
 
     /**
      * Creates one calorie summary for every date in the requested period.
+     *
+     * @param startDate first date in the period
+     * @param endDate final date in the period
+     * @param meals meals recorded during the period
+     * @param exercises exercises recorded during the period
+     * @return daily calorie summaries
      */
     private static List<DailyTrackingSummary> createDailySummaries(
             LocalDate startDate,
@@ -178,10 +193,7 @@ public final class TrackingInteractor
             double consumed = 0.0;
 
             for (MealEntry meal : meals) {
-                if (meal.getDateTime()
-                        .toLocalDate()
-                        .equals(summaryDate)) {
-
+                if (meal.getDate().equals(summaryDate)) {
                     consumed += meal.getTotalCalories();
                 }
             }
@@ -189,10 +201,7 @@ public final class TrackingInteractor
             double burned = 0.0;
 
             for (ExerciseEntry exercise : exercises) {
-                if (exercise.getDateTime()
-                        .toLocalDate()
-                        .equals(summaryDate)) {
-
+                if (exercise.getDate().equals(summaryDate)) {
                     burned += exercise.getCaloriesBurned();
                 }
             }

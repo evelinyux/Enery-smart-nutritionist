@@ -181,7 +181,7 @@ public final class FoodItem {
     public String toString() {
         return String.format(
                 java.util.Locale.US,
-                "%s — nutrients per %.1f g, %.1f kcal",
+                "%s - nutrients per %.1f g, %.1f kcal",
                 formatName(name),
                 servingSizeInGrams,
                 calories

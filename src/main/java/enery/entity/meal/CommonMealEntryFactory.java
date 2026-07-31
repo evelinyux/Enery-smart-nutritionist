@@ -1,6 +1,6 @@
 package enery.entity.meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Creates standard meal entries.
@@ -12,13 +12,13 @@ public final class CommonMealEntryFactory implements MealEntryFactory {
             FoodItem foodItem,
             MealType mealType,
             double servings,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         return new MealEntry(
                 foodItem,
                 mealType,
                 servings,
-                dateTime
+                date
         );
     }
 }
