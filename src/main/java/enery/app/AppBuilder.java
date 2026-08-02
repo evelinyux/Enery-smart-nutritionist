@@ -36,6 +36,9 @@ import enery.interface_adapter.log_meal.LogMealViewModel;
 import enery.interface_adapter.login.LoginController;
 import enery.interface_adapter.login.LoginPresenter;
 import enery.interface_adapter.login.LoginViewModel;
+import enery.interface_adapter.forgot_password.ForgotPasswordController;
+import enery.interface_adapter.forgot_password.ForgotPasswordPresenter;
+import enery.interface_adapter.forgot_password.ForgotPasswordViewModel;
 import enery.interface_adapter.logout.LogoutController;
 import enery.interface_adapter.logout.LogoutPresenter;
 import enery.interface_adapter.search_exercise.SearchExerciseController;
@@ -65,6 +68,9 @@ import enery.use_case.log_meal.LogMealOutputBoundary;
 import enery.use_case.login.LoginInputBoundary;
 import enery.use_case.login.LoginInteractor;
 import enery.use_case.login.LoginOutputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInteractor;
+import enery.use_case.forgot_password.ForgotPasswordOutputBoundary;
 import enery.use_case.logout.LogoutInputBoundary;
 import enery.use_case.logout.LogoutInteractor;
 import enery.use_case.logout.LogoutOutputBoundary;
@@ -89,21 +95,20 @@ import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
+import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
 import enery.view.ViewManager;
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
- *
- * <p>This class is the composition root of the application. It creates the
+ * This class is the composition root of the application. It creates the
  * concrete views, view models, controllers, presenters, interactors,
  * repositories, API adapters, and factories used by the Clean Architecture
- * layers.</p>
- *
- * <p>Each {@code add...View()} method must be called before the related
+ * layers.
+ * Each {@code add...View()} method must be called before the related
  * {@code add...UseCase()} method because the use-case method attaches a
- * controller to an existing view.</p>
+ * controller to an existing view.
  */
 public final class AppBuilder {
 
@@ -137,6 +142,8 @@ public final class AppBuilder {
     private SignupViewModel signupViewModel;
     private LoginView loginView;
     private LoginViewModel loginViewModel;
+    private ForgotPasswordView forgotPasswordView;
+    private ForgotPasswordViewModel forgotPasswordViewModel;
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
     private ChangePasswordView changePasswordView;
@@ -185,8 +192,40 @@ public final class AppBuilder {
      */
     public AppBuilder addLoginView() {
         loginViewModel = new LoginViewModel();
-        loginView = new LoginView(loginViewModel);
-        cardPanel.add(loginView, loginView.getViewName());
+
+        loginView = new LoginView(
+                loginViewModel,
+                viewManagerModel
+        );
+
+        cardPanel.add(
+                loginView,
+                loginView.getViewName()
+        );
+
+        return this;
+    }
+
+    public AppBuilder addForgotPasswordUseCase() {
+
+        final ForgotPasswordOutputBoundary presenter =
+                new ForgotPasswordPresenter(
+                        viewManagerModel,
+                        forgotPasswordViewModel
+                );
+
+        final ForgotPasswordInputBoundary interactor =
+                new ForgotPasswordInteractor(
+                        userDataAccessObject,
+                        presenter
+                );
+
+        forgotPasswordView.setForgotPasswordController(
+                new ForgotPasswordController(
+                        interactor
+                )
+        );
+
         return this;
     }
 
@@ -345,6 +384,29 @@ public final class AppBuilder {
 
         loginView.setLoginController(
                 new LoginController(interactor));
+        return this;
+    }
+
+    /**
+     * Creates and registers the Forgot Password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addForgotPasswordView() {
+        forgotPasswordViewModel =
+                new ForgotPasswordViewModel();
+
+        forgotPasswordView =
+                new ForgotPasswordView(
+                        forgotPasswordViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                forgotPasswordView,
+                forgotPasswordView.getViewName()
+        );
+
         return this;
     }
 

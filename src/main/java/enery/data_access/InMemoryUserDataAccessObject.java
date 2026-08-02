@@ -6,6 +6,7 @@ import java.util.Map;
 import enery.entity.user.User;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;
+import enery.use_case.forgot_password.ForgotPasswordUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;
 import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.signup.SignupUserDataAccessInterface;
@@ -17,6 +18,7 @@ import enery.use_case.signup.SignupUserDataAccessInterface;
 public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
+        ForgotPasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         ProfileUserDataAccessInterface {
 

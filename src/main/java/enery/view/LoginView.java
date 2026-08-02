@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.forgot_password.ForgotPasswordViewModel;
 import enery.interface_adapter.login.LoginController;
 import enery.interface_adapter.login.LoginState;
 import enery.interface_adapter.login.LoginViewModel;
@@ -23,8 +25,10 @@ import enery.interface_adapter.login.LoginViewModel;
 public class LoginView extends JPanel
         implements PropertyChangeListener {
 
-    private final String viewName = "log in";
+    public static final String VIEW_NAME = "log in";
+
     private final LoginViewModel loginViewModel;
+    private final ViewManagerModel viewManagerModel;
 
     private final JTextField usernameInputField =
             new JTextField(15);
@@ -36,19 +40,25 @@ public class LoginView extends JPanel
             new JPasswordField(15);
 
     private final JButton logIn;
+    private final JButton forgotPassword;
     private final JButton cancel;
 
     private LoginController loginController;
 
-    public LoginView(LoginViewModel loginViewModel) {
+    public LoginView(
+            LoginViewModel loginViewModel,
+            ViewManagerModel viewManagerModel) {
 
         this.loginViewModel = loginViewModel;
+        this.viewManagerModel = viewManagerModel;
+
         this.loginViewModel.addPropertyChangeListener(this);
 
         final JLabel title =
                 new JLabel("Login Screen");
 
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
 
         final LabelTextPanel usernameInfo =
                 new LabelTextPanel(
@@ -62,12 +72,20 @@ public class LoginView extends JPanel
                         passwordInputField
                 );
 
-        final JPanel buttons = new JPanel();
+        final JPanel buttons =
+                new JPanel();
 
-        logIn = new JButton("log in");
+        logIn = new JButton("Log In");
         buttons.add(logIn);
 
-        cancel = new JButton("Back to Sign Up");
+        forgotPassword =
+                new JButton("Forgot Password");
+
+        buttons.add(forgotPassword);
+
+        cancel =
+                new JButton("Back to Sign Up");
+
         buttons.add(cancel);
 
         logIn.addActionListener(event -> {
@@ -80,6 +98,14 @@ public class LoginView extends JPanel
                         currentState.getPassword()
                 );
             }
+        });
+
+        forgotPassword.addActionListener(event -> {
+            viewManagerModel.setState(
+                    ForgotPasswordViewModel.VIEW_NAME
+            );
+
+            viewManagerModel.firePropertyChanged();
         });
 
         cancel.addActionListener(event -> {
@@ -98,10 +124,12 @@ public class LoginView extends JPanel
                                         loginViewModel.getState();
 
                                 currentState.setUsername(
-                                        usernameInputField.getText());
+                                        usernameInputField.getText()
+                                );
 
                                 loginViewModel.setState(
-                                        currentState);
+                                        currentState
+                                );
                             }
 
                             @Override
@@ -139,10 +167,13 @@ public class LoginView extends JPanel
                                 currentState.setPassword(
                                         new String(
                                                 passwordInputField
-                                                        .getPassword()));
+                                                        .getPassword()
+                                        )
+                                );
 
                                 loginViewModel.setState(
-                                        currentState);
+                                        currentState
+                                );
                             }
 
                             @Override
@@ -168,7 +199,12 @@ public class LoginView extends JPanel
                         }
                 );
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(
+                new BoxLayout(
+                        this,
+                        BoxLayout.Y_AXIS
+                )
+        );
 
         add(title);
         add(usernameInfo);
@@ -185,25 +221,30 @@ public class LoginView extends JPanel
                 (LoginState) event.getNewValue();
 
         setFields(state);
+
         usernameErrorField.setText(
-                state.getLoginError());
+                state.getLoginError()
+        );
     }
 
     private void setFields(LoginState state) {
         usernameInputField.setText(
-                state.getUsername());
+                state.getUsername()
+        );
 
         passwordInputField.setText(
-                state.getPassword());
+                state.getPassword()
+        );
     }
 
     public String getViewName() {
-        return viewName;
+        return VIEW_NAME;
     }
 
     public void setLoginController(
             LoginController loginController) {
 
-        this.loginController = loginController;
+        this.loginController =
+                loginController;
     }
 }
