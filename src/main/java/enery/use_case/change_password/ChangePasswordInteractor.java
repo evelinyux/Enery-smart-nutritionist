@@ -1,6 +1,6 @@
 package enery.use_case.change_password;
 
-import enery.entity.User;
+import enery.entity.user.User;
 
 /**
  * The Change Password Interactor.
