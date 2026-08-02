@@ -62,10 +62,10 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
         final double targetCarbs = nutritionGoal.getCarbohydratesInGrams();
         final double netCarbs = nutritionGoal.getCarbohydratesInGrams();
         final int remainingCarbs = (int) Math.max(0, targetCarbs - netCarbs);
-        final
+
 
         // 4. Fetch candidate recipes and exercises from external APIs/DAOs
-        final List<Recipe> candidateRecipes = userDataAccess.fetchCandidateRecipes(
+        List<Recipe> candidateRecipes = userDataAccess.fetchCandidateRecipes(
                 remainingCalories,
                 profile.getDietaryRestrictions()
         );

@@ -1,6 +1,5 @@
 package enery.data_access.api;
 
-import enery.entity.DailyLog;
 import enery.entity.ExerciseSearchResult;
 import enery.entity.Recipe;
 import enery.entity.User;
@@ -14,9 +13,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+// TODO: Import Evelyn's Nutrition Assment and use the values there for min/max  fat,
+//  potein etc in API call
 
 /**
  * Data Access Object that integrates with recipe-api.com to fetch candidate recipes
@@ -39,10 +41,13 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
     /**
      * Overloaded helper method to fetch recipes with full calorie and macro range constraints.
      */
-    public List<Recipe> fetchCandidateRecipesWithMacros(int maxCalories,
-                                                        Double minFat,
-                                                        Double maxFat,
-                                                        List<String> dietaryRestrictions) {
+    public List<Recipe> fetchRecipes(int maxCalories,
+                                              Optional<Double> minProtein,
+                                              Optional<Double> minCarbs,
+                                              Optional<Double> maxCarbs,
+                                              Optional<Double> minFat,
+                                              Optional<Double> maxFat,
+                                              List<String> dietaryRestrictions) {
         final List<Recipe> recipes = new ArrayList<>();
 
         try {
@@ -52,6 +57,15 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
             // Set maximum calories for the meal recommendation
             urlBuilder.append("max_calories=").append(maxCalories);
 
+            if (minProtein != null) {
+                urlBuilder.append("&min_protein=").append(minProtein);
+            }
+            if (minCarbs != null) {
+                urlBuilder.append("&min_carbs=").append(minCarbs);
+            }
+            if (maxCarbs != null) {
+                urlBuilder.append("&max_carbs=").append(maxCarbs);
+            }
             // Add fat range parameters if provided
             if (minFat != null) {
                 urlBuilder.append("&min_fat=").append(minFat);
@@ -65,6 +79,8 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
                 final String flags = String.join(",", dietaryRestrictions);
                 urlBuilder.append("&dietary=").append(URLEncoder.encode(flags, StandardCharsets.UTF_8));
             }
+            // Append page size limit to query parameters
+            urlBuilder.append("&per_page=20");
 
             final HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(urlBuilder.toString()))
@@ -77,10 +93,7 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
 
             if (response.statusCode() == 200) {
                 final JSONObject jsonResponse = new JSONObject(response.body());
-                final JSONArray results = jsonResponse.optJSONArray("data");
-
-                // In case the API returns an array directly or an object wrapping "data"
-                final JSONArray recipeList = results != null ? results : jsonResponse.optJSONArray("recipes");
+                final JSONArray recipeList = jsonResponse.optJSONArray("data");
 
                 if (recipeList != null) {
                     for (int i = 0; i < recipeList.length(); i++) {
@@ -88,10 +101,12 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
 
                         final String id = item.optString("id", "r_" + i);
                         final String name = item.optString("name", "Unnamed Recipe");
+                        final String description = item.optString("description", "");
 
-                        // Extract per_serving nutrients
+                        // Extract Nutrition
                         double calories = 0.0;
                         double protein = 0.0;
+                        double sugar = 0.0;
                         double carbs = 0.0;
                         double fat = 0.0;
 
@@ -100,41 +115,68 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
                             final JSONObject perServing = nutrition.optJSONObject("per_serving");
                             if (perServing != null) {
                                 calories = perServing.optDouble("calories", 0.0);
-                                protein = perServing.optDouble("protein", 0.0);
-                                carbs = perServing.optDouble("carbohydrates", 0.0);
-                                fat = perServing.optDouble("fat", 0.0);
+                                protein = perServing.optDouble("protein", perServing.optDouble("protein_g", 0.0));
+                                sugar = perServing.optDouble("sugar", perServing.optDouble("sugar_g", 0.0));
+                                carbs = perServing.optDouble("carbohydrates", perServing.optDouble("carbs_g", 0.0));
+                                fat = perServing.optDouble("fat", perServing.optDouble("fat_g", 0.0));
                             }
                         }
 
-                        // Extract ingredients list summary
+                        // Extract Ingredients
                         final List<String> ingredients = new ArrayList<>();
-                        final JSONArray ingredientGroups = item.optJSONArray("ingredients");
-                        if (ingredientGroups != null) {
-                            for (int j = 0; j < ingredientGroups.length(); j++) {
-                                final JSONObject group = ingredientGroups.getJSONObject(j);
-                                final JSONArray items = group.optJSONArray("items");
-                                if (items != null) {
-                                    for (int k = 0; k < items.length(); k++) {
-                                        ingredients.add(items.getJSONObject(k).optString("name", ""));
+                        final JSONArray ingredientArray = item.optJSONArray("ingredients");
+                        if (ingredientArray != null) {
+                            for (int j = 0; j < ingredientArray.length(); j++) {
+                                Object ingObj = ingredientArray.get(j);
+                                if (ingObj instanceof JSONObject) {
+                                    JSONObject ingJson = (JSONObject) ingObj;
+                                    JSONArray items = ingJson.optJSONArray("items");
+                                    if (items != null) {
+                                        for (int k = 0; k < items.length(); k++) {
+                                            ingredients.add(items.getJSONObject(k).optString("name", ""));
+                                        }
+                                    } else {
+                                        ingredients.add(ingJson.optString("name", ""));
                                     }
+                                } else if (ingObj instanceof String) {
+                                    ingredients.add((String) ingObj);
                                 }
                             }
                         }
 
+                        // Extract Instructions
+                        StringBuilder instructionsBuilder = new StringBuilder();
+                        final JSONArray instructionsArray = item.optJSONArray("instructions");
+                        if (instructionsArray != null) {
+                            for (int j = 0; j < instructionsArray.length(); j++) {
+                                Object step = instructionsArray.get(j);
+                                if (step instanceof JSONObject) {
+                                    instructionsBuilder.append(j + 1).append(". ")
+                                            .append(((JSONObject) step).optString("text", ""))
+                                            .append("\n");
+                                } else {
+                                    instructionsBuilder.append(j + 1).append(". ")
+                                            .append(step.toString())
+                                            .append("\n");
+                                }
+                            }
+                        }
+                        final String instructions = instructionsBuilder.toString();
                         final String sourceUrl = "https://recipe-api.com/recipes/" + id;
 
-                        recipes.add(new Recipe(id, name, calories, protein, carbs, fat, ingredients, sourceUrl));
+                        recipes.add(new Recipe(
+                                id, name, calories, protein, sugar, carbs, fat,
+                                ingredients, sourceUrl, description, instructions
+                        ));
                     }
                 }
-            } else {
-                System.err.println("Recipe API error status code: " + response.statusCode());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return recipes;
+    }
     }
 
     // --- Implementation of RecommendationUserDataAccessInterface ---
@@ -142,7 +184,7 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
     @Override
     public List<Recipe> fetchCandidateRecipes(int targetCalories, List<String> dietaryRestrictions) {
         // Calls the macro method with default fat parameters (or customized based on your needs)
-        return fetchCandidateRecipesWithMacros(targetCalories, null, null, dietaryRestrictions);
+        return fetchRecipes(targetCalories, null, null, dietaryRestrictions);
     }
 
     @Override

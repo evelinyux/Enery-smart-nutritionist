@@ -13,29 +13,39 @@ public final class Recipe {
     private final String name;
     private final double calories;
     private final double proteinInGrams;
+    private final double sugarInGrams;
     private final double carbohydratesInGrams;
     private final double fatInGrams;
     private final List<String> ingredients;
     private final String recipeUrl;
+    private final String description;
+    private final String instructions;
 
     public Recipe(
             String id,
             String name,
             double calories,
             double proteinInGrams,
+            double sugarInGrams,
             double carbohydratesInGrams,
             double fatInGrams,
             List<String> ingredients,
-            String recipeUrl) {
+            String recipeUrl,
+            String description,
+            String instructions
+           ) {
 
         this.id = id;
         this.name = name;
         this.calories = calories;
         this.proteinInGrams = proteinInGrams;
+        this.sugarInGrams = sugarInGrams;
         this.carbohydratesInGrams = carbohydratesInGrams;
         this.fatInGrams = fatInGrams;
         this.ingredients = new ArrayList<>(ingredients);
         this.recipeUrl = recipeUrl;
+        this.description = description;
+        this.instructions = instructions;
     }
 
     public String getId() {
@@ -53,6 +63,7 @@ public final class Recipe {
     public double getProteinInGrams() {
         return proteinInGrams;
     }
+    public double getSugarInGrams() {return sugarInGrams;}
 
     public double getCarbohydratesInGrams() {
         return carbohydratesInGrams;
@@ -69,4 +80,8 @@ public final class Recipe {
     public String getRecipeUrl() {
         return recipeUrl;
     }
+    public String getDescription() {return description;}
+    public String getInstructions() {return instructions;}
+
+
 }

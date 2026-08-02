@@ -21,7 +21,7 @@ public class RecommendationPresenter implements RecommendationOutputBoundary {
         final RecommendationState state = viewModel.getState();
 
         // Update state with newly recommended recipes and exercises
-        state.setRecommendedRecipes(response.getRecommendedRecipes());
+        state.setRecipeTitles(response.getRecommendedRecipeTitles());
         state.setRecommendedExercises(response.getRecommendedExercises());
         state.setRecommendationError(null);
         state.setLoading(false);
