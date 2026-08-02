@@ -8,9 +8,17 @@ import enery.entity.user.User;
 public interface ChangePasswordUserDataAccessInterface {
 
     /**
+     * Gets an existing user.
+     *
+     * @param username the username
+     * @return the user
+     */
+    User get(String username);
+
+    /**
      * Updates the system to record this user's password.
+     *
      * @param user the user whose password is to be updated
      */
     void changePassword(User user);
 }
-

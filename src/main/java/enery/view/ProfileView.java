@@ -15,6 +15,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import enery.entity.user.ActivityLevel;
 import enery.entity.user.HealthGoal;
@@ -98,6 +102,7 @@ public final class ProfileView extends JPanel
 
         profileViewModel.addPropertyChangeListener(this);
 
+        configureNumericFields();
         configureView();
     }
 
@@ -188,6 +193,42 @@ public final class ProfileView extends JPanel
         add(saveButton);
         add(backButton);
         add(statusLabel);
+    }
+
+    /**
+     * Restricts profile fields to valid numeric input.
+     */
+    private void configureNumericFields() {
+        setIntegerFilter(ageField);
+        setDecimalFilter(heightField);
+        setDecimalFilter(weightField);
+        setDecimalFilter(targetWeightField);
+        setIntegerFilter(durationDaysField);
+    }
+
+    /**
+     * Allows only non-negative whole numbers.
+     *
+     * @param textField field to restrict
+     */
+    private void setIntegerFilter(
+            JTextField textField) {
+
+        final AbstractDocument document =
+                (AbstractDocument) textField.getDocument();
+
+        document.setDocumentFilter(
+                new NumericDocumentFilter(false));
+    }
+
+    private void setDecimalFilter(
+            JTextField textField) {
+
+        final AbstractDocument document =
+                (AbstractDocument) textField.getDocument();
+
+        document.setDocumentFilter(
+                new NumericDocumentFilter(true));
     }
 
     /**
@@ -485,5 +526,95 @@ public final class ProfileView extends JPanel
             ProfileController controller) {
 
         this.profileController = controller;
+    }
+
+    /**
+     * Restricts text input to integers or decimal numbers.
+     */
+    private static final class NumericDocumentFilter
+            extends DocumentFilter {
+
+        private final boolean decimalAllowed;
+
+        private NumericDocumentFilter(
+                boolean decimalAllowed) {
+
+            this.decimalAllowed = decimalAllowed;
+        }
+
+        @Override
+        public void insertString(
+                FilterBypass filterBypass,
+                int offset,
+                String text,
+                AttributeSet attributes)
+                throws BadLocationException {
+
+            if (text == null) {
+                return;
+            }
+
+            replace(
+                    filterBypass,
+                    offset,
+                    0,
+                    text,
+                    attributes
+            );
+        }
+
+        @Override
+        public void replace(
+                FilterBypass filterBypass,
+                int offset,
+                int length,
+                String text,
+                AttributeSet attributes)
+                throws BadLocationException {
+
+            final String currentText =
+                    filterBypass.getDocument().getText(
+                            0,
+                            filterBypass.getDocument().getLength()
+                    );
+
+            final String replacementText =
+                    text == null ? "" : text;
+
+            final String newText =
+                    currentText.substring(0, offset)
+                            + replacementText
+                            + currentText.substring(
+                            offset + length);
+
+            if (isValidInput(newText)) {
+                filterBypass.replace(
+                        offset,
+                        length,
+                        replacementText,
+                        attributes
+                );
+            }
+        }
+
+        /**
+         * Checks whether the proposed text is valid.
+         *
+         * @param text proposed field contents
+         * @return whether the text is valid
+         */
+        private boolean isValidInput(
+                String text) {
+
+            if (text.isEmpty()) {
+                return true;
+            }
+
+            if (decimalAllowed) {
+                return text.matches("\\d*(\\.\\d*)?");
+            }
+
+            return text.matches("\\d*");
+        }
     }
 }
