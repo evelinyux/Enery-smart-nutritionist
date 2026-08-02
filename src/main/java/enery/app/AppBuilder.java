@@ -84,6 +84,7 @@ import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
 import enery.view.HomeView;
+import enery.view.ChangePasswordView;
 import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
@@ -138,6 +139,7 @@ public final class AppBuilder {
     private LoginViewModel loginViewModel;
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
+    private ChangePasswordView changePasswordView;
 
     // Profile components.
     private ProfileView profileView;
@@ -197,6 +199,26 @@ public final class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         homeView = new HomeView(loggedInViewModel, viewManagerModel);
         cardPanel.add(homeView, homeView.getViewName());
+        return this;
+    }
+
+    /**
+     * Creates and registers the Change Password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addChangePasswordView() {
+        changePasswordView =
+                new ChangePasswordView(
+                        loggedInViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                changePasswordView,
+                changePasswordView.getViewName()
+        );
+
         return this;
     }
 
@@ -338,12 +360,12 @@ public final class AppBuilder {
         final ChangePasswordInputBoundary interactor =
                 new ChangePasswordInteractor(
                         userDataAccessObject,
-                        presenter,
-                        userFactory
+                        presenter
                 );
 
-        homeView.setChangePasswordController(
+        changePasswordView.setChangePasswordController(
                 new ChangePasswordController(interactor));
+
         return this;
     }
 

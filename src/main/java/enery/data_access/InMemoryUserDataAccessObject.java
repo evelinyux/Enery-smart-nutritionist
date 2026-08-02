@@ -4,23 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import enery.entity.User;
-import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;
+import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.signup.SignupUserDataAccessInterface;
 
 /**
- * In-memory implementation of the DAO for storing user data. This implementation does
- * NOT persist data between runs of the program.
+ * In-memory implementation of the DAO for storing user data.
+ *
+ * <p>This implementation does not persist data between runs
+ * of the program.</p>
  */
-public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
+public class InMemoryUserDataAccessObject
+        implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         ProfileUserDataAccessInterface {
 
-    private final Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users =
+            new HashMap<>();
 
     private String currentUsername;
 
@@ -31,7 +35,10 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
 
     @Override
     public void save(User user) {
-        users.put(user.getName(), user);
+        users.put(
+                user.getName(),
+                user
+        );
     }
 
     @Override
@@ -41,7 +48,6 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
 
     @Override
     public void changePassword(User user) {
-        // Replace the old entry with the new password
         users.put(user.getName(), user);
     }
 
@@ -55,4 +61,3 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         return currentUsername;
     }
 }
-
