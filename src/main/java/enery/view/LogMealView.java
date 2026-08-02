@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -17,8 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import enery.entity.FoodItem;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealType;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_meal.LogMealController;
@@ -328,7 +328,7 @@ public final class LogMealView extends JPanel
                     selected,
                     mealType,
                     servings,
-                    LocalDateTime.now()
+                    LocalDate.now()
             );
         }
         catch (IllegalArgumentException exception) {

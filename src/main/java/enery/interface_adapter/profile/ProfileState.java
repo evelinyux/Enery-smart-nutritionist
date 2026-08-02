@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import enery.entity.ActivityLevel;
-import enery.entity.HealthGoal;
-import enery.entity.Sex;
+import enery.entity.user.ActivityLevel;
+import enery.entity.user.HealthGoal;
+import enery.entity.user.Sex;
 
 /**
  * The state for the Profile View Model.

@@ -1,6 +1,6 @@
 package enery.use_case.profile;
 
-import enery.entity.UserProfile;
+import enery.entity.user.UserProfile;
 
 /**
  * Output Data for the Profile Use Case.

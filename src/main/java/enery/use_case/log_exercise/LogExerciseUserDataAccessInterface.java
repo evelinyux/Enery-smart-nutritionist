@@ -3,7 +3,7 @@ package enery.use_case.log_exercise;
 import java.time.LocalDate;
 import java.util.List;
 
-import enery.entity.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntry;
 
 /**
  * Data-access operations required by the log-exercise use case.

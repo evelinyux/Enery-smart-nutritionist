@@ -1,6 +1,6 @@
-package enery.entity;
+package enery.entity.exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Represents one exercise activity recorded by a user.
@@ -10,18 +10,18 @@ public final class ExerciseEntry {
     private final String exerciseName;
     private final int durationInMinutes;
     private final double caloriesBurned;
-    private final LocalDateTime dateTime;
+    private final LocalDate date;
 
     public ExerciseEntry(
             String exerciseName,
             int durationInMinutes,
             double caloriesBurned,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         this.exerciseName = exerciseName;
         this.durationInMinutes = durationInMinutes;
         this.caloriesBurned = caloriesBurned;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 
     public String getExerciseName() {
@@ -36,7 +36,7 @@ public final class ExerciseEntry {
         return caloriesBurned;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 }

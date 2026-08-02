@@ -1,7 +1,10 @@
 package enery.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,8 +25,8 @@ class MealEntryTest {
                 2.0    // sodium
         );
 
-        final LocalDateTime time =
-                LocalDateTime.of(2026, 7, 26, 8, 30);
+        final LocalDate time =
+                LocalDate.of(2026, 7, 26);
 
         final MealEntry entry = new MealEntry(
                 apple,
@@ -35,7 +38,7 @@ class MealEntryTest {
         assertEquals(apple, entry.getFoodItem());
         assertEquals(MealType.BREAKFAST, entry.getMealType());
         assertEquals(2.0, entry.getServings());
-        assertEquals(time, entry.getDateTime());
+        assertEquals(time, entry.getDate());
 
         assertEquals(190.0, entry.getTotalCalories());
         assertEquals(1.0, entry.getTotalProteinInGrams());

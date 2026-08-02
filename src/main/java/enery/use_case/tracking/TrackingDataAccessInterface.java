@@ -3,8 +3,8 @@ package enery.use_case.tracking;
 import java.time.LocalDate;
 import java.util.List;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.MealEntry;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.MealEntry;
 
 /**
  * Supplies meals and exercises within a date range.

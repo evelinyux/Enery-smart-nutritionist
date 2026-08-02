@@ -1,6 +1,6 @@
-package enery.entity;
+package enery.entity.exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Creates standard exercise entries.
@@ -13,13 +13,13 @@ public final class CommonExerciseEntryFactory
             String exerciseName,
             int durationInMinutes,
             double caloriesBurned,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         return new ExerciseEntry(
                 exerciseName,
                 durationInMinutes,
                 caloriesBurned,
-                dateTime
+                date
         );
     }
 }

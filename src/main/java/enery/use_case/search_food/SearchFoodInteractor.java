@@ -2,7 +2,7 @@ package enery.use_case.search_food;
 
 import java.util.List;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 
 /**
  * Coordinates food nutrition searches.

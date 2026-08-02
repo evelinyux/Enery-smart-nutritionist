@@ -11,20 +11,16 @@ import enery.use_case.profile.ProfileUserDataAccessInterface;
 import enery.use_case.signup.SignupUserDataAccessInterface;
 
 /**
- * In-memory implementation of the DAO for storing user data.
- *
- * <p>This implementation does not persist data between runs
- * of the program.</p>
+ * In-memory implementation of the DAO for storing user data. This implementation does
+ * NOT persist data between runs of the program.
  */
-public class InMemoryUserDataAccessObject
-        implements SignupUserDataAccessInterface,
+public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         ProfileUserDataAccessInterface {
 
-    private final Map<String, User> users =
-            new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
 
     private String currentUsername;
 
@@ -35,10 +31,7 @@ public class InMemoryUserDataAccessObject
 
     @Override
     public void save(User user) {
-        users.put(
-                user.getName(),
-                user
-        );
+        users.put(user.getName(), user);
     }
 
     @Override

@@ -5,41 +5,21 @@ import enery.entity.User;
 /**
  * The Change Password Interactor.
  */
-public class ChangePasswordInteractor
-        implements ChangePasswordInputBoundary {
+public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
+    private final ChangePasswordUserDataAccessInterface userDataAccessObject;
+    private final ChangePasswordOutputBoundary userPresenter;
 
-    private final ChangePasswordUserDataAccessInterface
-            userDataAccessObject;
-
-    private final ChangePasswordOutputBoundary
-            userPresenter;
-
-    /**
-     * Creates the Change Password Interactor.
-     *
-     * @param userDataAccessObject user data access object
-     * @param userPresenter presenter
-     */
-    public ChangePasswordInteractor(
-            ChangePasswordUserDataAccessInterface
-                    userDataAccessObject,
-            ChangePasswordOutputBoundary
-                    userPresenter) {
-
-        this.userDataAccessObject =
-                userDataAccessObject;
-
-        this.userPresenter =
-                userPresenter;
+    public ChangePasswordInteractor(ChangePasswordUserDataAccessInterface changePasswordDataAccessInterface,
+                                    ChangePasswordOutputBoundary changePasswordOutputBoundary) {
+        this.userDataAccessObject = changePasswordDataAccessInterface;
+        this.userPresenter = changePasswordOutputBoundary;
     }
 
     @Override
-    public void execute(
-            ChangePasswordInputData inputData) {
-
+    public void execute(ChangePasswordInputData changePasswordInputData) {
         final User user =
                 userDataAccessObject.get(
-                        inputData.getUsername());
+                        changePasswordInputData.getUsername());
 
         if (user == null) {
             userPresenter.prepareFailView(
@@ -47,23 +27,17 @@ public class ChangePasswordInteractor
             return;
         }
 
-        /*
-         * Update the existing User instead of creating
-         * a completely new User.
-         */
         user.setPassword(
-                inputData.getPassword());
+                changePasswordInputData.getPassword());
 
-        userDataAccessObject.changePassword(
-                user);
+        userDataAccessObject.changePassword(user);
 
         final ChangePasswordOutputData outputData =
                 new ChangePasswordOutputData(
                         user.getName(),
-                        false
-                );
+                        false);
 
-        userPresenter.prepareSuccessView(
-                outputData);
+        userPresenter.prepareSuccessView(outputData);
     }
 }
+

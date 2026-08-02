@@ -1,15 +1,15 @@
 package enery.use_case.tracking;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.FoodItem;
-import enery.entity.MealEntry;
-import enery.entity.MealType;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -41,12 +41,11 @@ class TrackingInteractorTest {
                         apple,
                         MealType.BREAKFAST,
                         2.0,
-                        LocalDateTime.of(
+                        LocalDate.of(
                                 2026,
                                 7,
-                                20,
-                                8,
-                                0)
+                                20
+                        )
                 );
 
         final MealEntry tuesdayMeal =
@@ -54,12 +53,11 @@ class TrackingInteractorTest {
                         apple,
                         MealType.SNACK,
                         1.0,
-                        LocalDateTime.of(
+                        LocalDate.of(
                                 2026,
                                 7,
-                                21,
-                                15,
-                                0)
+                                21
+                        )
                 );
 
         final ExerciseEntry mondayExercise =
@@ -67,12 +65,11 @@ class TrackingInteractorTest {
                         "Cycling",
                         30,
                         100.0,
-                        LocalDateTime.of(
+                        LocalDate.of(
                                 2026,
                                 7,
-                                20,
-                                18,
-                                0)
+                                20
+                        )
                 );
 
         final TrackingDataAccessInterface repository =
@@ -245,12 +242,11 @@ class TrackingInteractorTest {
                         apple,
                         MealType.BREAKFAST,
                         2.0,
-                        LocalDateTime.of(
+                        LocalDate.of(
                                 2026,
                                 7,
-                                26,
-                                8,
-                                0)
+                                26
+                        )
                 );
 
         final TrackingDataAccessInterface repository =

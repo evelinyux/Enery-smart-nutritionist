@@ -1,6 +1,6 @@
 package enery.use_case.log_exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Input data for logging an exercise activity.
@@ -11,20 +11,20 @@ public final class LogExerciseInputData {
     private final String exerciseName;
     private final int durationInMinutes;
     private final double caloriesBurned;
-    private final LocalDateTime dateTime;
+    private final LocalDate date;
 
     public LogExerciseInputData(
             String username,
             String exerciseName,
             int durationInMinutes,
             double caloriesBurned,
-            LocalDateTime dateTime) {
+            LocalDate date) {
 
         this.username = username;
         this.exerciseName = exerciseName;
         this.durationInMinutes = durationInMinutes;
         this.caloriesBurned = caloriesBurned;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 
     public String getUsername() {
@@ -43,7 +43,7 @@ public final class LogExerciseInputData {
         return caloriesBurned;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 }

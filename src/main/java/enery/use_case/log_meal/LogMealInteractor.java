@@ -1,7 +1,7 @@
 package enery.use_case.log_meal;
 
-import enery.entity.MealEntry;
-import enery.entity.MealEntryFactory;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealEntryFactory;
 
 /**
  * Interactor for logging a meal.
@@ -50,7 +50,7 @@ public final class LogMealInteractor
             return;
         }
 
-        if (inputData.getDateTime() == null) {
+        if (inputData.getDate() == null) {
             presenter.prepareFailView(
                     "A date and time are required.");
             return;
@@ -60,7 +60,7 @@ public final class LogMealInteractor
                 inputData.getFoodItem(),
                 inputData.getMealType(),
                 inputData.getServings(),
-                inputData.getDateTime()
+                inputData.getDate()
         );
 
         dataAccessObject.saveMeal(

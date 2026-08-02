@@ -1,4 +1,6 @@
-package enery.entity;
+package enery.entity.user;
+
+import enery.entity.tracking.DailyLog;
 
 import java.time.LocalDate;
 import java.util.Map;
