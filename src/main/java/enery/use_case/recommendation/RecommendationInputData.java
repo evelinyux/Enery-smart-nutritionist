@@ -1,9 +1,9 @@
 package enery.use_case.recommendation;
 
-public class RecommenderInputData {
+public class RecommendationInputData {
     private final String username;
 
-    public RecommenderInputData(String username) {
+    public RecommendationInputData(String username) {
         this.username = username;
     }
 

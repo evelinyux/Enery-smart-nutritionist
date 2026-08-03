@@ -1,32 +1,32 @@
 package enery.use_case.recommendation;
 
-import enery.entity.tracking.DailyLog;
-import enery.entity.exercise.ExerciseSearchResult;
-import enery.entity.user.NutritionGoal;
-import enery.entity.recipe.Recipe;
-import enery.entity.user.User;
-import enery.entity.user.UserProfile;
+import enery.entity.DailyLog;
+import enery.entity.ExerciseSearchResult;
+import enery.entity.NutritionGoal;
+import enery.entity.Recipe;
+import enery.entity.User;
+import enery.entity.UserProfile;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecommenderInteractor implements RecommenderInputBoundary {
+public class RecommendationInteractor implements RecommendationInputBoundary {
 
-    private final RecommenderUserDataAccessInterface userDataAccess;
-    private final RecommenderOutputBoundary presenter;
+    private final RecommendationUserDataAccessInterface userDataAccess;
+    private final RecommendationOutputBoundary presenter;
 
-    public RecommenderInteractor(
-            RecommenderUserDataAccessInterface userDataAccess,
-            RecommenderOutputBoundary presenter) {
+    public RecommendationInteractor(
+            RecommendationUserDataAccessInterface userDataAccess,
+            RecommendationOutputBoundary presenter) {
 
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }
 
     @Override
-    public void execute(RecommenderInputData inputData) {
+    public void execute(RecommendationInputData inputData) {
         final String username = inputData.getUsername();
         final User user = userDataAccess.getUser(username);
 
@@ -59,9 +59,13 @@ public class RecommenderInteractor implements RecommenderInputBoundary {
         final double targetDailyCalories = nutritionGoal.getDailyCalories();
         final double netCaloriesToday = todayLog.getNetCalories();
         final int remainingCalories = (int) Math.max(0, targetDailyCalories - netCaloriesToday);
+        final double targetCarbs = nutritionGoal.getCarbohydratesInGrams();
+        final double netCarbs = nutritionGoal.getCarbohydratesInGrams();
+        final int remainingCarbs = (int) Math.max(0, targetCarbs - netCarbs);
+
 
         // 4. Fetch candidate recipes and exercises from external APIs/DAOs
-        final List<Recipe> candidateRecipes = userDataAccess.fetchCandidateRecipes(
+        List<Recipe> candidateRecipes = userDataAccess.fetchCandidateRecipes(
                 remainingCalories,
                 profile.getDietaryRestrictions()
         );
@@ -84,8 +88,8 @@ public class RecommenderInteractor implements RecommenderInputBoundary {
         if (filteredRecipes.isEmpty() && filteredExercises.isEmpty()) {
             presenter.prepareFailView("No suitable recommendations found for your remaining calorie targets today.");
         } else {
-            final RecommenderOutputData outputData =
-                    new RecommenderOutputData(filteredRecipes, filteredExercises);
+            final RecommendationOutputData outputData =
+                    new RecommendationOutputData(filteredRecipes, filteredExercises);
             presenter.prepareSuccessView(outputData);
         }
     }
