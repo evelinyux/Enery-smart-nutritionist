@@ -1,7 +1,7 @@
 package enery.use_case.log_exercise;
 
-import enery.entity.ExerciseEntry;
-import enery.entity.ExerciseEntryFactory;
+import enery.entity.exercise.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntryFactory;
 
 /**
  * Interactor for logging an exercise activity.
@@ -53,7 +53,7 @@ public final class LogExerciseInteractor
             return;
         }
 
-        if (inputData.getDateTime() == null) {
+        if (inputData.getDate() == null) {
             presenter.prepareFailView(
                     "A date and time are required.");
             return;
@@ -64,7 +64,7 @@ public final class LogExerciseInteractor
                         inputData.getExerciseName(),
                         inputData.getDurationInMinutes(),
                         inputData.getCaloriesBurned(),
-                        inputData.getDateTime()
+                        inputData.getDate()
                 );
 
         dataAccessObject.saveExercise(

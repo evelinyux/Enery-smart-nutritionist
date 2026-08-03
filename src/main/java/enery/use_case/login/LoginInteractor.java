@@ -1,6 +1,6 @@
 package enery.use_case.login;
 
-import enery.entity.User;
+import enery.entity.user.User;
 
 /**
  * The Login Interactor.
@@ -34,9 +34,15 @@ public class LoginInteractor implements LoginInputBoundary {
                 userDataAccessObject.setCurrentUsername(user.getName());
 
                 final LoginOutputData loginOutputData = new LoginOutputData(user.getName(), false);
+
                 loginPresenter.prepareSuccessView(loginOutputData);
             }
         }
+
+    }
+    @Override
+    public void switchToSignupView() {
+        loginPresenter.switchToSignupView();
     }
 }
 

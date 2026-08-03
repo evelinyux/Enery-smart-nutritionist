@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_exercise;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +21,8 @@ class LogExerciseControllerTest {
         final LogExerciseController controller =
                 new LogExerciseController(interactor);
 
-        final LocalDateTime time =
-                LocalDateTime.of(2026, 7, 26, 18, 0);
+        final LocalDate time =
+                LocalDate.of(2026, 7, 26);
 
         controller.execute(
                 "Paul",
@@ -50,7 +50,7 @@ class LogExerciseControllerTest {
         );
         assertEquals(
                 time,
-                receivedInput[0].getDateTime()
+                receivedInput[0].getDate()
         );
     }
 }

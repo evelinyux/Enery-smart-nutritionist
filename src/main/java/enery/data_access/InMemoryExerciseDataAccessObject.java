@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import enery.entity.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntry;
 import enery.use_case.log_exercise.LogExerciseUserDataAccessInterface;
 
 /**
@@ -47,8 +47,8 @@ public final class InMemoryExerciseDataAccessObject
                 new ArrayList<>();
 
         for (ExerciseEntry exercise : exercises) {
-            if (exercise.getDateTime()
-                    .toLocalDate()
+            if (exercise.getDate()
+                    
                     .equals(date)) {
 
                 matchingExercises.add(exercise);

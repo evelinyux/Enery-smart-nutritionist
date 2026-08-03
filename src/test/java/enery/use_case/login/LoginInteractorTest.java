@@ -1,9 +1,9 @@
 package enery.use_case.login;
 
 import enery.data_access.InMemoryUserDataAccessObject;
-import enery.entity.CommonUserFactory;
-import enery.entity.User;
-import enery.entity.UserFactory;
+import enery.entity.user.CommonUserFactory;
+import enery.entity.user.User;
+import enery.entity.user.UserFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +30,11 @@ class LoginInteractorTest {
             @Override
             public void prepareFailView(String error) {
                 fail("Use case failure is unexpected.");
+            }
+
+            @Override
+            public void switchToSignupView() {
+                // No action needed for this test.
             }
         };
 
@@ -59,6 +64,11 @@ class LoginInteractorTest {
             @Override
             public void prepareFailView(String error) {
                 fail("Use case failure is unexpected.");
+            }
+
+            @Override
+            public void switchToSignupView() {
+                // No action needed for this test.
             }
         };
 
@@ -92,6 +102,11 @@ class LoginInteractorTest {
             public void prepareFailView(String error) {
                 assertEquals("Incorrect password for \"Paul\".", error);
             }
+
+            @Override
+            public void switchToSignupView() {
+                // No action needed for this test.
+            }
         };
 
         LoginInputBoundary interactor = new LoginInteractor(userRepository, failurePresenter);
@@ -117,9 +132,53 @@ class LoginInteractorTest {
             public void prepareFailView(String error) {
                 assertEquals("Paul: Account does not exist.", error);
             }
+
+            @Override
+            public void switchToSignupView() {
+                // No action needed for this test.
+            }
         };
 
         LoginInputBoundary interactor = new LoginInteractor(userRepository, failurePresenter);
         interactor.execute(inputData);
+    }
+
+    @Test
+    void switchToSignupViewTest() {
+        final boolean[] switchedToSignup = {false};
+
+        final LoginOutputBoundary presenter =
+                new LoginOutputBoundary() {
+
+                    @Override
+                    public void prepareSuccessView(
+                            LoginOutputData outputData) {
+                        // Not used in this test.
+                    }
+
+                    @Override
+                    public void prepareFailView(
+                            String errorMessage) {
+                        // Not used in this test.
+                    }
+
+                    @Override
+                    public void switchToSignupView() {
+                        switchedToSignup[0] = true;
+                    }
+                };
+
+        final InMemoryUserDataAccessObject userDataAccessObject =
+                new InMemoryUserDataAccessObject();
+
+        final LoginInteractor interactor =
+                new LoginInteractor(
+                        userDataAccessObject,
+                        presenter
+                );
+
+        interactor.switchToSignupView();
+
+        assertTrue(switchedToSignup[0]);
     }
 }

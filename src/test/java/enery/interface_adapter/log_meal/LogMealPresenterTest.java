@@ -1,12 +1,12 @@
 package enery.interface_adapter.log_meal;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.FoodItem;
-import enery.entity.MealEntry;
-import enery.entity.MealType;
+import enery.entity.meal.FoodItem;
+import enery.entity.meal.MealEntry;
+import enery.entity.meal.MealType;
 import enery.use_case.log_meal.LogMealOutputData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,7 +37,7 @@ class LogMealPresenterTest {
                 apple,
                 MealType.BREAKFAST,
                 1.0,
-                LocalDateTime.now()
+                LocalDate.now()
         );
 
         presenter.prepareSuccessView(

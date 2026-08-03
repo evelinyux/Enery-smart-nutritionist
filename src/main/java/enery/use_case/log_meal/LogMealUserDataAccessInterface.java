@@ -3,7 +3,7 @@ package enery.use_case.log_meal;
 import java.time.LocalDate;
 import java.util.List;
 
-import enery.entity.MealEntry;
+import enery.entity.meal.MealEntry;
 
 /**
  * Data-access operations required by the log-meal use case.

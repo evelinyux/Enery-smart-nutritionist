@@ -24,6 +24,9 @@ public final class TrackingState {
     private double proteinInGrams;
     private double carbohydratesInGrams;
     private double fatInGrams;
+    private double fiberInGrams;
+    private double sugarInGrams;
+    private double sodiumInMilligrams;
 
     private double averageCaloriesConsumed;
     private double averageCaloriesBurned;
@@ -108,6 +111,18 @@ public final class TrackingState {
     public void setFatInGrams(double fatInGrams) {
         this.fatInGrams = fatInGrams;
     }
+
+    public double getFiberInGrams() { return fiberInGrams; }
+
+    public void setFiberInGrams(double fiberInGrams) { this.fiberInGrams = fiberInGrams; }
+
+    public double getSugarInGrams() { return sugarInGrams; }
+
+    public void setSugarInGrams(double sugarInGrams) { this.sugarInGrams = sugarInGrams; }
+
+    public double getSodiumInMilligrams() { return sodiumInMilligrams; }
+
+    public void setSodiumInMilligrams(double sodiumInMilligrams) { this.sodiumInMilligrams = sodiumInMilligrams; }
 
     public double getAverageCaloriesConsumed() {
         return averageCaloriesConsumed;
