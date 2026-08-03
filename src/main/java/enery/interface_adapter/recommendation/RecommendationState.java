@@ -1,7 +1,6 @@
 package enery.interface_adapter.recommendation;
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
+import enery.entity.recipe.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +10,12 @@ import java.util.List;
  */
 public class RecommendationState {
 
-    // Store raw display strings instead of Domain Entities
     private List<String> recipeTitles = new ArrayList<>();
     private List<String> recipeUrls = new ArrayList<>();
     private List<String> workoutNames = new ArrayList<>();
+
+    // Added to give RecommendationView access to full Recipe entities for click-to-view navigation
+    private List<Recipe> recommendedRecipes = new ArrayList<>();
 
     private String recommendationError = null;
     private boolean isLoading = false;
@@ -24,6 +25,7 @@ public class RecommendationState {
         this.recipeTitles = copy.recipeTitles != null ? new ArrayList<>(copy.recipeTitles) : new ArrayList<>();
         this.recipeUrls = copy.recipeUrls != null ? new ArrayList<>(copy.recipeUrls) : new ArrayList<>();
         this.workoutNames = copy.workoutNames != null ? new ArrayList<>(copy.workoutNames) : new ArrayList<>();
+        this.recommendedRecipes = copy.recommendedRecipes != null ? new ArrayList<>(copy.recommendedRecipes) : new ArrayList<>();
         this.recommendationError = copy.recommendationError;
         this.isLoading = copy.isLoading;
     }
@@ -41,8 +43,13 @@ public class RecommendationState {
     public void setRecipeTitles(List<String> recipeTitles) {
         this.recipeTitles = recipeTitles;
     }
+
     public List<String> getRecipeUrls() {
         return recipeUrls;
+    }
+
+    public void setRecipeUrls(List<String> recipeUrls) {
+        this.recipeUrls = recipeUrls;
     }
 
     public List<String> getRecommendedExercises() {
@@ -51,6 +58,14 @@ public class RecommendationState {
 
     public void setRecommendedExercises(List<String> recommendedExerciseNames) {
         this.workoutNames = recommendedExerciseNames;
+    }
+
+    public List<Recipe> getRecommendedRecipes() {
+        return recommendedRecipes;
+    }
+
+    public void setRecommendedRecipes(List<Recipe> recommendedRecipes) {
+        this.recommendedRecipes = recommendedRecipes;
     }
 
     public String getRecommendationError() {
@@ -68,6 +83,4 @@ public class RecommendationState {
     public void setLoading(boolean loading) {
         isLoading = loading;
     }
-
-
 }

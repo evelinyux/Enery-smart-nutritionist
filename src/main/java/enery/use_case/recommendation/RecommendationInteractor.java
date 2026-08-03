@@ -1,11 +1,11 @@
 package enery.use_case.recommendation;
 
-import enery.entity.DailyLog;
-import enery.entity.ExerciseSearchResult;
-import enery.entity.NutritionGoal;
-import enery.entity.Recipe;
-import enery.entity.User;
-import enery.entity.UserProfile;
+import enery.entity.tracking.DailyLog;
+import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.user.NutritionGoal;
+import enery.entity.recipe.Recipe;
+import enery.entity.user.User;
+import enery.entity.user.UserProfile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,13 +15,17 @@ import java.util.stream.Collectors;
 public class RecommendationInteractor implements RecommendationInputBoundary {
 
     private final RecommendationUserDataAccessInterface userDataAccess;
+    private final RecommendationRecipeDataAccessInterface recipeDataAccess;
     private final RecommendationOutputBoundary presenter;
+
 
     public RecommendationInteractor(
             RecommendationUserDataAccessInterface userDataAccess,
+            RecommendationRecipeDataAccessInterface recipeDataAccess,
             RecommendationOutputBoundary presenter) {
 
         this.userDataAccess = userDataAccess;
+        this.recipeDataAccess = recipeDataAccess;
         this.presenter = presenter;
     }
 
