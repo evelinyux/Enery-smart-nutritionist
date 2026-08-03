@@ -1,8 +1,8 @@
 package enery.data_access.api;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 import enery.entity.Recipe;
-import enery.entity.User;
+import enery.entity.user.User;
 import enery.use_case.recommendation.RecommendationUserDataAccessInterface;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,12 +42,12 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
      * Overloaded helper method to fetch recipes with full calorie and macro range constraints.
      */
     public List<Recipe> fetchRecipes(int maxCalories,
-                                              Optional<Double> minProtein,
-                                              Optional<Double> minCarbs,
-                                              Optional<Double> maxCarbs,
-                                              Optional<Double> minFat,
-                                              Optional<Double> maxFat,
-                                              List<String> dietaryRestrictions) {
+                                     Optional<Double> minProtein,
+                                     Optional<Double> minCarbs,
+                                     Optional<Double> maxCarbs,
+                                     Optional<Double> minFat,
+                                     Optional<Double> maxFat,
+                                     List<String> dietaryRestrictions) {
         final List<Recipe> recipes = new ArrayList<>();
 
         try {
@@ -57,21 +57,21 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
             // Set maximum calories for the meal recommendation
             urlBuilder.append("max_calories=").append(maxCalories);
 
-            if (minProtein != null) {
-                urlBuilder.append("&min_protein=").append(minProtein);
+            if (minProtein != null && minProtein.isPresent()) {
+                urlBuilder.append("&min_protein=").append(minProtein.get());
             }
-            if (minCarbs != null) {
-                urlBuilder.append("&min_carbs=").append(minCarbs);
+            if (minCarbs != null && minCarbs.isPresent()) {
+                urlBuilder.append("&min_carbs=").append(minCarbs.get());
             }
-            if (maxCarbs != null) {
-                urlBuilder.append("&max_carbs=").append(maxCarbs);
+            if (maxCarbs != null && maxCarbs.isPresent()) {
+                urlBuilder.append("&max_carbs=").append(maxCarbs.get());
             }
             // Add fat range parameters if provided
-            if (minFat != null) {
-                urlBuilder.append("&min_fat=").append(minFat);
+            if (minFat != null && minFat.isPresent()) {
+                urlBuilder.append("&min_fat=").append(minFat.get());
             }
-            if (maxFat != null) {
-                urlBuilder.append("&max_fat=").append(maxFat);
+            if (maxFat != null && maxFat.isPresent()) {
+                urlBuilder.append("&max_fat=").append(maxFat.get());
             }
 
             // Add comma-separated dietary flags if present
@@ -177,25 +177,20 @@ public class RecipeApiDataAccessObject implements RecommendationUserDataAccessIn
 
         return recipes;
     }
-    }
 
     // --- Implementation of RecommendationUserDataAccessInterface ---
 
     @Override
     public List<Recipe> fetchCandidateRecipes(int targetCalories, List<String> dietaryRestrictions) {
-        // Calls the macro method with default fat parameters (or customized based on your needs)
-        return fetchRecipes(targetCalories, null, null, dietaryRestrictions);
-    }
-
-    @Override
-    public List<ExerciseSearchResult> fetchCandidateExercises(int targetCalories) {
-        // Return empty list or delegate to exercise DAO/Memory implementation
-        return List.of();
-    }
-
-    @Override
-    public User getUser(String username) {
-        // Handled by User DAO
-        return null;
+        // Calls fetchRecipes passing empty Optionals for optional macro bounds
+        return fetchRecipes(
+                targetCalories,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                dietaryRestrictions
+        );
     }
 }
