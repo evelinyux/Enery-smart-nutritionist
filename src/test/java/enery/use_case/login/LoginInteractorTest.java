@@ -1,9 +1,9 @@
 package enery.use_case.login;
 
 import enery.data_access.InMemoryUserDataAccessObject;
-import enery.entity.CommonUserFactory;
-import enery.entity.User;
-import enery.entity.UserFactory;
+import enery.entity.user.CommonUserFactory;
+import enery.entity.user.User;
+import enery.entity.user.UserFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

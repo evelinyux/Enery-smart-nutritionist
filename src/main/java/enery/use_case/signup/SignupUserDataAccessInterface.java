@@ -1,6 +1,6 @@
 package enery.use_case.signup;
 
-import enery.entity.User;
+import enery.entity.user.User;
 
 /**
  * DAO for the Signup Use Case.

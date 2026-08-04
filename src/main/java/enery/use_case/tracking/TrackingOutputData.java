@@ -19,6 +19,9 @@ public final class TrackingOutputData {
     private final double proteinInGrams;
     private final double carbohydratesInGrams;
     private final double fatInGrams;
+    private final double fiberInGrams;
+    private final double sugarInGrams;
+    private final double sodiumInMilligrams;
 
     private final double averageCaloriesConsumed;
     private final double averageCaloriesBurned;
@@ -36,6 +39,9 @@ public final class TrackingOutputData {
             double proteinInGrams,
             double carbohydratesInGrams,
             double fatInGrams,
+            double fiberInGrams,
+            double sugarInGrams,
+            double sodiumInMilligrams,
             double averageCaloriesConsumed,
             double averageCaloriesBurned,
             double averageNetCalories,
@@ -50,6 +56,9 @@ public final class TrackingOutputData {
         this.proteinInGrams = proteinInGrams;
         this.carbohydratesInGrams = carbohydratesInGrams;
         this.fatInGrams = fatInGrams;
+        this.fiberInGrams = fiberInGrams;
+        this.sugarInGrams = sugarInGrams;
+        this.sodiumInMilligrams = sodiumInMilligrams;
         this.averageCaloriesConsumed = averageCaloriesConsumed;
         this.averageCaloriesBurned = averageCaloriesBurned;
         this.averageNetCalories = averageNetCalories;
@@ -91,6 +100,12 @@ public final class TrackingOutputData {
     public double getFatInGrams() {
         return fatInGrams;
     }
+
+    public double getFiberInGrams() { return fiberInGrams; }
+
+    public double getSugarInGrams() { return sugarInGrams; }
+
+    public double getSodiumInMilligrams() { return sodiumInMilligrams; }
 
     public double getAverageCaloriesConsumed() {
         return averageCaloriesConsumed;

@@ -2,7 +2,7 @@ package enery.use_case.search_exercise;
 
 import java.util.List;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 
 /**
  * Interactor for searching exercise calorie information.

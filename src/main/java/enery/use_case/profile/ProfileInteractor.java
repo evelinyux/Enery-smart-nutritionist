@@ -2,10 +2,10 @@ package enery.use_case.profile;
 
 import java.time.LocalDate;
 
-import enery.entity.HealthGoal;
-import enery.entity.User;
-import enery.entity.UserProfile;
-import enery.entity.WeightGoalPlan;
+import enery.entity.user.HealthGoal;
+import enery.entity.user.User;
+import enery.entity.user.UserProfile;
+import enery.entity.user.WeightGoalPlan;
 import enery.entity.strategy.DailyCalorieGoalCalculator;
 
 /**

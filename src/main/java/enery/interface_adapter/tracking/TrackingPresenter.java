@@ -41,6 +41,12 @@ public final class TrackingPresenter
                 outputData.getCarbohydratesInGrams());
         state.setFatInGrams(
                 outputData.getFatInGrams());
+        state.setFiberInGrams(
+                outputData.getFiberInGrams());
+        state.setSugarInGrams(
+                outputData.getSugarInGrams());
+        state.setSodiumInMilligrams(
+                outputData.getSodiumInMilligrams());
 
         state.setAverageCaloriesConsumed(
                 outputData.getAverageCaloriesConsumed());

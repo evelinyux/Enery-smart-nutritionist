@@ -3,6 +3,7 @@ package enery.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import enery.entity.user.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

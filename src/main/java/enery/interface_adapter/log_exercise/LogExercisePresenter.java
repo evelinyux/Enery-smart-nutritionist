@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_exercise;
 
-import enery.entity.ExerciseEntry;
+import enery.entity.exercise.ExerciseEntry;
 import enery.use_case.log_exercise.LogExerciseOutputBoundary;
 import enery.use_case.log_exercise.LogExerciseOutputData;
 

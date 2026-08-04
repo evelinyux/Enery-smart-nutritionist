@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseController;
@@ -187,7 +187,7 @@ public final class LogExerciseView extends JPanel
                 selected.getExerciseName(),
                 selected.getDurationInMinutes(),
                 selected.getTotalCalories(),
-                LocalDateTime.now()
+                LocalDate.now()
         );
     }
 

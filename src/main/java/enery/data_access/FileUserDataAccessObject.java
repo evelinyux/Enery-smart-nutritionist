@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import enery.entity.User;
-import enery.entity.UserFactory;
+import enery.entity.user.User;
+import enery.entity.user.UserFactory;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;

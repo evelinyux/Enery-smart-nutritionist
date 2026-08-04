@@ -2,7 +2,7 @@ package enery.use_case.search_food;
 
 import java.util.List;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 
 /**
  * Output data containing food-search results.
