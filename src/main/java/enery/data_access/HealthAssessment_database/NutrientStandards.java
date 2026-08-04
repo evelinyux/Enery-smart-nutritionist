@@ -6,19 +6,19 @@ public class NutrientStandards {
     private final double fatInGrams = 10;
     private final double FibreInGrams = 30;
 
-        public double getProteinInGrams() {
+    public double getProteinInGrams() {
             return proteinInGrams;
         }
 
-        public double getCarbohydratesInGrams() {
-            return carbohydratesInGrams;
-        }
-
-        public double getFatInGrams() {
-            return fatInGrams;
-        }
-
-        public double getFibreInGrams() {
-            return FibreInGrams;
-        }
+    public double getCarbohydratesInGrams() {
+        return carbohydratesInGrams;
     }
+
+    public double getFatInGrams() {
+        return fatInGrams;
+    }
+
+    public double getFibreInGrams() {
+        return FibreInGrams;
+    }
+}
