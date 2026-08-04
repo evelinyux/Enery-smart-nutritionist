@@ -1,7 +1,7 @@
 package enery.use_case.recommendation;
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
+import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.recipe.Recipe;
 import org.json.*;
 
 import java.util.Arrays;
@@ -18,17 +18,6 @@ public class RecommendationOutputData {
     }
 
     public List<Recipe> getRecommendedRecipes() {return this.recommendedRecipes;}
-
-    //TODO: Is the response to the API call automacitally a Recipe object? Dont think so.
-    // SHould it be made into one?
-
-
-    public List<String> getRecommendedRecipeTitles() {
-        String jsonString = this.getRecommendedRecipes().toString();
-        JSONObject obj = new JSONObject(jsonString);
-        JSONArray arr = obj.getJSONArray("name");
-        return Arrays.asList(arr.toString().split(","));
-    }
 
     public List<ExerciseSearchResult> getRecommendedExercises() {return this.recommendedExercises;}
 }

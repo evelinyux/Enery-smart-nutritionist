@@ -1,11 +1,12 @@
 package enery.data_access;
 
 import enery.entity.exercise.ExerciseSearchResult;
+import enery.use_case.recommendation.RecommendationExerciseDataAccessInterface;
 import java.util.List;
 
-public class InMemoryExerciseDataAccessObject {
-    public List<ExerciseSearchResult> fetchCandidateExercises(int targetCalories) {
-        // Return a static/hardcoded list of local exercise entities
+public class InMemoryExerciseDataAccessObject implements RecommendationExerciseDataAccessInterface {
+    @Override
+    public List<ExerciseSearchResult> fetchCandidateExercises(int targetCaloriesToBurn) {
         return List.of(
                 new ExerciseSearchResult("Running", 300, 60, 300),
                 new ExerciseSearchResult("Cycling", 200, 60, 200),

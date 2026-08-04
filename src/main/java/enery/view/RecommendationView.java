@@ -1,5 +1,7 @@
-package view;
+package enery.view;
 
+import enery.entity.recipe.Recipe;
+import enery.interface_adapter.recipe.RecipePresenter;
 import enery.interface_adapter.recommendation.RecommendationState;
 import enery.interface_adapter.recommendation.RecommendationViewModel;
 
@@ -7,20 +9,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.util.List;
 
 public class RecommendationView extends JPanel implements PropertyChangeListener {
 
     public final String viewName = "recommendation";
     private final RecommendationViewModel viewModel;
+    private final RecipePresenter recipePresenter;
+    private final CardLayout cardLayout;
+    private final JPanel viewsPanel;
 
     // Swing UI Components
     private final JPanel recipesPanel = new JPanel();
     private final JPanel workoutsPanel = new JPanel();
 
-    public RecommendationView(RecommendationViewModel viewModel) {
+    public RecommendationView(RecommendationViewModel viewModel,
+                              RecipePresenter recipePresenter,
+                              CardLayout cardLayout,
+                              JPanel viewsPanel) {
         this.viewModel = viewModel;
+        this.recipePresenter = recipePresenter;
+        this.cardLayout = cardLayout;
+        this.viewsPanel = viewsPanel;
+
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -52,43 +63,38 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
     }
 
     private void updateViewFromState(RecommendationState state) {
-        // --- Populate Recipes (as clickable links) ---
+        // --- Populate Recipes (as clickable links to RecipeView) ---
         recipesPanel.removeAll();
-        List<String> recipes = state.getRecipeTitles();
-        List<String> urls = state.getRecipeUrls();
+        List<Recipe> recipes = state.getRecommendedRecipes();
 
-        if (recipes.isEmpty()) {
+        if (recipes == null || recipes.isEmpty()) {
             recipesPanel.add(new JLabel("No recipe recommendations available."));
         } else {
             for (int i = 0; i < Math.min(3, recipes.size()); i++) {
-                String title = recipes.get(i);
-                String url = (i < urls.size()) ? urls.get(i) : null;
+                Recipe recipe = recipes.get(i);
 
-                // Styled JButton that looks like a hyperlink
-                JButton linkButton = new JButton("<html><a href=''>" + title + "</a></html>");
+                JButton linkButton = new JButton("<html><a href=''>" + recipe.getName() + "</a></html>");
                 linkButton.setHorizontalAlignment(SwingConstants.LEFT);
                 linkButton.setBorderPainted(false);
                 linkButton.setOpaque(false);
                 linkButton.setBackground(Color.WHITE);
                 linkButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+                // Click action: populate RecipeState and switch screen
                 linkButton.addActionListener(e -> {
-                    if (url != null && !url.isEmpty()) {
-                        openWebpage(url);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Opening recipe: " + title);
-                    }
+                    recipePresenter.prepareRecipeView(recipe);
+                    cardLayout.show(viewsPanel, "recipe view");
                 });
 
                 recipesPanel.add(linkButton);
             }
         }
 
-        // --- Populate Workouts (Names) ---
+        // --- Populate Workouts (Non-clickable names) ---
         workoutsPanel.removeAll();
-        List<String> workouts = state.getWorkoutNames();
+        List<String> workouts = state.getRecommendedExercises();
 
-        if (workouts.isEmpty()) {
+        if (workouts == null || workouts.isEmpty()) {
             workoutsPanel.add(new JLabel("No workout recommendations available."));
         } else {
             for (int i = 0; i < Math.min(3, workouts.size()); i++) {
@@ -105,18 +111,16 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
         workoutsPanel.repaint();
     }
 
-    private void openWebpage(String urlString) {
-        try {
-            Desktop.getDesktop().browse(new URI(urlString));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Could not open link: " + urlString);
-        }
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             RecommendationState state = (RecommendationState) evt.getNewValue();
+
+            if (state.getRecommendationError() != null) {
+                JOptionPane.showMessageDialog(this, state.getRecommendationError(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             updateViewFromState(state);
         }
     }

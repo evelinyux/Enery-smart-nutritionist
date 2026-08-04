@@ -1,9 +1,9 @@
 package enery.data_access.api;
 
 import enery.entity.exercise.ExerciseSearchResult;
-import enery.entity.Recipe;
+import enery.entity.recipe.Recipe;
 import enery.entity.user.User;
-import enery.use_case.recommendation.RecommendationUserDataAccessInterface;
+import enery.use_case.recommendation.RecommendationRecipeDataAccessInterface;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,7 +24,7 @@ import java.util.Optional;
  * Data Access Object that integrates with recipe-api.com to fetch candidate recipes
  * based on calorie constraints, macro limits, and dietary restrictions.
  */
-public class RecipeApiDataAccessObject implements RecommendationUserDataAccessInterface {
+public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccessInterface {
 
     private static final String BASE_URL = "https://recipe-api.com/api/v1/recipes";
     private final String apiKey;

@@ -23,7 +23,9 @@ public class RecommendationViewModel {
     }
 
     public void setState(RecommendationState state) {
+        RecommendationState oldState = this.state;
         this.state = state;
+        support.firePropertyChange("state", oldState, this.state);
     }
 
     /**
