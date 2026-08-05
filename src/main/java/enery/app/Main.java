@@ -19,6 +19,7 @@ public class Main {
                                             .addProfileView()
                                             .addLogMealView()
                                             .addLogExerciseView()
+                                            .addProgressView()
                                             .addTrackingView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -29,6 +30,7 @@ public class Main {
                                             .addSearchFoodUseCase()
                                             .addSearchExerciseUseCase()
                                             .addLogExerciseUseCase()
+                                            .addProgressUseCase()
                                             .addTrackingUseCase()
                                             .build();
 

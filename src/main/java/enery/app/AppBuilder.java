@@ -6,12 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import enery.data_access.*;
+import enery.interface_adapter.progress.ProgressController;
+import enery.interface_adapter.progress.ProgressPresenter;
+import enery.interface_adapter.progress.ProgressViewModel;
+import enery.view.*;
 import okhttp3.OkHttpClient;
 
-import enery.data_access.DailyTrackingDataAccessObject;
-import enery.data_access.InMemoryExerciseDataAccessObject;
-import enery.data_access.InMemoryMealDataAccessObject;
-import enery.data_access.InMemoryUserDataAccessObject;
 import enery.data_access.api.ApiNinjasCaloriesBurnedDataAccessObject;
 import enery.data_access.api.UsdaNutritionDataAccessObject;
 import enery.entity.CommonExerciseEntryFactory;
@@ -83,14 +84,7 @@ import enery.use_case.tracking.TrackingDataAccessInterface;
 import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
-import enery.view.HomeView;
-import enery.view.ProfileView;
-import enery.view.LogExerciseView;
-import enery.view.LogMealView;
-import enery.view.LoginView;
-import enery.view.SignupView;
-import enery.view.TrackingView;
-import enery.view.ViewManager;
+import enery.use_case.progress.*;
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
@@ -156,6 +150,10 @@ public final class AppBuilder {
     // Daily-tracking components.
     private TrackingView trackingView;
     private TrackingViewModel trackingViewModel;
+
+    //Plan Progress components.
+    private ProgressView progressView;
+    private ProgressViewModel progressViewModel;
 
     /**
      * Creates the builder and configures the shared card panel.
@@ -273,6 +271,26 @@ public final class AppBuilder {
         );
 
         cardPanel.add(trackingView, trackingView.getViewName());
+        return this;
+    }
+
+    /**
+     * Creates and registers the progress view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProgressView() {
+        progressViewModel = new ProgressViewModel();
+        this.progressView = new ProgressView(
+                progressViewModel,
+                viewManagerModel,
+                loggedInViewModel);
+
+        cardPanel.add(
+                progressView,
+                progressView.getViewName()
+        );
+
         return this;
     }
 
@@ -520,6 +538,27 @@ public final class AppBuilder {
 
         trackingView.setTrackingController(
                 new TrackingController(interactor));
+        return this;
+    }
+
+    /**
+     * Wires the progress use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProgressUseCase() {
+        final ProgressOutputBoundary presenter =
+                new ProgressPresenter(viewManagerModel, progressViewModel);
+
+        final InMemoryPlanDataAccessObject dataAccessObject =
+                new InMemoryPlanDataAccessObject(userDataAccessObject);
+
+        final ProgressInputBoundary interactor =
+                new ProgressInteractor(dataAccessObject, presenter);
+
+        progressView.setProgressController(
+                new ProgressController(interactor));
+
         return this;
     }
 
