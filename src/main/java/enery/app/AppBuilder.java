@@ -27,6 +27,9 @@ import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.ChangePasswordPresenter;
 import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.interface_adapter.forgot_password.ForgotPasswordController;
+import enery.interface_adapter.forgot_password.ForgotPasswordPresenter;
+import enery.interface_adapter.forgot_password.ForgotPasswordViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseController;
 import enery.interface_adapter.log_exercise.LogExercisePresenter;
 import enery.interface_adapter.log_exercise.LogExerciseViewModel;
@@ -53,6 +56,9 @@ import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.use_case.change_password.ChangePasswordInputBoundary;
 import enery.use_case.change_password.ChangePasswordInteractor;
 import enery.use_case.change_password.ChangePasswordOutputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInteractor;
+import enery.use_case.forgot_password.ForgotPasswordOutputBoundary;
 import enery.use_case.profile.ProfileInputBoundary;
 import enery.use_case.profile.ProfileInteractor;
 import enery.use_case.profile.ProfileOutputBoundary;
@@ -88,6 +94,7 @@ import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
+import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
 import enery.view.ViewManager;
@@ -136,6 +143,8 @@ public final class AppBuilder {
     private SignupViewModel signupViewModel;
     private LoginView loginView;
     private LoginViewModel loginViewModel;
+    private ForgotPasswordView forgotPasswordView;
+    private ForgotPasswordViewModel forgotPasswordViewModel;
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
 
@@ -185,6 +194,29 @@ public final class AppBuilder {
         loginViewModel = new LoginViewModel();
         loginView = new LoginView(loginViewModel);
         cardPanel.add(loginView, loginView.getViewName());
+        return this;
+    }
+
+    /**
+     * Creates and registers the Forgot Password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addForgotPasswordView() {
+        forgotPasswordViewModel =
+                new ForgotPasswordViewModel();
+
+        forgotPasswordView =
+                new ForgotPasswordView(
+                        forgotPasswordViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                forgotPasswordView,
+                forgotPasswordView.getViewName()
+        );
+
         return this;
     }
 
@@ -323,6 +355,34 @@ public final class AppBuilder {
 
         loginView.setLoginController(
                 new LoginController(interactor));
+        return this;
+    }
+
+    /**
+     * Wires the forgot-password use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addForgotPasswordUseCase() {
+
+        final ForgotPasswordOutputBoundary presenter =
+                new ForgotPasswordPresenter(
+                        viewManagerModel,
+                        forgotPasswordViewModel
+                );
+
+        final ForgotPasswordInputBoundary interactor =
+                new ForgotPasswordInteractor(
+                        userDataAccessObject,
+                        presenter
+                );
+
+        forgotPasswordView.setForgotPasswordController(
+                new ForgotPasswordController(
+                        interactor
+                )
+        );
+
         return this;
     }
 
