@@ -14,7 +14,8 @@ import java.beans.PropertyChangeListener;
 
 public class HealthAssessmentView extends JPanel implements ActionListener, PropertyChangeListener {
 
-    public final String viewName = "health assessment";
+    public static final String viewName = "health assessment";
+
 
     private final HealthAssessmentViewModel viewModel;
     private final HealthAssessmentController controller;
