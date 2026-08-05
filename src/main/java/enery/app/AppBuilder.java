@@ -104,6 +104,8 @@ import enery.view.LogMealView;
 import enery.view.LoginView;
 import enery.view.ProfileView;
 import enery.view.ProgressView;
+import enery.view.ChangePasswordView;
+import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
 import enery.view.ViewManager;
@@ -172,6 +174,8 @@ public final class AppBuilder {
 
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
+    private ChangePasswordView changePasswordView;
+
 
     // Profile components.
     private ProfileView profileView;
@@ -286,6 +290,26 @@ public final class AppBuilder {
         cardPanel.add(
                 homeView,
                 homeView.getViewName()
+        );
+
+        return this;
+    }
+
+    /**
+     * Creates and registers the Change Password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addChangePasswordView() {
+        changePasswordView =
+                new ChangePasswordView(
+                        loggedInViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                changePasswordView,
+                changePasswordView.getViewName()
         );
 
         return this;
