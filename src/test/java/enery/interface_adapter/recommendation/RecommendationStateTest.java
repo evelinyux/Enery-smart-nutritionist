@@ -1,58 +1,111 @@
 package enery.interface_adapter.recommendation;
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
+import enery.entity.recipe.Recipe;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RecommendationStateTest {
 
     @Test
-    @DisplayName("Copy Constructor - Creates independent deep/shallow copies of fields")
-    void copyConstructor_CopiesAllFieldsCorrectly() {
-        // Arrange
-        final RecommendationState originalState = getState();
+    void copyConstructorCopiesFields() {
+        final Recipe recipe = new Recipe(
+                "1",
+                "Salad",
+                150.0,
+                2.0,
+                3.0,
+                10.0,
+                5.0,
+                List.of("Lettuce"),
+                "http://example.com",
+                "A basic salad",
+                "Mix the ingredients."
+        );
 
-        // Act
-        final RecommendationState copiedState = new RecommendationState(originalState);
+        final RecommendationState original =
+                new RecommendationState();
 
-        // Assert
-        assertEquals(originalState.getRecommendationError(), copiedState.getRecommendationError());
-        assertEquals(originalState.isLoading(), copiedState.isLoading());
-        assertEquals(1, copiedState.getRecommendedRecipes().size());
-        assertEquals("Salad", copiedState.getRecommendedRecipes().get(0).getName());
-        assertEquals(1, copiedState.getRecommendedExercises().size());
-        assertEquals("Walking", copiedState.getRecommendedExercises().get(0).getExerciseName());
-    }
+        original.setRecommendationError(
+                "Failed to fetch"
+        );
 
-    @NotNull
-    private static RecommendationState getState() {
-        final RecommendationState originalState = new RecommendationState();
-        originalState.setRecommendationError("Failed to fetch");
-        originalState.setLoading(true);
+        original.setLoading(true);
+        original.setRecommendedRecipes(
+                List.of(recipe)
+        );
 
-        final Recipe recipe = new Recipe("1", "Salad", 150.0, 2.0, 10.0, 5.0, List.of(), "http://example.com");
-        final ExerciseSearchResult exercise = new ExerciseSearchResult("Walking", 100.0);
+        original.setRecommendedExercises(
+                List.of("Walking (100 kcal)")
+        );
 
-        originalState.setRecommendedRecipes(List.of(recipe));
-        originalState.setRecommendedExercises(List.of(exercise));
-        return originalState;
+        original.setRecipeTitles(
+                List.of("Salad")
+        );
+
+        original.setRecipeUrls(
+                List.of("http://example.com")
+        );
+
+        final RecommendationState copy =
+                new RecommendationState(original);
+
+        assertEquals(
+                original.getRecommendationError(),
+                copy.getRecommendationError()
+        );
+
+        assertEquals(
+                original.isLoading(),
+                copy.isLoading()
+        );
+
+        assertEquals(
+                "Salad",
+                copy.getRecommendedRecipes()
+                        .get(0)
+                        .getName()
+        );
+
+        assertEquals(
+                List.of("Walking (100 kcal)"),
+                copy.getRecommendedExercises()
+        );
+
+        assertNotSame(
+                original.getRecommendedRecipes(),
+                copy.getRecommendedRecipes()
+        );
+
+        assertNotSame(
+                original.getRecommendedExercises(),
+                copy.getRecommendedExercises()
+        );
     }
 
     @Test
-    @DisplayName("Default Constructor - Initializes lists safely without nulls")
-    void defaultConstructor_InitializesEmptyLists() {
-        // Arrange & Act
-        final RecommendationState state = new RecommendationState();
+    void defaultConstructorInitializesLists() {
+        final RecommendationState state =
+                new RecommendationState();
 
-        // Assert
-        assertTrue(state.getRecommendedRecipes().isEmpty());
-        assertTrue(state.getRecommendedExercises().isEmpty());
+        assertTrue(
+                state.getRecommendedRecipes().isEmpty()
+        );
+
+        assertTrue(
+                state.getRecommendedExercises().isEmpty()
+        );
+
+        assertTrue(
+                state.getRecipeTitles().isEmpty()
+        );
+
+        assertTrue(
+                state.getRecipeUrls().isEmpty()
+        );
     }
 }

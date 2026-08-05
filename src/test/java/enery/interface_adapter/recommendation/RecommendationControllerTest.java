@@ -1,51 +1,36 @@
 package enery.interface_adapter.recommendation;
 
-import enery.entity.ExerciseSearchResult;
-import enery.entity.Recipe;
-import org.junit.jupiter.api.DisplayName;
+import enery.use_case.recommendation.RecommendationInputBoundary;
+import enery.use_case.recommendation.RecommendationInputData;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
+import org.mockito.ArgumentCaptor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-class RecommendationStateTest {
-
-    @Test
-    @DisplayName("Copy Constructor - Creates independent deep/shallow copies of fields")
-    void copyConstructor_CopiesAllFieldsCorrectly() {
-        // Arrange
-        final RecommendationState originalState = new RecommendationState();
-        originalState.setRecommendationError("Failed to fetch");
-        originalState.setLoading(true);
-
-        final Recipe recipe = new Recipe("1", "Salad", 150.0, 2.0, 10.0, 5.0, List.of(), "http://example.com");
-        final ExerciseSearchResult exercise = new ExerciseSearchResult("Walking", 100.0);
-
-        originalState.setRecommendedRecipes(List.of(recipe));
-        originalState.setRecommendedExercises(List.of(exercise));
-
-        // Act
-        final RecommendationState copiedState = new RecommendationState(originalState);
-
-        // Assert
-        assertEquals(originalState.getRecommendationError(), copiedState.getRecommendationError());
-        assertEquals(originalState.isLoading(), copiedState.isLoading());
-        assertEquals(1, copiedState.getRecommendedRecipes().size());
-        assertEquals("Salad", copiedState.getRecommendedRecipes().get(0).getName());
-        assertEquals(1, copiedState.getRecommendedExercises().size());
-        assertEquals("Walking", copiedState.getRecommendedExercises().get(0).getExerciseName());
-    }
+class RecommendationControllerTest {
 
     @Test
-    @DisplayName("Default Constructor - Initializes lists safely without nulls")
-    void defaultConstructor_InitializesEmptyLists() {
-        // Arrange & Act
-        final RecommendationState state = new RecommendationState();
+    void executePassesUsernameToInteractor() {
+        final RecommendationInputBoundary interactor =
+                mock(RecommendationInputBoundary.class);
 
-        // Assert
-        assertTrue(state.getRecommendedRecipes().isEmpty());
-        assertTrue(state.getRecommendedExercises().isEmpty());
+        final RecommendationController controller =
+                new RecommendationController(interactor);
+
+        controller.execute("test_user");
+
+        final ArgumentCaptor<RecommendationInputData> captor =
+                ArgumentCaptor.forClass(
+                        RecommendationInputData.class
+                );
+
+        verify(interactor).execute(captor.capture());
+
+        assertEquals(
+                "test_user",
+                captor.getValue().getUsername()
+        );
     }
 }
