@@ -30,10 +30,7 @@ class CommonUserTest {
         );
 
         final NutritionGoal goal = new NutritionGoal(
-                2200.0,
-                140.0,
-                250.0,
-                70.0
+                2200.0
         );
 
         user.setUserProfile(profile);
