@@ -94,6 +94,7 @@ import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
+import enery.view.ChangePasswordView;
 import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
@@ -115,9 +116,7 @@ public final class AppBuilder {
 
     // Shared navigation infrastructure.
     private final JPanel cardPanel = new JPanel();
-    private final JFrame application;
-    private final JPanel views;
-    private CardLayout cardLayout = new CardLayout();
+    private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager =
             new ViewManager(cardPanel, cardLayout, viewManagerModel);
@@ -149,6 +148,8 @@ public final class AppBuilder {
     private ForgotPasswordViewModel forgotPasswordViewModel;
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
+    private ChangePasswordView changePasswordView;
+
 
     // Profile components.
     private ProfileView profileView;
@@ -173,11 +174,6 @@ public final class AppBuilder {
      */
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
-        application = new JFrame("Smart Nutritionist Application");
-        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        cardLayout = new CardLayout();
-        views = new JPanel(cardLayout);
     }
 
     /**
@@ -245,6 +241,26 @@ public final class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         homeView = new HomeView(loggedInViewModel, viewManagerModel);
         cardPanel.add(homeView, homeView.getViewName());
+        return this;
+    }
+
+    /**
+     * Creates and registers the Change Password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addChangePasswordView() {
+        changePasswordView =
+                new ChangePasswordView(
+                        loggedInViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                changePasswordView,
+                changePasswordView.getViewName()
+        );
+
         return this;
     }
 
@@ -409,17 +425,22 @@ public final class AppBuilder {
      */
     public AppBuilder addChangePasswordUseCase() {
         final ChangePasswordOutputBoundary presenter =
-                new ChangePasswordPresenter(loggedInViewModel);
+                new ChangePasswordPresenter(
+                        loggedInViewModel
+                );
 
         final ChangePasswordInputBoundary interactor =
                 new ChangePasswordInteractor(
                         userDataAccessObject,
-                        presenter,
-                        userFactory
+                        presenter
                 );
 
-        homeView.setChangePasswordController(
-                new ChangePasswordController(interactor));
+        changePasswordView.setChangePasswordController(
+                new ChangePasswordController(
+                        interactor
+                )
+        );
+
         return this;
     }
 
