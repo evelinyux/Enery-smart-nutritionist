@@ -33,9 +33,7 @@ public class Main {
                                             .addSearchExerciseUseCase()
                                             .addLogExerciseUseCase()
                                             .addTrackingUseCase()
+                                            .addHealthAssessmentUseCase()
                                             .build();
-
-        application.pack();
-        application.setVisible(true);
     }
 }
