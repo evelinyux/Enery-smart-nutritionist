@@ -17,10 +17,10 @@ public class Main {
                                             .addLoginView()
                                             .addForgotPasswordView()
                                             .addHomeView()
-                                            .addChangePasswordView()
                                             .addProfileView()
                                             .addLogMealView()
                                             .addLogExerciseView()
+                                            .addProgressView()
                                             .addTrackingView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -32,6 +32,7 @@ public class Main {
                                             .addSearchFoodUseCase()
                                             .addSearchExerciseUseCase()
                                             .addLogExerciseUseCase()
+                                            .addProgressUseCase()
                                             .addTrackingUseCase()
                                             .build();
 

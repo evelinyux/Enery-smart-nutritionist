@@ -11,22 +11,23 @@ import okhttp3.OkHttpClient;
 import enery.data_access.DailyTrackingDataAccessObject;
 import enery.data_access.InMemoryExerciseDataAccessObject;
 import enery.data_access.InMemoryMealDataAccessObject;
+import enery.data_access.InMemoryPlanDataAccessObject;
 import enery.data_access.InMemoryUserDataAccessObject;
 import enery.data_access.api.ApiNinjasCaloriesBurnedDataAccessObject;
 import enery.data_access.api.UsdaNutritionDataAccessObject;
 import enery.entity.exercise.CommonExerciseEntryFactory;
-import enery.entity.meal.CommonMealEntryFactory;
-import enery.entity.user.CommonUserFactory;
 import enery.entity.exercise.ExerciseEntryFactory;
+import enery.entity.meal.CommonMealEntryFactory;
 import enery.entity.meal.MealEntryFactory;
+import enery.entity.user.CommonUserFactory;
 import enery.entity.user.UserFactory;
-import enery.interface_adapter.profile.ProfileController;
-import enery.interface_adapter.profile.ProfilePresenter;
-import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.ChangePasswordPresenter;
 import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.interface_adapter.forgot_password.ForgotPasswordController;
+import enery.interface_adapter.forgot_password.ForgotPasswordPresenter;
+import enery.interface_adapter.forgot_password.ForgotPasswordViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseController;
 import enery.interface_adapter.log_exercise.LogExercisePresenter;
 import enery.interface_adapter.log_exercise.LogExerciseViewModel;
@@ -36,11 +37,14 @@ import enery.interface_adapter.log_meal.LogMealViewModel;
 import enery.interface_adapter.login.LoginController;
 import enery.interface_adapter.login.LoginPresenter;
 import enery.interface_adapter.login.LoginViewModel;
-import enery.interface_adapter.forgot_password.ForgotPasswordController;
-import enery.interface_adapter.forgot_password.ForgotPasswordPresenter;
-import enery.interface_adapter.forgot_password.ForgotPasswordViewModel;
 import enery.interface_adapter.logout.LogoutController;
 import enery.interface_adapter.logout.LogoutPresenter;
+import enery.interface_adapter.profile.ProfileController;
+import enery.interface_adapter.profile.ProfilePresenter;
+import enery.interface_adapter.profile.ProfileViewModel;
+import enery.interface_adapter.progress.ProgressController;
+import enery.interface_adapter.progress.ProgressPresenter;
+import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.search_exercise.SearchExerciseController;
 import enery.interface_adapter.search_exercise.SearchExercisePresenter;
 import enery.interface_adapter.search_exercise.SearchExerciseViewModel;
@@ -56,9 +60,9 @@ import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.use_case.change_password.ChangePasswordInputBoundary;
 import enery.use_case.change_password.ChangePasswordInteractor;
 import enery.use_case.change_password.ChangePasswordOutputBoundary;
-import enery.use_case.profile.ProfileInputBoundary;
-import enery.use_case.profile.ProfileInteractor;
-import enery.use_case.profile.ProfileOutputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInputBoundary;
+import enery.use_case.forgot_password.ForgotPasswordInteractor;
+import enery.use_case.forgot_password.ForgotPasswordOutputBoundary;
 import enery.use_case.log_exercise.LogExerciseInputBoundary;
 import enery.use_case.log_exercise.LogExerciseInteractor;
 import enery.use_case.log_exercise.LogExerciseOutputBoundary;
@@ -68,12 +72,16 @@ import enery.use_case.log_meal.LogMealOutputBoundary;
 import enery.use_case.login.LoginInputBoundary;
 import enery.use_case.login.LoginInteractor;
 import enery.use_case.login.LoginOutputBoundary;
-import enery.use_case.forgot_password.ForgotPasswordInputBoundary;
-import enery.use_case.forgot_password.ForgotPasswordInteractor;
-import enery.use_case.forgot_password.ForgotPasswordOutputBoundary;
 import enery.use_case.logout.LogoutInputBoundary;
 import enery.use_case.logout.LogoutInteractor;
 import enery.use_case.logout.LogoutOutputBoundary;
+import enery.use_case.profile.ProfileInputBoundary;
+import enery.use_case.profile.ProfileInteractor;
+import enery.use_case.profile.ProfileOutputBoundary;
+import enery.use_case.progress.ProgressDataInterface;
+import enery.use_case.progress.ProgressInputBoundary;
+import enery.use_case.progress.ProgressInteractor;
+import enery.use_case.progress.ProgressOutputBoundary;
 import enery.use_case.search_exercise.CaloriesBurnedDataAccessInterface;
 import enery.use_case.search_exercise.SearchExerciseInputBoundary;
 import enery.use_case.search_exercise.SearchExerciseInteractor;
@@ -89,12 +97,14 @@ import enery.use_case.tracking.TrackingDataAccessInterface;
 import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
+import enery.view.ForgotPasswordView;
 import enery.view.HomeView;
-import enery.view.ChangePasswordView;
-import enery.view.ProfileView;
 import enery.view.LogExerciseView;
 import enery.view.LogMealView;
 import enery.view.LoginView;
+import enery.view.ProfileView;
+import enery.view.ProgressView;
+import enery.view.ChangePasswordView;
 import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
@@ -102,53 +112,70 @@ import enery.view.ViewManager;
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
- * This class is the composition root of the application. It creates the
+ *
+ * <p>This class is the composition root of the application. It creates the
  * concrete views, view models, controllers, presenters, interactors,
  * repositories, API adapters, and factories used by the Clean Architecture
- * layers.
- * Each {@code add...View()} method must be called before the related
+ * layers.</p>
+ *
+ * <p>Each {@code add...View()} method must be called before the related
  * {@code add...UseCase()} method because the use-case method attaches a
- * controller to an existing view.
+ * controller to an existing view.</p>
  */
 public final class AppBuilder {
 
     // Shared navigation infrastructure.
     private final JPanel cardPanel = new JPanel();
-    private final JFrame application;
-    private final JPanel views;
-    private CardLayout cardLayout = new CardLayout();
-    private final ViewManagerModel viewManagerModel = new ViewManagerModel();
+    private final CardLayout cardLayout = new CardLayout();
+    private final ViewManagerModel viewManagerModel =
+            new ViewManagerModel();
+
     private final ViewManager viewManager =
-            new ViewManager(cardPanel, cardLayout, viewManagerModel);
+            new ViewManager(
+                    cardPanel,
+                    cardLayout,
+                    viewManagerModel
+            );
 
     // Shared factories.
-    private final UserFactory userFactory = new CommonUserFactory();
+    private final UserFactory userFactory =
+            new CommonUserFactory();
+
     private final MealEntryFactory mealEntryFactory =
             new CommonMealEntryFactory();
+
     private final ExerciseEntryFactory exerciseEntryFactory =
             new CommonExerciseEntryFactory();
 
     // Shared application repositories.
     private final InMemoryUserDataAccessObject userDataAccessObject =
             new InMemoryUserDataAccessObject();
+
     private final InMemoryMealDataAccessObject mealDataAccessObject =
             new InMemoryMealDataAccessObject();
-    private final InMemoryExerciseDataAccessObject exerciseDataAccessObject =
+
+    private final InMemoryExerciseDataAccessObject
+            exerciseDataAccessObject =
             new InMemoryExerciseDataAccessObject();
 
-    // Shared HTTP client for API Ninjas requests.
-    private final OkHttpClient httpClient = new OkHttpClient();
+    // Shared HTTP client.
+    private final OkHttpClient httpClient =
+            new OkHttpClient();
 
     // Authentication and home components.
     private SignupView signupView;
     private SignupViewModel signupViewModel;
+
     private LoginView loginView;
     private LoginViewModel loginViewModel;
+
     private ForgotPasswordView forgotPasswordView;
     private ForgotPasswordViewModel forgotPasswordViewModel;
+
     private HomeView homeView;
     private LoggedInViewModel loggedInViewModel;
     private ChangePasswordView changePasswordView;
+
 
     // Profile components.
     private ProfileView profileView;
@@ -164,7 +191,11 @@ public final class AppBuilder {
     private LogExerciseViewModel logExerciseViewModel;
     private SearchExerciseViewModel searchExerciseViewModel;
 
-    // Daily-tracking components.
+    // Progress components.
+    private ProgressView progressView;
+    private ProgressViewModel progressViewModel;
+
+    // Tracking components.
     private TrackingView trackingView;
     private TrackingViewModel trackingViewModel;
 
@@ -173,11 +204,6 @@ public final class AppBuilder {
      */
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
-        application = new JFrame("Smart Nutritionist Application");
-        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        cardLayout = new CardLayout();
-        views = new JPanel(cardLayout);
     }
 
     /**
@@ -186,9 +212,17 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addSignupView() {
-        signupViewModel = new SignupViewModel();
-        signupView = new SignupView(signupViewModel);
-        cardPanel.add(signupView, signupView.getViewName());
+        signupViewModel =
+                new SignupViewModel();
+
+        signupView =
+                new SignupView(signupViewModel);
+
+        cardPanel.add(
+                signupView,
+                signupView.getViewName()
+        );
+
         return this;
     }
 
@@ -198,12 +232,14 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLoginView() {
-        loginViewModel = new LoginViewModel();
+        loginViewModel =
+                new LoginViewModel();
 
-        loginView = new LoginView(
-                loginViewModel,
-                viewManagerModel
-        );
+        loginView =
+                new LoginView(
+                        loginViewModel,
+                        viewManagerModel
+                );
 
         cardPanel.add(
                 loginView,
@@ -213,24 +249,24 @@ public final class AppBuilder {
         return this;
     }
 
-    public AppBuilder addForgotPasswordUseCase() {
+    /**
+     * Creates and registers the forgot-password view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addForgotPasswordView() {
+        forgotPasswordViewModel =
+                new ForgotPasswordViewModel();
 
-        final ForgotPasswordOutputBoundary presenter =
-                new ForgotPasswordPresenter(
-                        viewManagerModel,
-                        forgotPasswordViewModel
+        forgotPasswordView =
+                new ForgotPasswordView(
+                        forgotPasswordViewModel,
+                        viewManagerModel
                 );
 
-        final ForgotPasswordInputBoundary interactor =
-                new ForgotPasswordInteractor(
-                        userDataAccessObject,
-                        presenter
-                );
-
-        forgotPasswordView.setForgotPasswordController(
-                new ForgotPasswordController(
-                        interactor
-                )
+        cardPanel.add(
+                forgotPasswordView,
+                forgotPasswordView.getViewName()
         );
 
         return this;
@@ -242,9 +278,20 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addHomeView() {
-        loggedInViewModel = new LoggedInViewModel();
-        homeView = new HomeView(loggedInViewModel, viewManagerModel);
-        cardPanel.add(homeView, homeView.getViewName());
+        loggedInViewModel =
+                new LoggedInViewModel();
+
+        homeView =
+                new HomeView(
+                        loggedInViewModel,
+                        viewManagerModel
+                );
+
+        cardPanel.add(
+                homeView,
+                homeView.getViewName()
+        );
+
         return this;
     }
 
@@ -274,8 +321,11 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addProfileView() {
-        profileViewModel = new ProfileViewModel();
-        profileView = new ProfileView(profileViewModel);
+        profileViewModel =
+                new ProfileViewModel();
+
+        profileView =
+                new ProfileView(profileViewModel);
 
         cardPanel.add(
                 profileView,
@@ -291,56 +341,102 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLogMealView() {
-        logMealViewModel = new LogMealViewModel();
-        searchFoodViewModel = new SearchFoodViewModel();
+        logMealViewModel =
+                new LogMealViewModel();
 
-        logMealView = new LogMealView(
-                logMealViewModel,
-                searchFoodViewModel,
-                viewManagerModel,
-                loggedInViewModel
+        searchFoodViewModel =
+                new SearchFoodViewModel();
+
+        logMealView =
+                new LogMealView(
+                        logMealViewModel,
+                        searchFoodViewModel,
+                        viewManagerModel,
+                        loggedInViewModel
+                );
+
+        cardPanel.add(
+                logMealView,
+                logMealView.getViewName()
         );
 
-        cardPanel.add(logMealView, logMealView.getViewName());
         return this;
     }
 
     /**
-     * Creates and registers the combined exercise-search and exercise-logging
-     * view.
+     * Creates and registers the combined exercise-search and
+     * exercise-logging view.
      *
      * @return this builder
      */
     public AppBuilder addLogExerciseView() {
-        searchExerciseViewModel = new SearchExerciseViewModel();
-        logExerciseViewModel = new LogExerciseViewModel();
+        searchExerciseViewModel =
+                new SearchExerciseViewModel();
 
-        logExerciseView = new LogExerciseView(
-                searchExerciseViewModel,
-                logExerciseViewModel,
-                viewManagerModel,
-                loggedInViewModel
+        logExerciseViewModel =
+                new LogExerciseViewModel();
+
+        logExerciseView =
+                new LogExerciseView(
+                        searchExerciseViewModel,
+                        logExerciseViewModel,
+                        viewManagerModel,
+                        loggedInViewModel
+                );
+
+        cardPanel.add(
+                logExerciseView,
+                logExerciseView.getViewName()
         );
 
-        cardPanel.add(logExerciseView, logExerciseView.getViewName());
         return this;
     }
 
     /**
-     * Creates and registers the daily-tracking view.
+     * Creates and registers the progress view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProgressView() {
+        progressViewModel =
+                new ProgressViewModel();
+
+        progressView =
+                new ProgressView(
+                        progressViewModel,
+                        viewManagerModel,
+                        loggedInViewModel
+                );
+
+        cardPanel.add(
+                progressView,
+                progressView.getViewName()
+        );
+
+        return this;
+    }
+
+    /**
+     * Creates and registers the tracking view.
      *
      * @return this builder
      */
     public AppBuilder addTrackingView() {
-        trackingViewModel = new TrackingViewModel();
+        trackingViewModel =
+                new TrackingViewModel();
 
-        trackingView = new TrackingView(
-                trackingViewModel,
-                viewManagerModel,
-                loggedInViewModel
+        trackingView =
+                new TrackingView(
+                        trackingViewModel,
+                        viewManagerModel,
+                        loggedInViewModel
+                );
+
+        cardPanel.add(
+                trackingView,
+                trackingView.getViewName()
         );
 
-        cardPanel.add(trackingView, trackingView.getViewName());
         return this;
     }
 
@@ -365,7 +461,9 @@ public final class AppBuilder {
                 );
 
         signupView.setSignupController(
-                new SignupController(interactor));
+                new SignupController(interactor)
+        );
+
         return this;
     }
 
@@ -390,28 +488,32 @@ public final class AppBuilder {
                 );
 
         loginView.setLoginController(
-                new LoginController(interactor));
+                new LoginController(interactor)
+        );
+
         return this;
     }
 
     /**
-     * Creates and registers the Forgot Password view.
+     * Wires the forgot-password use case.
      *
      * @return this builder
      */
-    public AppBuilder addForgotPasswordView() {
-        forgotPasswordViewModel =
-                new ForgotPasswordViewModel();
-
-        forgotPasswordView =
-                new ForgotPasswordView(
-                        forgotPasswordViewModel,
-                        viewManagerModel
+    public AppBuilder addForgotPasswordUseCase() {
+        final ForgotPasswordOutputBoundary presenter =
+                new ForgotPasswordPresenter(
+                        viewManagerModel,
+                        forgotPasswordViewModel
                 );
 
-        cardPanel.add(
-                forgotPasswordView,
-                forgotPasswordView.getViewName()
+        final ForgotPasswordInputBoundary interactor =
+                new ForgotPasswordInteractor(
+                        userDataAccessObject,
+                        presenter
+                );
+
+        forgotPasswordView.setForgotPasswordController(
+                new ForgotPasswordController(interactor)
         );
 
         return this;
@@ -424,7 +526,9 @@ public final class AppBuilder {
      */
     public AppBuilder addChangePasswordUseCase() {
         final ChangePasswordOutputBoundary presenter =
-                new ChangePasswordPresenter(loggedInViewModel);
+                new ChangePasswordPresenter(
+                        loggedInViewModel
+                );
 
         final ChangePasswordInputBoundary interactor =
                 new ChangePasswordInteractor(
@@ -432,8 +536,9 @@ public final class AppBuilder {
                         presenter
                 );
 
-        changePasswordView.setChangePasswordController(
-                new ChangePasswordController(interactor));
+        homeView.setChangePasswordController(
+                new ChangePasswordController(interactor)
+        );
 
         return this;
     }
@@ -458,7 +563,9 @@ public final class AppBuilder {
                 );
 
         homeView.setLogoutController(
-                new LogoutController(interactor));
+                new LogoutController(interactor)
+        );
+
         return this;
     }
 
@@ -481,7 +588,8 @@ public final class AppBuilder {
                 );
 
         profileView.setProfileController(
-                new ProfileController(interactor));
+                new ProfileController(interactor)
+        );
 
         return this;
     }
@@ -493,7 +601,9 @@ public final class AppBuilder {
      */
     public AppBuilder addLogMealUseCase() {
         final LogMealOutputBoundary presenter =
-                new LogMealPresenter(logMealViewModel);
+                new LogMealPresenter(
+                        logMealViewModel
+                );
 
         final LogMealInputBoundary interactor =
                 new LogMealInteractor(
@@ -503,12 +613,14 @@ public final class AppBuilder {
                 );
 
         logMealView.setLogMealController(
-                new LogMealController(interactor));
+                new LogMealController(interactor)
+        );
+
         return this;
     }
 
     /**
-     * Wires the reusable USDA-backed food-search use case.
+     * Wires the USDA-backed food-search use case.
      *
      * @return this builder
      */
@@ -517,11 +629,14 @@ public final class AppBuilder {
                 new UsdaNutritionDataAccessObject(
                         httpClient,
                         getRequiredEnvironmentVariable(
-                                "USDA_API_KEY")
+                                "USDA_API_KEY"
+                        )
                 );
 
         final SearchFoodOutputBoundary presenter =
-                new SearchFoodPresenter(searchFoodViewModel);
+                new SearchFoodPresenter(
+                        searchFoodViewModel
+                );
 
         final SearchFoodInputBoundary interactor =
                 new SearchFoodInteractor(
@@ -530,7 +645,8 @@ public final class AppBuilder {
                 );
 
         logMealView.setSearchFoodController(
-                new SearchFoodController(interactor));
+                new SearchFoodController(interactor)
+        );
 
         return this;
     }
@@ -539,14 +655,14 @@ public final class AppBuilder {
      * Wires the API-backed exercise-search use case.
      *
      * @return this builder
-     * @throws IllegalStateException if {@code API_NINJAS_KEY} is missing
      */
     public AppBuilder addSearchExerciseUseCase() {
         final CaloriesBurnedDataAccessInterface dataAccessObject =
                 new ApiNinjasCaloriesBurnedDataAccessObject(
                         httpClient,
                         getRequiredEnvironmentVariable(
-                                "API_NINJAS_KEY")
+                                "API_NINJAS_KEY"
+                        )
                 );
 
         final SearchExerciseOutputBoundary presenter =
@@ -561,7 +677,9 @@ public final class AppBuilder {
                 );
 
         logExerciseView.setSearchController(
-                new SearchExerciseController(interactor));
+                new SearchExerciseController(interactor)
+        );
+
         return this;
     }
 
@@ -584,12 +702,44 @@ public final class AppBuilder {
                 );
 
         logExerciseView.setLogController(
-                new LogExerciseController(interactor));
+                new LogExerciseController(interactor)
+        );
+
         return this;
     }
 
     /**
-     * Wires the daily-tracking use case.
+     * Wires the progress use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addProgressUseCase() {
+        final ProgressDataInterface dataAccessObject =
+                new InMemoryPlanDataAccessObject(
+                        userDataAccessObject
+                );
+
+        final ProgressOutputBoundary presenter =
+                new ProgressPresenter(
+                        viewManagerModel,
+                        progressViewModel
+                );
+
+        final ProgressInputBoundary interactor =
+                new ProgressInteractor(
+                        dataAccessObject,
+                        presenter
+                );
+
+        progressView.setProgressController(
+                new ProgressController(interactor)
+        );
+
+        return this;
+    }
+
+    /**
+     * Wires the tracking use case.
      *
      * @return this builder
      */
@@ -601,7 +751,9 @@ public final class AppBuilder {
                 );
 
         final TrackingOutputBoundary presenter =
-                new TrackingPresenter(trackingViewModel);
+                new TrackingPresenter(
+                        trackingViewModel
+                );
 
         final TrackingInputBoundary interactor =
                 new TrackingInteractor(
@@ -610,25 +762,33 @@ public final class AppBuilder {
                 );
 
         trackingView.setTrackingController(
-                new TrackingController(interactor));
+                new TrackingController(interactor)
+        );
+
         return this;
     }
 
     /**
-     * Creates the main application window and selects signup as the initial
-     * screen.
+     * Creates the main application window.
      *
-     * @return the constructed application window
+     * @return constructed application window
      */
     public JFrame build() {
         final JFrame application =
-                new JFrame("ENERY Smart Nutritionist");
+                new JFrame(
+                        "ENERY Smart Nutritionist"
+                );
 
         application.setDefaultCloseOperation(
-                WindowConstants.EXIT_ON_CLOSE);
+                WindowConstants.EXIT_ON_CLOSE
+        );
+
         application.add(cardPanel);
 
-        viewManagerModel.setState(signupView.getViewName());
+        viewManagerModel.setState(
+                signupView.getViewName()
+        );
+
         viewManagerModel.firePropertyChanged();
 
         return application;
@@ -638,18 +798,20 @@ public final class AppBuilder {
      * Reads a required environment variable.
      *
      * @param variableName environment-variable name
-     * @return configured value
-     * @throws IllegalStateException if the variable is absent or blank
+     * @return configured environment-variable value
+     * @throws IllegalStateException if the variable is missing
      */
     private static String getRequiredEnvironmentVariable(
             String variableName) {
 
-        final String value = System.getenv(variableName);
+        final String value =
+                System.getenv(variableName);
 
         if (value == null || value.isBlank()) {
             throw new IllegalStateException(
                     variableName
-                            + " environment variable is not configured.");
+                            + " environment variable is not configured."
+            );
         }
 
         return value;

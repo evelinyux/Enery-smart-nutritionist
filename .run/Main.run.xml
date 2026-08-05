@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <envs>
+      <env name="API_NINJAS_KEY" value="ILVuOs128Y6EMyee1dQIl4S3X1KfpvOLSOsS6wUK" />
+      <env name="USDA_API_KEY" value="bFEIqbaxlObeu7tp2S32HVZdCUWtIlllMNbyjh65" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="enery.app.Main" />
+    <module name="csc207-enery-smart-nutritionist" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
