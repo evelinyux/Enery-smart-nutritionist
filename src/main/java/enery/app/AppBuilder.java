@@ -199,8 +199,17 @@ public final class AppBuilder {
      */
     public AppBuilder addLoginView() {
         loginViewModel = new LoginViewModel();
-        loginView = new LoginView(loginViewModel);
-        cardPanel.add(loginView, loginView.getViewName());
+
+        loginView = new LoginView(
+                loginViewModel,
+                viewManagerModel
+        );
+
+        cardPanel.add(
+                loginView,
+                loginView.getViewName()
+        );
+
         return this;
     }
 
