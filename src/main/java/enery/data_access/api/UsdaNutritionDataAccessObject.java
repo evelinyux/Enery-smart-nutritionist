@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 import enery.use_case.search_food.NutritionDataAccessInterface;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;

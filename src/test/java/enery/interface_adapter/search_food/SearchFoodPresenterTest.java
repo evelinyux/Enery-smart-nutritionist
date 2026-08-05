@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 import enery.use_case.search_food.SearchFoodOutputData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

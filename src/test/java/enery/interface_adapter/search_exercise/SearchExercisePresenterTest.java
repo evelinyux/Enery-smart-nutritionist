@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 import enery.use_case.search_exercise.SearchExerciseOutputData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

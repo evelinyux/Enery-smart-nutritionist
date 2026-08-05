@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 
 /**
  * Stores the current state of a food search.

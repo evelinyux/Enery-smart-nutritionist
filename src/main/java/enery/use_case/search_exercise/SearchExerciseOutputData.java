@@ -2,7 +2,7 @@ package enery.use_case.search_exercise;
 
 import java.util.List;
 
-import enery.entity.ExerciseSearchResult;
+import enery.entity.exercise.ExerciseSearchResult;
 
 /**
  * Output data containing matching exercise results.

@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
-import enery.entity.FoodItem;
+import enery.entity.meal.FoodItem;
 import okhttp3.OkHttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

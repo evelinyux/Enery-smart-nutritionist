@@ -1,6 +1,6 @@
 package enery.use_case.login;
 
-import enery.entity.User;
+import enery.entity.user.User;
 
 /**
  * The Login Interactor.

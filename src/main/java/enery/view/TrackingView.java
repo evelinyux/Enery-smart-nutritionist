@@ -54,6 +54,9 @@ public final class TrackingView extends JPanel
     private final JLabel proteinLabel = new JLabel("-");
     private final JLabel carbohydratesLabel = new JLabel("-");
     private final JLabel fatLabel = new JLabel("-");
+    private final JLabel fiberLabel = new JLabel("-");
+    private final JLabel sugarLabel = new JLabel("-");
+    private final JLabel sodiumLabel = new JLabel("-");
 
     private final JLabel averageConsumedLabel = new JLabel("-");
     private final JLabel averageBurnedLabel = new JLabel("-");
@@ -145,6 +148,15 @@ public final class TrackingView extends JPanel
 
         totals.add(new JLabel("Fat"));
         totals.add(fatLabel);
+
+        totals.add(new JLabel("Fiber"));
+        totals.add(fiberLabel);
+
+        totals.add(new JLabel("Sugar"));
+        totals.add(sugarLabel);
+
+        totals.add(new JLabel("Sodium"));
+        totals.add(sodiumLabel);
 
         totals.add(new JLabel("Daily average consumed"));
         totals.add(averageConsumedLabel);
@@ -286,6 +298,21 @@ public final class TrackingView extends JPanel
                 formatNumber(
                         state.getFatInGrams(),
                         "g"));
+
+        fiberLabel.setText(
+                formatNumber(
+                        state.getFiberInGrams(),
+                        "g"));
+
+        sugarLabel.setText(
+                formatNumber(
+                        state.getSugarInGrams(),
+                        "g"));
+
+        sodiumLabel.setText(
+                formatNumber(
+                        state.getSodiumInMilligrams(),
+                        "mg"));
 
         averageConsumedLabel.setText(
                 formatNumber(

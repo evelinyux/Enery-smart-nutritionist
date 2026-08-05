@@ -2,9 +2,9 @@ package enery.interface_adapter.profile;
 
 import java.util.List;
 
-import enery.entity.ActivityLevel;
-import enery.entity.HealthGoal;
-import enery.entity.Sex;
+import enery.entity.user.ActivityLevel;
+import enery.entity.user.HealthGoal;
+import enery.entity.user.Sex;
 import enery.use_case.profile.ProfileInputBoundary;
 import enery.use_case.profile.ProfileInputData;
 

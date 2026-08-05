@@ -17,7 +17,6 @@ import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseViewModel;
 import enery.interface_adapter.log_meal.LogMealViewModel;
 import enery.interface_adapter.logout.LogoutController;
-import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
 
 /**
@@ -36,7 +35,6 @@ public final class HomeView extends JPanel
     private final JButton mealButton = new JButton("Log Meal");
     private final JButton exerciseButton = new JButton("Log Exercise");
     private final JButton trackingButton = new JButton("View Progress");
-    private final JButton progressButton = new JButton("Plan Summary");
     private final JButton logoutButton = new JButton("Log Out");
 
     private LogoutController logoutController;
@@ -73,10 +71,6 @@ public final class HomeView extends JPanel
         trackingButton.addActionListener(event ->
                 switchView(TrackingViewModel.VIEW_NAME));
 
-        progressButton.addActionListener(event ->
-                switchView(ProgressViewModel.VIEW_NAME));
-
-
         logoutButton.addActionListener(event -> {
             final LoggedInState state =
                     loggedInViewModel.getState();
@@ -94,7 +88,6 @@ public final class HomeView extends JPanel
         add(mealButton);
         add(exerciseButton);
         add(trackingButton);
-        add(progressButton);
         add(logoutButton);
     }
 

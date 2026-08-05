@@ -15,7 +15,9 @@ public class Main {
         final JFrame application = appBuilder
                                             .addSignupView()
                                             .addLoginView()
+                                            .addForgotPasswordView()
                                             .addHomeView()
+                                            .addChangePasswordView()
                                             .addProfileView()
                                             .addLogMealView()
                                             .addLogExerciseView()
@@ -23,6 +25,7 @@ public class Main {
                                             .addTrackingView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
+                                            .addForgotPasswordUseCase()
                                             .addChangePasswordUseCase()
                                             .addLogoutUseCase()
                                             .addProfileUseCase()

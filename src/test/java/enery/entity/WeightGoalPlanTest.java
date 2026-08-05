@@ -2,6 +2,8 @@ package enery.entity;
 
 import java.time.LocalDate;
 
+import enery.entity.user.HealthGoal;
+import enery.entity.user.WeightGoalPlan;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
