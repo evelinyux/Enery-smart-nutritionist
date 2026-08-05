@@ -19,7 +19,6 @@ import enery.interface_adapter.log_meal.LogMealViewModel;
 import enery.interface_adapter.logout.LogoutController;
 import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
-import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
 
 /**
  * Main navigation screen displayed after a successful login.
@@ -54,9 +53,6 @@ public final class HomeView extends JPanel
             new JButton("Log Out");
 
     private LogoutController logoutController;
-
-    private final JButton healthAssessmentButton =
-            new JButton("Health Assessment");
 
     /**
      * Creates the home screen and connects its navigation buttons.
@@ -106,7 +102,6 @@ public final class HomeView extends JPanel
         add(mealButton);
         add(exerciseButton);
         add(trackingButton);
-        add(healthAssessmentButton);
 
         /*
          * Account actions.
@@ -143,9 +138,6 @@ public final class HomeView extends JPanel
         changePasswordButton.addActionListener(event ->
                 switchView(
                         ChangePasswordView.VIEW_NAME));
-        healthAssessmentButton.addActionListener(event ->
-                switchView(
-                        HealthAssessmentViewModel.viewName));
 
         logoutButton.addActionListener(event -> {
             final LoggedInState state =

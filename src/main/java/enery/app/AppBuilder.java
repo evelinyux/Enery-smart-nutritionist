@@ -99,15 +99,6 @@ import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
 import enery.view.ViewManager;
-import enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject;
-import enery.interface_adapter.health_assessment.HealthAssessmentController;
-import enery.interface_adapter.health_assessment.HealthAssessmentPresenter;
-import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
-import enery.use_case.health_assessment.HealthAssessmentDataAccessInterface;
-import enery.use_case.health_assessment.HealthAssessmentInputBoundary;
-import enery.use_case.health_assessment.HealthAssessmentInteractor;
-import enery.use_case.health_assessment.HealthAssessmentOutputBoundary;
-import enery.view.HealthAssessment.HealthAssessmentView;
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
@@ -663,23 +654,4 @@ public final class AppBuilder {
 
         return value;
     }
-    public AppBuilder addHealthAssessmentUseCase() {
-
-        HealthAssessmentViewModel healthViewModel = new HealthAssessmentViewModel();
-
-        HealthAssessmentDataAccessObject healthDataAccess = new HealthAssessmentDataAccessObject();
-
-        HealthAssessmentOutputBoundary presenter = new HealthAssessmentPresenter(healthViewModel);
-
-        HealthAssessmentInputBoundary interactor = new HealthAssessmentInteractor(presenter, healthDataAccess);
-
-        HealthAssessmentController controller = new HealthAssessmentController(interactor);
-
-        HealthAssessmentView healthView = new HealthAssessmentView(healthViewModel, controller);
-
-        views.add(healthView, healthView.viewName);
-
-        return this;
-    }
-
 }
