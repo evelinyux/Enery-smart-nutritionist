@@ -2,9 +2,36 @@ package enery.entity.recipe;
 
 import java.util.List;
 
-public class RecipeFactory{
-    public Recipe create(String id, String name, double calories, double protein,
-                         double carbs, double fat, List<String> ingredients, String recipeUrl) {
-        return new Recipe(id, name, calories, protein, carbs, fat, ingredients, recipeUrl);
+/**
+ * Creates recipe entities.
+ */
+public final class RecipeFactory {
+
+    public Recipe create(
+            String id,
+            String name,
+            double calories,
+            double proteinInGrams,
+            double sugarInGrams,
+            double carbohydratesInGrams,
+            double fatInGrams,
+            List<String> ingredients,
+            String recipeUrl,
+            String description,
+            String instructions) {
+
+        return new Recipe(
+                id,
+                name,
+                calories,
+                proteinInGrams,
+                sugarInGrams,
+                carbohydratesInGrams,
+                fatInGrams,
+                ingredients,
+                recipeUrl,
+                description,
+                instructions
+        );
     }
 }

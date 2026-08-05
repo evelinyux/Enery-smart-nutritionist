@@ -16,16 +16,19 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
 
     private final RecommendationUserDataAccessInterface userDataAccess;
     private final RecommendationRecipeDataAccessInterface recipeDataAccess;
+    private final RecommendationExerciseDataAccessInterface exerciseDataAccess;
     private final RecommendationOutputBoundary presenter;
 
 
     public RecommendationInteractor(
             RecommendationUserDataAccessInterface userDataAccess,
             RecommendationRecipeDataAccessInterface recipeDataAccess,
+            RecommendationExerciseDataAccessInterface exerciseDataAccess,
             RecommendationOutputBoundary presenter) {
 
         this.userDataAccess = userDataAccess;
         this.recipeDataAccess = recipeDataAccess;
+        this.exerciseDataAccess = exerciseDataAccess;
         this.presenter = presenter;
     }
 
@@ -63,19 +66,19 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
         final double targetDailyCalories = nutritionGoal.getDailyCalories();
         final double netCaloriesToday = todayLog.getNetCalories();
         final int remainingCalories = (int) Math.max(0, targetDailyCalories - netCaloriesToday);
-        final double targetCarbs = nutritionGoal.getCarbohydratesInGrams();
-        final double netCarbs = nutritionGoal.getCarbohydratesInGrams();
-        final int remainingCarbs = (int) Math.max(0, targetCarbs - netCarbs);
+        //final double targetCarbs = nutritionGoal.getCarbohydratesInGrams();
+        //final double netCarbs = nutritionGoal.getCarbohydratesInGrams();
+        //final int remainingCarbs = (int) Math.max(0, targetCarbs - netCarbs);
 
 
         // 4. Fetch candidate recipes and exercises from external APIs/DAOs
-        List<Recipe> candidateRecipes = userDataAccess.fetchCandidateRecipes(
+        List<Recipe> candidateRecipes = recipeDataAccess.fetchCandidateRecipes(
                 remainingCalories,
                 profile.getDietaryRestrictions()
         );
 
         final List<ExerciseSearchResult> candidateExercises =
-                userDataAccess.fetchCandidateExercises(remainingCalories);
+                exerciseDataAccess.fetchCandidateExercises(remainingCalories);
 
         // 5. Filter out items that the user already logged today
         final List<Recipe> filteredRecipes = candidateRecipes.stream()

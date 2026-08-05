@@ -1,9 +1,8 @@
 package enery.data_access;
 
-import enery.entity.DailyLog;
-import enery.entity.HealthGoal;
-import enery.entity.NutritionGoal;
-import enery.entity.User;
+import enery.entity.tracking.DailyLog;
+import enery.entity.user.NutritionGoal;
+import enery.entity.user.User;
 import enery.use_case.progress.ProgressDataInterface;
 
 import java.time.LocalDate;
