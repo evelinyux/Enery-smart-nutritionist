@@ -115,7 +115,9 @@ public final class AppBuilder {
 
     // Shared navigation infrastructure.
     private final JPanel cardPanel = new JPanel();
-    private final CardLayout cardLayout = new CardLayout();
+    private final JFrame application;
+    private final JPanel views;
+    private CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager =
             new ViewManager(cardPanel, cardLayout, viewManagerModel);
@@ -171,6 +173,11 @@ public final class AppBuilder {
      */
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
+        application = new JFrame("Smart Nutritionist Application");
+        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        cardLayout = new CardLayout();
+        views = new JPanel(cardLayout);
     }
 
     /**
