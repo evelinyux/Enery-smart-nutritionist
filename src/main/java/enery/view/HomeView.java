@@ -20,6 +20,7 @@ import enery.interface_adapter.logout.LogoutController;
 import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
+import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
 
 /**
  * Main navigation screen displayed after a successful login.
@@ -55,6 +56,9 @@ public final class HomeView extends JPanel
     private final JButton logoutButton =
             new JButton("Log Out");
 
+    private final JButton healthAssessmentButton =
+            new JButton("Health Assessment");
+
     private LogoutController logoutController;
 
     /*
@@ -86,6 +90,45 @@ public final class HomeView extends JPanel
     /**
      * Configures component alignment.
      */
+    private void configureView() {
+        setLayout(
+                new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        final JLabel title =
+                new JLabel("ENERY Smart Nutritionist");
+
+        title.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        final JSeparator accountSeparator =
+                new JSeparator();
+
+        accountSeparator.setMaximumSize(
+                accountSeparator.getPreferredSize());
+
+        add(title);
+        add(usernameLabel);
+
+        /*
+         * Main application features.
+         */
+        add(profileButton);
+        add(mealButton);
+        add(exerciseButton);
+        add(trackingButton);
+        add(healthAssessmentButton);
+
+        /*
+         * Account actions.
+         */
+        add(Box.createVerticalStrut(20));
+        add(logoutButton);
+
+        add(Box.createVerticalStrut(15));
+        add(accountSeparator);
+        add(Box.createVerticalStrut(15));
+
+        add(changePasswordButton);
     private void configureComponents() {
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -113,12 +156,20 @@ public final class HomeView extends JPanel
         progressButton.addActionListener(event ->
                 switchView(ProgressViewModel.VIEW_NAME));
 
+        healthAssessmentButton.addActionListener(event ->
+                switchView(
+                        HealthAssessmentViewModel.VIEW_NAME));
+
+        changePasswordButton.addActionListener(event ->
+                switchView(
+                        ChangePasswordView.VIEW_NAME));
         trackingButton.addActionListener(event ->
                 switchView(TrackingViewModel.VIEW_NAME));
 
         logoutButton.addActionListener(event -> {
             final LoggedInState state =
                     loggedInViewModel.getState();
+
 
             if (logoutController != null) {
                 logoutController.execute(state.getUsername());
