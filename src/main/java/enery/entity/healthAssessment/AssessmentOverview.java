@@ -61,7 +61,7 @@ public class AssessmentOverview {
                     (this.exercisePatternAssessment.getExerciseScore() * EXERCISE_WEIGHT);
             this.overallScore = Math.round(calculated);
 
-            determineSeverity(); // 分数算完后，联动更新 Severity
+            determineSeverity();
         }
     }
 

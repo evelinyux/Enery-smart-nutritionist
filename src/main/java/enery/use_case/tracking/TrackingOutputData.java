@@ -12,13 +12,13 @@ public final class TrackingOutputData {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private final double caloriesConsumed;
-    private final double caloriesBurned;
+    private static double caloriesConsumed;
+    private static double caloriesBurned;
     private final double netCalories;
 
-    private final double proteinInGrams;
-    private final double carbohydratesInGrams;
-    private final double fatInGrams;
+    private static double proteinInGrams;
+    private static double carbohydratesInGrams;
+    private static double fatInGrams;
     private final double fiberInGrams;
     private final double sugarInGrams;
     private final double sodiumInMilligrams;
@@ -65,6 +65,8 @@ public final class TrackingOutputData {
         this.dailySummaries = List.copyOf(dailySummaries);
     }
 
+
+
     public TrackingPeriod getPeriod() {
         return period;
     }
@@ -77,11 +79,11 @@ public final class TrackingOutputData {
         return endDate;
     }
 
-    public double getCaloriesConsumed() {
+    public static double getCaloriesConsumed() {
         return caloriesConsumed;
     }
 
-    public double getCaloriesBurned() {
+    public static double getCaloriesBurned() {
         return caloriesBurned;
     }
 
@@ -89,15 +91,15 @@ public final class TrackingOutputData {
         return netCalories;
     }
 
-    public double getProteinInGrams() {
+    public static double getProteinInGrams() {
         return proteinInGrams;
     }
 
-    public double getCarbohydratesInGrams() {
+    public static double getCarbohydratesInGrams() {
         return carbohydratesInGrams;
     }
 
-    public double getFatInGrams() {
+    public static double getFatInGrams() {
         return fatInGrams;
     }
 
