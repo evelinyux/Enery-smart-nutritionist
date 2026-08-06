@@ -9,6 +9,7 @@ import enery.use_case.login.LoginUserDataAccessInterface;
 import enery.use_case.forgot_password.ForgotPasswordUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;
 import enery.use_case.profile.ProfileUserDataAccessInterface;
+import enery.use_case.recommendation.RecommendationUserDataAccessInterface;
 import enery.use_case.signup.SignupUserDataAccessInterface;
 
 /**
@@ -20,7 +21,8 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         ChangePasswordUserDataAccessInterface,
         ForgotPasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        ProfileUserDataAccessInterface {
+        ProfileUserDataAccessInterface,
+        RecommendationUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
 
