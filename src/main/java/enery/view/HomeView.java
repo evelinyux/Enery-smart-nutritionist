@@ -215,6 +215,9 @@ public final class HomeView extends JPanel
         add(trackingButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
+        add(healthAssessmentButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+
         add(logoutButton);
     }
 
