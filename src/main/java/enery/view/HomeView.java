@@ -9,10 +9,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 import enery.interface_adapter.ViewManagerModel;
-import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.LoggedInState;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.log_exercise.LogExerciseViewModel;
@@ -65,12 +63,6 @@ public final class HomeView extends JPanel
 
     private LogoutController logoutController;
 
-    /*
-     * The current HomeView does not display a change-password form,
-     * but AppBuilder still injects this controller.
-     */
-    private ChangePasswordController changePasswordController;
-
     /**
      * Creates the home screen and connects its navigation buttons.
      *
@@ -91,50 +83,7 @@ public final class HomeView extends JPanel
         configureLayout();
     }
 
-    /**
-     * Configures component alignment.
-     */
-    private void configureView() {
-        setLayout(
-                new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        final JLabel title =
-                new JLabel("ENERY Smart Nutritionist");
-
-        title.setAlignmentX(
-                Component.CENTER_ALIGNMENT);
-
-        final JSeparator accountSeparator =
-                new JSeparator();
-
-        accountSeparator.setMaximumSize(
-                accountSeparator.getPreferredSize());
-
-        add(title);
-        add(usernameLabel);
-
-        /*
-         * Main application features.
-         */
-        add(profileButton);
-        add(mealButton);
-        add(exerciseButton);
-        add(trackingButton);
-        add(healthAssessmentButton);
-
-        /*
-         * Account actions.
-         */
-        add(Box.createVerticalStrut(20));
-        add(logoutButton);
-
-        add(Box.createVerticalStrut(15));
-        add(accountSeparator);
-        add(Box.createVerticalStrut(15));
-
-        add(changePasswordButton);
-
-    }
     private void configureComponents() {
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -143,8 +92,9 @@ public final class HomeView extends JPanel
         exerciseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         progressButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         trackingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         healthAssessmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        changePasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     /**
@@ -219,6 +169,9 @@ public final class HomeView extends JPanel
         add(healthAssessmentButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
+        add(changePasswordButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+
         add(logoutButton);
     }
 
@@ -267,19 +220,5 @@ public final class HomeView extends JPanel
             LogoutController controller) {
 
         this.logoutController = controller;
-    }
-
-    /**
-     * Sets the change-password controller.
-     *
-     * <p>The controller remains wired for compatibility with the current
-     * AppBuilder, although this screen does not yet contain password fields.</p>
-     *
-     * @param controller change-password controller
-     */
-    public void setChangePasswordController(
-            ChangePasswordController controller) {
-
-        this.changePasswordController = controller;
     }
 }

@@ -17,6 +17,7 @@ public class Main {
                                             .addLoginView()
                                             .addForgotPasswordView()
                                             .addHomeView()
+                                            .addChangePasswordView()
                                             .addProfileView()
                                             .addLogMealView()
                                             .addLogExerciseView()

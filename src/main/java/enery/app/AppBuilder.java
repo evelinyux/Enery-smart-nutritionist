@@ -105,7 +105,6 @@ import enery.view.LoginView;
 import enery.view.ProfileView;
 import enery.view.ProgressView;
 import enery.view.ChangePasswordView;
-import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
 import enery.view.ViewManager;
@@ -536,7 +535,7 @@ public final class AppBuilder {
                         presenter
                 );
 
-        homeView.setChangePasswordController(
+        changePasswordView.setChangePasswordController(
                 new ChangePasswordController(interactor)
         );
 
