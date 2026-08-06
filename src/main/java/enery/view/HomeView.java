@@ -20,6 +20,7 @@ import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
+import enery.interface_adapter.recommendation.RecommendationViewModel;
 
 /**
  * Main navigation screen displayed after a successful login.
@@ -51,6 +52,9 @@ public final class HomeView extends JPanel
 
     private final JButton trackingButton =
             new JButton("Nutrition and Exercise Tracking");
+
+    private final JButton recommendationButton =
+            new JButton("Recommendations");
 
     private final JButton changePasswordButton =
             new JButton("Change Password");
@@ -95,6 +99,7 @@ public final class HomeView extends JPanel
         healthAssessmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         changePasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     }
 
     /**
@@ -122,6 +127,9 @@ public final class HomeView extends JPanel
                         ChangePasswordView.VIEW_NAME));
         trackingButton.addActionListener(event ->
                 switchView(TrackingViewModel.VIEW_NAME));
+
+        recommendationButton.addActionListener(event ->
+                switchView(RecommendationViewModel.VIEW_NAME));
 
         logoutButton.addActionListener(event -> {
             final LoggedInState state =
