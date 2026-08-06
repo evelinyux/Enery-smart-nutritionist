@@ -1,10 +1,15 @@
 package enery.view;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
@@ -12,14 +17,13 @@ import enery.interface_adapter.progress.ProgressController;
 import enery.interface_adapter.progress.ProgressViewModel;
 
 /**
- * Swing view for searching for food and logging a selected meal.
- *
- * <p>The selected USDA result provides nutrition values per reference serving,
- * usually 100 grams. The user enters the amount they actually consumed in
- * grams, and this view scales the nutrient totals before logging the meal.</p>
+ * Swing view for viewing the user's progress towards their daily goal.
  */
 public final class ProgressView extends JPanel implements PropertyChangeListener {
-    public static final String VIEW_NAME = "progress";
+    private static final String VIEW_NAME = "progress";
+    private static final double PERCENTAGE_FACTOR = 100.0;
+    private static final double TENTHS_ROUNDING_FACTOR = 10.0;
+    private static final int SMALL_GAP = 5;
 
     private final ProgressViewModel progressViewModel;
     private final ViewManagerModel viewManagerModel;
@@ -54,21 +58,12 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     }
 
     private void configureView() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(
-                15,
-                15,
-                15,
-                15
-        ));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         dailyProgressLabel.setText(formatDailyProgressLabel(0.0));
 
         final JPanel contents = new JPanel(new GridLayout(0, 1, 5, 5));
-
-
 
         dailyProgressLabel.setVisible(false);
 
@@ -106,20 +101,31 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         });
 
         add(title);
+        add(Box.createVerticalStrut(SMALL_GAP));
         add(contents);
     }
 
     private String formatDailyProgressLabel(Double dailyProgressPercent) {
-        double todaysCalories = progressViewModel.getState().getTodaysCalories();
-        double dailyCalorieGoal = progressViewModel.getState().getDailyCalorieGoal();
+        final double todaysCalories = progressViewModel.getState().getTodaysCalories();
+        final double dailyCalorieGoal = progressViewModel.getState().getDailyCalorieGoal();
+
+        String label = "";
 
         if (dailyProgressPercent < 1) {
-            return "Your goal is " + dailyCalorieGoal + " kcal. You consumed " + todaysCalories + " kcal. That is "
-                    + Math.round((dailyProgressPercent * 1000.0)) / 10.0 + "% of your daily goal.";
+            label = "Your goal is "
+                    + dailyCalorieGoal
+                    + " kcal. You consumed "
+                    + todaysCalories
+                    + " kcal. That is "
+                    + Math.round((dailyProgressPercent * PERCENTAGE_FACTOR)
+                    * TENTHS_ROUNDING_FACTOR / TENTHS_ROUNDING_FACTOR)
+                    + "% of your daily goal.";
         }
         else {
-            return "You consumed " + todaysCalories + "kCal. You achieved your Daily Goal!";
+            label = "You consumed " + todaysCalories + "kCal. You achieved your Daily Goal!";
         }
+
+        return label;
     }
 
     @Override
@@ -129,28 +135,28 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         }
         else if (evt.getPropertyName().equals("data") && evt.getSource().equals(progressViewModel)) {
             final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
-            updateProgressUI(dailyProgressPercent);
+            updateProgressUi(dailyProgressPercent);
         }
     }
 
     private void updateProgress() {
         if (progressController == null) {
             statusLabel.setText("Progress is not configured");
-            return;
         }
-
-        final String username = loggedInViewModel.getState().getUsername();
-        progressController.execute(username);
-        if (progressViewModel.getState().getProgressError() == null) {
-            progressViewModel.firePropertyChanged("data");
+        else {
+            final String username = loggedInViewModel.getState().getUsername();
+            progressController.execute(username);
+            if (progressViewModel.getState().getProgressError() == null) {
+                progressViewModel.firePropertyChanged("data");
+            }
         }
     }
 
-    private void updateProgressUI(double dailyProgressPercent) {
+    private void updateProgressUi(double dailyProgressPercent) {
         dailyProgressLabel.setText(formatDailyProgressLabel(dailyProgressPercent));
         dailyProgressLabel.setVisible(true);
 
-        dailyProgressBar.setValue((int) (dailyProgressPercent * 100));
+        dailyProgressBar.setValue((int) (dailyProgressPercent * PERCENTAGE_FACTOR));
         dailyProgressBar.setVisible(true);
 
         recommendationLabel.setVisible(dailyProgressPercent < 1);

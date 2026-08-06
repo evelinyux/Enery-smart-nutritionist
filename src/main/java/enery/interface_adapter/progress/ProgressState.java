@@ -5,7 +5,7 @@ public class ProgressState {
     private double dailyCalorieGoal;
     private double dailyProgressPercent;
 
-    private String ProgressError;
+    private String progressError;
     private String successMessage;
 
     public double getTodaysCalories() {
@@ -33,11 +33,11 @@ public class ProgressState {
     }
 
     public String getProgressError() {
-        return ProgressError;
+        return progressError;
     }
 
     public void setProgressError(String progressError) {
-        ProgressError = progressError;
+        this.progressError = progressError;
     }
 
     public String getSuccessMessage() {

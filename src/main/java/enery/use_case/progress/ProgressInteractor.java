@@ -2,7 +2,7 @@ package enery.use_case.progress;
 
 public final class ProgressInteractor implements ProgressInputBoundary {
     private final ProgressDataInterface dataAccessObject;
-    private ProgressOutputBoundary presenter;
+    private final ProgressOutputBoundary presenter;
 
     public ProgressInteractor(
             ProgressDataInterface dataAccessObject,

@@ -1,13 +1,13 @@
 package enery.data_access;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import enery.entity.meal.MealEntry;
 import enery.entity.user.User;
 import enery.entity.user.UserProfile;
 import enery.entity.user.WeightGoalPlan;
 import enery.use_case.progress.ProgressDataInterface;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Stores meal entries in memory.
@@ -22,16 +22,17 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
         this.mealDataAccessObject = mealDataAccessObject;
     }
 
+    @Override
     public UserProfile getUserProfile() {
-        String username = userDataAccessObject.getCurrentUsername();
-        User user = userDataAccessObject.get(username);
+        final String username = userDataAccessObject.getCurrentUsername();
+        final User user = userDataAccessObject.get(username);
         return user.getUserProfile();
     }
 
     @Override
     public double getTodaysCalories() {
-        String username = userDataAccessObject.getCurrentUsername();
-        List<MealEntry> meals = mealDataAccessObject.getMeals(username, LocalDate.now());
+        final String username = userDataAccessObject.getCurrentUsername();
+        final List<MealEntry> meals = mealDataAccessObject.getMeals(username, LocalDate.now());
 
         double calories = 0.0;
 
@@ -44,8 +45,8 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
 
     @Override
     public double getDailyCalorieGoal() {
-       UserProfile userProfile = getUserProfile();
-       WeightGoalPlan weightGoalPlan = userProfile.getActivePlan();
-       return weightGoalPlan.getCurrentDailyCalorieGoal();
+        final UserProfile userProfile = getUserProfile();
+        final WeightGoalPlan weightGoalPlan = userProfile.getActivePlan();
+        return weightGoalPlan.getCurrentDailyCalorieGoal();
     }
 }
