@@ -790,7 +790,7 @@ public final class AppBuilder {
                 new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
 
         enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
-                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller);
+                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller, viewManagerModel);
 
         cardPanel.add(healthAssessmentView,enery.interface_adapter.health_assessment.HealthAssessmentViewModel.VIEW_NAME
         );

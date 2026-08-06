@@ -144,6 +144,7 @@ public final class HomeView extends JPanel
         progressButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         trackingButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        healthAssessmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     /**
