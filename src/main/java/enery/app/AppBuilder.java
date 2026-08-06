@@ -6,7 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import enery.interface_adapter.recipe.RecipeViewModel;
 import okhttp3.OkHttpClient;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 import enery.data_access.DailyTrackingDataAccessObject;
 import enery.data_access.InMemoryExerciseDataAccessObject;
@@ -105,8 +111,19 @@ import enery.view.LoginView;
 import enery.view.ProfileView;
 import enery.view.ProgressView;
 import enery.view.ChangePasswordView;
+import enery.view.ForgotPasswordView;
 import enery.view.SignupView;
 import enery.view.TrackingView;
+import enery.data_access.api.RecipeApiDataAccessObject;
+import enery.interface_adapter.recommendation.RecommendationController;
+import enery.interface_adapter.recommendation.RecommendationPresenter;
+import enery.interface_adapter.recommendation.RecommendationViewModel;
+import enery.use_case.recommendation.RecommendationInputBoundary;
+import enery.use_case.recommendation.RecommendationInteractor;
+import enery.use_case.recommendation.RecommendationOutputBoundary;
+import enery.use_case.recommendation.RecommendationRecipeDataAccessInterface;
+import enery.view.RecommendationView;
+import enery.interface_adapter.recipe.RecipePresenter;
 import enery.view.ViewManager;
 
 /**
@@ -157,9 +174,11 @@ public final class AppBuilder {
             exerciseDataAccessObject =
             new InMemoryExerciseDataAccessObject();
 
-    // Shared HTTP client.
-    private final OkHttpClient httpClient =
-            new OkHttpClient();
+    //    // Shared HTTP client.
+//    private final OkHttpClient httpClient =
+//            new OkHttpClient();
+    // creating less safe TTP client to work on Yael's laptop
+    private final OkHttpClient httpClient = createUnsafeOkHttpClient();
 
     // Authentication and home components.
     private SignupView signupView;
@@ -197,6 +216,12 @@ public final class AppBuilder {
     // Tracking components.
     private TrackingView trackingView;
     private TrackingViewModel trackingViewModel;
+
+    //Recommendation components.
+    private RecommendationView recommendationView;
+    private RecommendationViewModel recommendationViewModel;
+    private RecipeViewModel recipeViewModel; //
+
 
     /**
      * Creates the builder and configures the shared card panel.
@@ -329,6 +354,39 @@ public final class AppBuilder {
         cardPanel.add(
                 profileView,
                 profileView.getViewName()
+        );
+
+        return this;
+    }
+
+    /**
+     * Creates and registers the recommendation view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addRecommendationView() {
+        recommendationViewModel = new RecommendationViewModel();
+        recipeViewModel = new RecipeViewModel();
+
+        final RecipePresenter recipePresenter = new RecipePresenter(recipeViewModel);
+
+//        recommendationView = new RecommendationView(
+//                recommendationViewModel,
+//                loggedInViewModel,
+//                recipePresenter,
+//                cardLayout,
+//                cardPanel
+//        );
+        recommendationView = new RecommendationView(
+                recommendationViewModel,
+                loggedInViewModel,
+                recipePresenter,
+                viewManagerModel
+        );
+
+        cardPanel.add(
+                recommendationView,
+                RecommendationViewModel.VIEW_NAME
         );
 
         return this;
@@ -535,7 +593,7 @@ public final class AppBuilder {
                         presenter
                 );
 
-        changePasswordView.setChangePasswordController(
+        homeView.setChangePasswordController(
                 new ChangePasswordController(interactor)
         );
 
@@ -715,8 +773,7 @@ public final class AppBuilder {
     public AppBuilder addProgressUseCase() {
         final ProgressDataInterface dataAccessObject =
                 new InMemoryPlanDataAccessObject(
-                        userDataAccessObject,
-                        mealDataAccessObject
+                        userDataAccessObject
                 );
 
         final ProgressOutputBoundary presenter =
@@ -769,34 +826,34 @@ public final class AppBuilder {
     }
 
     /**
-     * Wires and registers the Health Assessment module.
+     * Wires the recommendation use case.
      *
      * @return this builder
      */
-    public AppBuilder addHealthAssessmentModule() {
-        enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
-                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
+    public AppBuilder addRecommendationUseCase() {
+        final RecommendationOutputBoundary presenter =
+                new RecommendationPresenter(recommendationViewModel);
 
-        enery.interface_adapter.health_assessment.HealthAssessmentViewModel healthAssessmentViewModel =
-                new enery.interface_adapter.health_assessment.HealthAssessmentViewModel();
+        final RecommendationRecipeDataAccessInterface recipeApiDao =
+                new RecipeApiDataAccessObject(
+                        getRequiredEnvironmentVariable("RECIPE_API_KEY")
+                );
+        final RecommendationInputBoundary interactor =
+                new RecommendationInteractor(
+                        userDataAccessObject,
+                        recipeApiDao,
+                        exerciseDataAccessObject,
+                        presenter
+                );
 
-        enery.use_case.health_assessment.HealthAssessmentOutputBoundary presenter =
-                new enery.interface_adapter.health_assessment.HealthAssessmentPresenter(healthAssessmentViewModel);
-
-        enery.use_case.health_assessment.HealthAssessmentInputBoundary interactor =
-                new enery.use_case.health_assessment.HealthAssessmentInteractor(presenter, healthDataAccess);
-
-        enery.interface_adapter.health_assessment.HealthAssessmentController controller =
-                new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
-
-        enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
-                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller, viewManagerModel);
-
-        cardPanel.add(healthAssessmentView,enery.interface_adapter.health_assessment.HealthAssessmentViewModel.VIEW_NAME
+        recommendationView.setRecommendationController(
+                new RecommendationController(interactor)
         );
 
         return this;
     }
+
+
 
     /**
      * Creates the main application window.
@@ -845,5 +902,31 @@ public final class AppBuilder {
         }
 
         return value;
+    }
+    private static OkHttpClient createUnsafeOkHttpClient() {
+        try {
+            final TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[]{};
+                        }
+                    }
+            };
+
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+
+            return new OkHttpClient.Builder()
+                    .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
+                    .hostnameVerifier((hostname, session) -> true)
+                    .build();
+        } catch (Exception e) {
+            return new OkHttpClient();
+        }
     }
 }
