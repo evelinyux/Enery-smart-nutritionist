@@ -34,6 +34,7 @@ public class Main {
                                             .addLogExerciseUseCase()
                                             .addProgressUseCase()
                                             .addTrackingUseCase()
+                                            .addHealthAssessmentModule()
                                             .build();
 
         application.pack();

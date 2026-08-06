@@ -17,8 +17,4 @@ public class NutrientStandards {
     public double getFatInGrams() {
         return fatInGrams;
     }
-
-    public double getFibreInGrams() {
-        return FibreInGrams;
-    }
 }

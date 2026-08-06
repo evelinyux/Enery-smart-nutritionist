@@ -769,6 +769,36 @@ public final class AppBuilder {
     }
 
     /**
+     * Wires and registers the Health Assessment module.
+     *
+     * @return this builder
+     */
+    public AppBuilder addHealthAssessmentModule() {
+        enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
+                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
+
+        enery.interface_adapter.health_assessment.HealthAssessmentViewModel healthAssessmentViewModel =
+                new enery.interface_adapter.health_assessment.HealthAssessmentViewModel();
+
+        enery.use_case.health_assessment.HealthAssessmentOutputBoundary presenter =
+                new enery.interface_adapter.health_assessment.HealthAssessmentPresenter(healthAssessmentViewModel);
+
+        enery.use_case.health_assessment.HealthAssessmentInputBoundary interactor =
+                new enery.use_case.health_assessment.HealthAssessmentInteractor(presenter, healthDataAccess);
+
+        enery.interface_adapter.health_assessment.HealthAssessmentController controller =
+                new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
+
+        enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
+                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller);
+
+        cardPanel.add(healthAssessmentView,enery.interface_adapter.health_assessment.HealthAssessmentViewModel.VIEW_NAME
+        );
+
+        return this;
+    }
+
+    /**
      * Creates the main application window.
      *
      * @return constructed application window
