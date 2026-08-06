@@ -2,7 +2,6 @@ package enery.use_case.health_assessment;
 
 import enery.entity.healthAssessment.AssessmentOverview;
 import enery.entity.healthAssessment.DietaryPatternAssessment;
-import enery.entity.healthAssessment.ExercisePatternAssessment;
 import enery.data_access.HealthAssessment_database.NutrientStandards;
 import enery.use_case.tracking.TrackingOutputData;
 
@@ -12,12 +11,12 @@ public class HealthAssessmentInteractor implements HealthAssessmentInputBoundary
 
     private final HealthAssessmentOutputBoundary outputBoundary;
 
-    private final HealthAssessmentDataAccessInterface HealthAssessmentDataAccessInterface;
+    private final HealthAssessmentDataAccessInterface healthDataAccess;
 
     public HealthAssessmentInteractor(HealthAssessmentOutputBoundary outputBoundary,
                                       HealthAssessmentDataAccessInterface HealthAssessmentDataAccessInterface) {
         this.outputBoundary = outputBoundary;
-        this.HealthAssessmentDataAccessInterface = HealthAssessmentDataAccessInterface;
+        this.healthDataAccess = HealthAssessmentDataAccessInterface;
     }
 
     @Override
@@ -25,17 +24,22 @@ public class HealthAssessmentInteractor implements HealthAssessmentInputBoundary
         try {
             String assessmentId = UUID.randomUUID().toString();
             String userId = inputData.getUserId();
-            TrackingOutputData trackingData = inputData.getTrackingData();
+            java.time.LocalDate endDate = java.time.LocalDate.now();
+            java.time.LocalDate startDate = endDate.minusDays(7);
+
+            TrackingOutputData trackingData = healthDataAccess.getTrackingData(userId, startDate, endDate);
+            if (trackingData == null) {
+                outputBoundary.prepareFailView("No tracking records found for this user. Please log data first.");
+                return;
+            }
 
             AssessmentOverview overview = new AssessmentOverview(assessmentId, userId);
-            overview.setPeriod(trackingData.getStartDate(), trackingData.getEndDate());
-
             // ===========================
             // Dietary Pattern Assessment
             // ===========================
             DietaryPatternAssessment dietaryAssessment = new DietaryPatternAssessment(assessmentId, userId);
 
-            NutrientStandards nutrientStandards = HealthAssessmentDataAccessInterface.getNutrientStandards();
+            NutrientStandards nutrientStandards = healthDataAccess.getNutrientStandards();
             NutrientComparer comparer = new NutrientComparer();
             NutrientComparer.DietaryEvaluationSummary dietSummary =
                     comparer.evaluateDiet(trackingData, nutrientStandards);
@@ -51,6 +55,14 @@ public class HealthAssessmentInteractor implements HealthAssessmentInputBoundary
 
             // overview
             overview.setDietaryPatternAssessment(dietaryAssessment);
+
+             HealthAssessmentOutputData outputData = new HealthAssessmentOutputData(overview.getAssessmentId(),
+                     overview.getOverallScore(),
+                     overview.getSeverity(),
+                     dietaryAssessment.getDietScore(),
+                     dietaryAssessment.getDietInsights(),
+                     dietaryAssessment.getDietActionableItems());
+             outputBoundary.prepareSuccessView(outputData);
         } catch (Exception e) {
             outputBoundary.prepareFailView("Fail to assess: " + e.getMessage());
         }

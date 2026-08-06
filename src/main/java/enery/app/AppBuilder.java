@@ -824,6 +824,10 @@ public final class AppBuilder {
         return application;
     }
 
+    private TrackingDataAccessInterface dailyTrackingDataAccessObject;
+    enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
+            new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
+    
     /**
      * Reads a required environment variable.
      *
