@@ -27,13 +27,16 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
 
     private final JLabel title = new JLabel("Plan Progress");
 
+    private final JButton updateProgressButton = new JButton("View Plan Progress");
     private final JLabel dailyProgressLabel = new JLabel();
     private final JProgressBar dailyProgressBar = new JProgressBar(0, 100);
-
-
+    private final JLabel recommendationLabel = new JLabel(
+            "We can recommend you a meal to help you reach your goal.");
     private final JButton recommendationButton = new JButton("Recommend a meal");
     private final JButton recalculateButton = new JButton("Recalculate Daily Goal");
-    private JButton backButton = new JButton("Home");
+    private final JButton backButton = new JButton("Home");
+    private final JLabel statusLabel = new JLabel();
+
     private ProgressController progressController;
 
     public ProgressView(
@@ -64,53 +67,93 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         dailyProgressLabel.setText(formatDailyProgressLabel(0.0));
 
         final JPanel contents = new JPanel(new GridLayout(0, 1, 5, 5));
+
+
+
+        dailyProgressLabel.setVisible(false);
+
         dailyProgressBar.setValue(0);
         dailyProgressBar.setStringPainted(true);
+        dailyProgressBar.setVisible(false);
+
+        recommendationLabel.setVisible(false);
+
         recommendationButton.setVisible(false);
+
+        contents.add(updateProgressButton);
         contents.add(dailyProgressLabel);
         contents.add(dailyProgressBar);
+        contents.add(recommendationLabel);
         contents.add(recommendationButton);
         contents.add(backButton);
+        contents.add(statusLabel);
+
+        updateProgressButton.addActionListener(event -> {
+            updateProgress();
+            if (progressViewModel.getState().getProgressError() == null) {
+                updateProgressButton.setText("Update Plan Progress");
+            }
+        });
+
+        recommendationButton.addActionListener(event -> {
+            viewManagerModel.setState("recommendation");
+            viewManagerModel.firePropertyChanged();
+        });
 
         backButton.addActionListener(event -> {
             viewManagerModel.setState(HomeView.VIEW_NAME);
-            viewManagerModel.firePropertyChanged();});
+            viewManagerModel.firePropertyChanged();
+        });
 
         add(title);
         add(contents);
     }
 
     private String formatDailyProgressLabel(Double dailyProgressPercent) {
-        Double todaysCalories = progressViewModel.getState().getTodaysCalories();
-        Double dailyCalorieGoal = progressViewModel.getState().getDailyCalorieGoal();
+        double todaysCalories = progressViewModel.getState().getTodaysCalories();
+        double dailyCalorieGoal = progressViewModel.getState().getDailyCalorieGoal();
 
         if (dailyProgressPercent < 1) {
-            return "Your goal is " +  dailyCalorieGoal.toString() + " kcal. You consumed " + todaysCalories.toString() +
-                    " kcal. That is " + dailyProgressPercent.toString() + "% of your daily goal. We can recommend you a"
-                    + " meal to get you closer to your goal.";
+            return "Your goal is " + dailyCalorieGoal + " kcal. You consumed " + todaysCalories + " kcal. That is "
+                    + Math.round((dailyProgressPercent * 1000.0)) / 10.0 + "% of your daily goal.";
         }
         else {
-            return "You consumed " + todaysCalories.toString() + "kCal. You achieved your Daily Goal!";
+            return "You consumed " + todaysCalories + "kCal. You achieved your Daily Goal!";
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state") && VIEW_NAME.equals(evt.getNewValue())) {
-            String username = loggedInViewModel.getState().getUsername();
-            if (progressController != null) {
-                progressController.execute(username);
-            }
+        if (evt.getPropertyName().equals("error") && evt.getSource().equals(progressViewModel)) {
+            statusLabel.setText(progressViewModel.getState().getProgressError());
         }
-        else if (evt.getPropertyName().equals("state") && evt.getSource() == progressViewModel) {
+        else if (evt.getPropertyName().equals("data") && evt.getSource().equals(progressViewModel)) {
             final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
             updateProgressUI(dailyProgressPercent);
         }
     }
 
+    private void updateProgress() {
+        if (progressController == null) {
+            statusLabel.setText("Progress is not configured");
+            return;
+        }
+
+        final String username = loggedInViewModel.getState().getUsername();
+        progressController.execute(username);
+        if (progressViewModel.getState().getProgressError() == null) {
+            progressViewModel.firePropertyChanged("data");
+        }
+    }
+
     private void updateProgressUI(double dailyProgressPercent) {
         dailyProgressLabel.setText(formatDailyProgressLabel(dailyProgressPercent));
+        dailyProgressLabel.setVisible(true);
+
         dailyProgressBar.setValue((int) (dailyProgressPercent * 100));
+        dailyProgressBar.setVisible(true);
+
+        recommendationLabel.setVisible(dailyProgressPercent < 1);
         recommendationButton.setVisible(dailyProgressPercent < 1);
     }
 

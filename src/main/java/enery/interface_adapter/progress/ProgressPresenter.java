@@ -38,6 +38,6 @@ public class ProgressPresenter implements ProgressOutputBoundary {
 
         progressViewModel.setState(progressState);
 
-        progressViewModel.firePropertyChanged();
+        progressViewModel.firePropertyChanged("error");
     }
 }
