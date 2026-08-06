@@ -164,7 +164,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     }
 
     public String getViewName() {
-        return this.VIEW_NAME;
+        return VIEW_NAME;
     }
 
     public void setProgressController(ProgressController progressController) {
