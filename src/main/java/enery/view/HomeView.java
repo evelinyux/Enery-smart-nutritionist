@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import enery.interface_adapter.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
@@ -52,6 +53,9 @@ public final class HomeView extends JPanel
 
     private final JButton trackingButton =
             new JButton("Nutrition and Exercise Tracking");
+
+    private final JButton changePasswordButton =
+            new JButton("Change Password");
 
     private final JButton logoutButton =
             new JButton("Log Out");
@@ -129,6 +133,8 @@ public final class HomeView extends JPanel
         add(Box.createVerticalStrut(15));
 
         add(changePasswordButton);
+
+    }
     private void configureComponents() {
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
