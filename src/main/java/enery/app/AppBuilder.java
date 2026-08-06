@@ -716,7 +716,8 @@ public final class AppBuilder {
     public AppBuilder addProgressUseCase() {
         final ProgressDataInterface dataAccessObject =
                 new InMemoryPlanDataAccessObject(
-                        userDataAccessObject
+                        userDataAccessObject,
+                        mealDataAccessObject
                 );
 
         final ProgressOutputBoundary presenter =
