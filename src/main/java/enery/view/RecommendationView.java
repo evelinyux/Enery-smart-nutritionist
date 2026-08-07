@@ -143,11 +143,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+
 public class RecommendationView extends JPanel implements PropertyChangeListener {
     private final LoggedInViewModel loggedInViewModel;
     public static final String VIEW_NAME = "recommendation";
     private final RecommendationViewModel viewModel;
     private final RecipePresenter recipePresenter;
+    private final JPanel recipesContainer = new JPanel();
     //    private final CardLayout cardLayout;
 //    private final JPanel viewsPanel;
     private RecommendationController recommendationController;
@@ -175,6 +177,7 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
         this.recipePresenter = recipePresenter;
         this.viewManagerModel = viewManagerModel;
         this.loggedInViewModel = loggedInViewModel;
+
 
 
         this.viewModel.addPropertyChangeListener(this);
@@ -238,9 +241,26 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
             recipesPanel.add(new JLabel("No recipe recommendations available."));
         } else {
             System.out.println("Rendering " + recipes.size() + " recipes.");
+//            for (int i = 0; i < Math.min(3, recipes.size()); i++) {
+//                Recipe recipe = recipes.get(i);
+//
+//                JButton linkButton = new JButton("<html><a href=''>" + recipe.getName() + "</a></html>");
+//                linkButton.setHorizontalAlignment(SwingConstants.LEFT);
+//                linkButton.setBorderPainted(false);
+//                linkButton.setOpaque(false);
+//                linkButton.setBackground(Color.WHITE);
+//                linkButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//
+//                // Click action: populate RecipeState and switch screen
+//                linkButton.addActionListener(e -> {
+//                    recipePresenter.prepareRecipeView(recipe);
+////                    cardLayout.show(viewsPanel, RecipeViewModel.VIEW_NAME);
+//                    switchView(RecipeViewModel.VIEW_NAME);
+//                });
             for (int i = 0; i < Math.min(3, recipes.size()); i++) {
                 Recipe recipe = recipes.get(i);
 
+                // Create a button styled like a link for the recipe title
                 JButton linkButton = new JButton("<html><a href=''>" + recipe.getName() + "</a></html>");
                 linkButton.setHorizontalAlignment(SwingConstants.LEFT);
                 linkButton.setBorderPainted(false);
@@ -248,15 +268,21 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
                 linkButton.setBackground(Color.WHITE);
                 linkButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-                // Click action: populate RecipeState and switch screen
+                // Action Listener: when clicked, pass recipe to presenter and switch view
                 linkButton.addActionListener(e -> {
-                    recipePresenter.prepareRecipeView(recipe);
-//                    cardLayout.show(viewsPanel, RecipeViewModel.VIEW_NAME);
-                    switchView(RecipeViewModel.VIEW_NAME);
+                    System.out.println("[DEBUG RecView] Clicked recipe: " + recipe.getName());
+                    if (recipePresenter != null) {
+                        recipePresenter.prepareRecipeView(recipe);
+
+                        // Tell ViewManagerModel to switch to the recipe view
+                        viewManagerModel.setState(RecipeViewModel.VIEW_NAME);
+                        viewManagerModel.firePropertyChanged();
+                    }
                 });
 
                 recipesPanel.add(linkButton);
             }
+
         }
 
         // --- Populate Workouts (Non-clickable names) ---

@@ -30,8 +30,11 @@ public class RecipePresenter {
 
         // Convert List<String> to multi-line bullet points for the view
         List<String> rawIngredients = recipe.getIngredients();
+        System.out.println("[DEBUG RecipePresenter] Raw ingredients from entity: " + recipe.getIngredients());
+        System.out.println("[DEBUG RecipePresenter] Raw instructions from entity: " + recipe.getInstructions());
         if (rawIngredients != null && !rawIngredients.isEmpty()) {
             state.setIngredients("• " + String.join("\n• ", rawIngredients));
+
         } else {
             state.setIngredients("No ingredients provided.");
         }
