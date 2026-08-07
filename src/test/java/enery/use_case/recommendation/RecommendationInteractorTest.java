@@ -91,7 +91,7 @@ class RecommendationInteractorTest {
         final DailyLog dailyLog =
                 new DailyLog(LocalDate.now());
 
-        when(userDataAccess.getUser(username))
+        when(userDataAccess.get(username))
                 .thenReturn(user);
 
         when(user.getUserProfile())
@@ -175,7 +175,7 @@ class RecommendationInteractorTest {
                         "missing_user"
                 );
 
-        when(userDataAccess.getUser(
+        when(userDataAccess.get(
                 "missing_user"
         )).thenReturn(null);
 
@@ -193,7 +193,7 @@ class RecommendationInteractorTest {
     void executeFailsWhenProfileIncomplete() {
         final User user = mock(User.class);
 
-        when(userDataAccess.getUser("new_user"))
+        when(userDataAccess.get("new_user"))
                 .thenReturn(user);
 
         when(user.getUserProfile())
@@ -262,7 +262,7 @@ class RecommendationInteractorTest {
                 )
         );
 
-        when(userDataAccess.getUser(username))
+        when(userDataAccess.get(username))
                 .thenReturn(user);
 
         when(user.getUserProfile())

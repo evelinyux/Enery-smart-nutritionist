@@ -247,4 +247,5 @@ public final class UsdaNutritionDataAccessObject
 
         return 0.0;
     }
+
 }

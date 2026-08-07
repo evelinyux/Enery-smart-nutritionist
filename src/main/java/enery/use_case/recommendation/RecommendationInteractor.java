@@ -149,8 +149,13 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
         }
         final LocalDate localDate = LocalDate.now();
         final UserProfile profile = user.getUserProfile();
+
+        if (profile == null) {
+            presenter.prepareFailView("Please complete your user profile first.");
+            return;
+        }
         final NutritionGoal nutritionGoal = user.getNutritionGoal();
-        final HealthGoal healthGoal = user.getUserProfile().getHealthGoal();
+//        final HealthGoal healthGoal = user.getUserProfile().getHealthGoal();
         final WeightGoalPlan weightGoalPlan = user.getUserProfile().getActivePlan();
         final DailyLog dailyLog = user.getDailyLog(localDate);
 

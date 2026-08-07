@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: maybe Import Evelyn's Nutrition Assment and use the values there for min/max  fat,
-//  potein etc in API call
-
 /**
  * Data Access Object that integrates with recipe-api.com to fetch candidate recipes
  * based on calorie constraints, macro limits, and dietary restrictions.

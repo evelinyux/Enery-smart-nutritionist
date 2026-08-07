@@ -2,6 +2,7 @@
   <configuration default="false" name="Main" type="Application" factoryName="Application">
     <envs>
       <env name="API_NINJAS_KEY" value="ILVuOs128Y6EMyee1dQIl4S3X1KfpvOLSOsS6wUK" />
+      <env name="RECIPE_API_KEY" value="rapi_966a04053c350497135e0c41001d3ba0a91741b7d294503a" />
       <env name="USDA_API_KEY" value="bFEIqbaxlObeu7tp2S32HVZdCUWtIlllMNbyjh65" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="enery.app.Main" />

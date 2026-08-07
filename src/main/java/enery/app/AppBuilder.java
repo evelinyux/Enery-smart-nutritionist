@@ -939,6 +939,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import enery.use_case.recommendation.*;
 import okhttp3.OkHttpClient;
 
 import enery.data_access.DailyTrackingDataAccessObject;
@@ -1047,10 +1048,6 @@ import enery.interface_adapter.recipe.RecipeViewModel;
 import enery.interface_adapter.recommendation.RecommendationController;
 import enery.interface_adapter.recommendation.RecommendationPresenter;
 import enery.interface_adapter.recommendation.RecommendationViewModel;
-import enery.use_case.recommendation.RecommendationInputBoundary;
-import enery.use_case.recommendation.RecommendationInteractor;
-import enery.use_case.recommendation.RecommendationOutputBoundary;
-import enery.use_case.recommendation.RecommendationRecipeDataAccessInterface;
 import enery.view.RecipeView;
 import enery.view.RecommendationView;
 
@@ -1416,13 +1413,16 @@ public final class AppBuilder {
         return this;
     }
 
+
+
     /**
      * Creates and registers the detailed recipe view.
      *
      * @return this builder
      */
     public AppBuilder addRecipeView() {
-        recipeView = new RecipeView(recipeViewModel, viewManagerModel);
+//        recipeView = new RecipeView(recipeViewModel, viewManagerModel);
+        RecipeView recipeView = new RecipeView(recipeViewModel, viewManagerModel);
 
         cardPanel.add(
                 recipeView,
@@ -1708,7 +1708,8 @@ public final class AppBuilder {
     public AppBuilder addProgressUseCase() {
         final ProgressDataInterface dataAccessObject =
                 new InMemoryPlanDataAccessObject(
-                        userDataAccessObject
+                        userDataAccessObject,
+                        mealDataAccessObject
                 );
 
         final ProgressOutputBoundary presenter =
@@ -1769,16 +1770,24 @@ public final class AppBuilder {
         final RecommendationOutputBoundary presenter =
                 new RecommendationPresenter(recommendationViewModel);
 
+//        final RecommendationRecipeDataAccessInterface recipeApiDAO =
+//                new RecipeApiDataAccessObject(
+//                        httpClient,
+//                        getRequiredEnvironmentVariable("RECIPE_API_KEY")
+//                );
         final RecommendationRecipeDataAccessInterface recipeApiDAO =
                 new RecipeApiDataAccessObject(
-                        httpClient,
                         getRequiredEnvironmentVariable("RECIPE_API_KEY")
                 );
+
+        final RecommendationExerciseDataAccessInterface exerciseDAO =
+                new InMemoryExerciseDataAccessObject();
 
         final RecommendationInputBoundary interactor =
                 new RecommendationInteractor(
                         userDataAccessObject,
                         recipeApiDAO,
+                        exerciseDAO,
                         presenter
                 );
 
