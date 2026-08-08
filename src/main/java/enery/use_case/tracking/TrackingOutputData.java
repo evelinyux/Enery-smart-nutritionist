@@ -12,13 +12,13 @@ public final class TrackingOutputData {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private static double caloriesConsumed;
-    private static double caloriesBurned;
+    private final double caloriesConsumed;
+    private final double caloriesBurned;
     private final double netCalories;
 
-    private static double proteinInGrams;
-    private static double carbohydratesInGrams;
-    private static double fatInGrams;
+    private final double proteinInGrams;
+    private final double carbohydratesInGrams;
+    private final double fatInGrams;
     private final double fiberInGrams;
     private final double sugarInGrams;
     private final double sodiumInMilligrams;
@@ -79,11 +79,11 @@ public final class TrackingOutputData {
         return endDate;
     }
 
-    public static double getCaloriesConsumed() {
+    public double getCaloriesConsumed() {
         return caloriesConsumed;
     }
 
-    public static double getCaloriesBurned() {
+    public double getCaloriesBurned() {
         return caloriesBurned;
     }
 
@@ -91,15 +91,15 @@ public final class TrackingOutputData {
         return netCalories;
     }
 
-    public static double getProteinInGrams() {
+    public double getProteinInGrams() {
         return proteinInGrams;
     }
 
-    public static double getCarbohydratesInGrams() {
+    public double getCarbohydratesInGrams() {
         return carbohydratesInGrams;
     }
 
-    public static double getFatInGrams() {
+    public double getFatInGrams() {
         return fatInGrams;
     }
 
