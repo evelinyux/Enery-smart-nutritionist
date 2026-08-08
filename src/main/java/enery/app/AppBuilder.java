@@ -774,8 +774,14 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addHealthAssessmentModule() {
+        enery.use_case.tracking.TrackingDataAccessInterface trackingDAO =
+                new enery.data_access.DailyTrackingDataAccessObject(
+                        mealDataAccessObject,
+                        exerciseDataAccessObject
+                );
+
         enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
-                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
+                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject(trackingDAO);
 
         enery.interface_adapter.health_assessment.HealthAssessmentViewModel healthAssessmentViewModel =
                 new enery.interface_adapter.health_assessment.HealthAssessmentViewModel();
@@ -790,7 +796,11 @@ public final class AppBuilder {
                 new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
 
         enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
-                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller, viewManagerModel);
+                new enery.view.HealthAssessment.HealthAssessmentView(
+                        healthAssessmentViewModel,
+                        controller,
+                        viewManagerModel,
+                        loggedInViewModel);
 
         cardPanel.add(healthAssessmentView,enery.interface_adapter.health_assessment.HealthAssessmentViewModel.VIEW_NAME
         );
@@ -824,10 +834,6 @@ public final class AppBuilder {
         return application;
     }
 
-    private TrackingDataAccessInterface dailyTrackingDataAccessObject;
-    enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
-            new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
-    
     /**
      * Reads a required environment variable.
      *
