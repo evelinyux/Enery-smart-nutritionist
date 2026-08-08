@@ -9,8 +9,8 @@ public class ProgressOutputData {
             double todaysCalories,
             double dailyCalorieGoal,
             double dailyProgressPercent) {
-       this.todaysCalories = todaysCalories;
-       this.dailyCalorieGoal = dailyCalorieGoal;
+        this.todaysCalories = todaysCalories;
+        this.dailyCalorieGoal = dailyCalorieGoal;
         this.dailyProgressPercent = dailyProgressPercent;
     }
 

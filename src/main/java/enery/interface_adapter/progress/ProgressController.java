@@ -7,10 +7,14 @@ public final class ProgressController {
 
     private final ProgressInputBoundary progressInteractor;
 
-    public ProgressController(ProgressInputBoundary progressInteractor){
+    public ProgressController(ProgressInputBoundary progressInteractor) {
         this.progressInteractor = progressInteractor;
     }
 
+    /**
+     * Executes the interactor.
+     * @param username username of the user logged-in.
+     */
     public void execute(String username) {
         final ProgressInputData inputData = new ProgressInputData(username);
 
