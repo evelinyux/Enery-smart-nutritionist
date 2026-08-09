@@ -2,13 +2,13 @@ package enery.use_case.log_meal;
 
 import enery.entity.meal.MealEntry;
 import enery.entity.meal.MealEntryFactory;
+import enery.entity.user.User;
 
 /**
  * Interactor for logging a meal.
  */
 public final class LogMealInteractor
         implements LogMealInputBoundary {
-
     private final LogMealUserDataAccessInterface dataAccessObject;
     private final LogMealOutputBoundary presenter;
     private final MealEntryFactory mealEntryFactory;
@@ -67,6 +67,12 @@ public final class LogMealInteractor
                 inputData.getUsername(),
                 mealEntry
         );
+
+        // --- FIX: Update the User's DailyLog in memory ---
+        final User user = dataAccessObject.get(inputData.getUsername());
+        if (user != null) {
+            user.getDailyLog(inputData.getDate()).addMealEntry(mealEntry);
+        }
 
         presenter.prepareSuccessView(
                 new LogMealOutputData(

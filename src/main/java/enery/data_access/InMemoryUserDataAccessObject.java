@@ -3,8 +3,10 @@ package enery.data_access;
 import java.util.HashMap;
 import java.util.Map;
 
+import enery.entity.meal.MealEntry;
 import enery.entity.user.User;
 import enery.use_case.change_password.ChangePasswordUserDataAccessInterface;
+import enery.use_case.log_meal.LogMealUserDataAccessInterface;
 import enery.use_case.login.LoginUserDataAccessInterface;
 import enery.use_case.forgot_password.ForgotPasswordUserDataAccessInterface;
 import enery.use_case.logout.LogoutUserDataAccessInterface;
@@ -22,7 +24,9 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         ForgotPasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         ProfileUserDataAccessInterface,
-        RecommendationUserDataAccessInterface {
+        RecommendationUserDataAccessInterface,
+        LogMealUserDataAccessInterface
+{
 
     private final Map<String, User> users = new HashMap<>();
 
@@ -56,5 +60,23 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public String getCurrentUsername() {
         return currentUsername;
+    }
+
+    @Override
+    public void saveMeal(String username, MealEntry mealEntry) {
+        final User user = users.get(username);
+        if (user != null && mealEntry != null) {
+            final java.time.LocalDate logDate = mealEntry.getDate();
+            user.getDailyLog(logDate).addMealEntry(mealEntry);
+        }
+    }
+
+    @Override
+    public java.util.List<enery.entity.meal.MealEntry> getMeals(String username, java.time.LocalDate date) {
+        final User user = users.get(username);
+        if (user != null) {
+            return user.getDailyLog(date).getMealEntries();
+        }
+        return java.util.Collections.emptyList();
     }
 }

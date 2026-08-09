@@ -8,16 +8,25 @@ import java.util.List;
 import java.util.Map;
 
 import enery.entity.meal.MealEntry;
+import enery.entity.user.User;
 import enery.use_case.log_meal.LogMealUserDataAccessInterface;
 
 /**
  * Stores meal entries in memory.
  */
 public final class InMemoryMealDataAccessObject
-        implements LogMealUserDataAccessInterface {
+        implements LogMealUserDataAccessInterface
+{
 
     private final Map<String, List<MealEntry>> mealsByUsername =
             new HashMap<>();
+    private final InMemoryUserDataAccessObject userDataAccessObject;
+
+
+
+    public InMemoryMealDataAccessObject(InMemoryUserDataAccessObject userDataAccessObject) {
+        this.userDataAccessObject = userDataAccessObject;
+    }
 
     @Override
     public void saveMeal(
@@ -30,7 +39,13 @@ public final class InMemoryMealDataAccessObject
                         key -> new ArrayList<>()
                 )
                 .add(mealEntry);
+
     }
+    @Override
+    public User get(String username) {
+        return userDataAccessObject.get(username);
+    }
+
 
     @Override
     public List<MealEntry> getMeals(
@@ -54,6 +69,8 @@ public final class InMemoryMealDataAccessObject
                 matchingMeals.add(meal);
             }
         }
+
+
 
         return Collections.unmodifiableList(
                 matchingMeals);
