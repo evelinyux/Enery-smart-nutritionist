@@ -1,6 +1,6 @@
 package enery.use_case.logout;
 
-import enery.data_access.InMemoryUserDataAccessObject;
+import enery.data_access.in_memory.InMemoryUserDataAccessObject;
 import enery.entity.user.CommonUserFactory;
 import enery.entity.user.User;
 import enery.entity.user.UserFactory;

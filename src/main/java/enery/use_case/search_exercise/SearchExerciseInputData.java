@@ -5,26 +5,33 @@ package enery.use_case.search_exercise;
  */
 public final class SearchExerciseInputData {
 
-    private final String activityQuery;
-    private final double weightInPounds;
+    private final String username;
+    private final String exerciseName;
     private final int durationInMinutes;
 
+    /**
+     * Creates input data for an exercise search.
+     *
+     * @param username logged-in username
+     * @param exerciseName exercise search query
+     * @param durationInMinutes exercise duration
+     */
     public SearchExerciseInputData(
-            String activityQuery,
-            double weightInPounds,
+            String username,
+            String exerciseName,
             int durationInMinutes) {
 
-        this.activityQuery = activityQuery;
-        this.weightInPounds = weightInPounds;
+        this.username = username;
+        this.exerciseName = exerciseName;
         this.durationInMinutes = durationInMinutes;
     }
 
-    public String getActivityQuery() {
-        return activityQuery;
+    public String getUsername() {
+        return username;
     }
 
-    public double getWeightInPounds() {
-        return weightInPounds;
+    public String getExerciseName() {
+        return exerciseName;
     }
 
     public int getDurationInMinutes() {

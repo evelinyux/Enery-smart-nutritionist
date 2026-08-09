@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_meal;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model for the log-meal screen.

@@ -1,12 +1,11 @@
 package enery.use_case.log_meal;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.data_access.InMemoryMealDataAccessObject;
+import enery.data_access.in_memory.InMemoryMealDataAccessObject;
 import enery.entity.meal.CommonMealEntryFactory;
 import enery.entity.meal.FoodItem;
 import enery.entity.meal.MealEntry;

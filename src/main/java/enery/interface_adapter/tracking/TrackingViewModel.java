@@ -1,6 +1,6 @@
 package enery.interface_adapter.tracking;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model for the tracking screen.

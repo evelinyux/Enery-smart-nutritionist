@@ -1,6 +1,6 @@
 package enery.interface_adapter.signup;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.login.LoginState;
 import enery.interface_adapter.login.LoginViewModel;
 import enery.use_case.signup.SignupOutputBoundary;

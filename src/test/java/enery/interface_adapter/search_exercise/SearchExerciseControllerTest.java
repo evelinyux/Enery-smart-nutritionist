@@ -21,19 +21,21 @@ class SearchExerciseControllerTest {
                 new SearchExerciseController(interactor);
 
         controller.execute(
+                "test_user",
                 "cycling",
-                160.0,
                 30
         );
 
         assertEquals(
-                "cycling",
-                receivedInput[0].getActivityQuery()
+                "test_user",
+                receivedInput[0].getUsername()
         );
+
         assertEquals(
-                160.0,
-                receivedInput[0].getWeightInPounds()
+                "cycling",
+                receivedInput[0].getExerciseName()
         );
+
         assertEquals(
                 30,
                 receivedInput[0].getDurationInMinutes()

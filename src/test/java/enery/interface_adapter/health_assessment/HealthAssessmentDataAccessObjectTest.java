@@ -1,6 +1,7 @@
 package enery.interface_adapter.health_assessment;
 
 import enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject;
+import enery.entity.exercise.ExerciseEntry;
 import enery.entity.meal.MealEntry;
 import enery.use_case.tracking.TrackingDataAccessInterface;
 import enery.use_case.tracking.TrackingOutputData;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -43,10 +45,17 @@ public class HealthAssessmentDataAccessObjectTest {
         when(meal2.getTotalCarbohydratesInGrams()).thenReturn(30.0);
         when(meal2.getTotalFatInGrams()).thenReturn(5.0);
 
+        ExerciseEntry exercise = mock(ExerciseEntry.class);
+        when(exercise.getCaloriesBurned()).thenReturn(200.0);
 
-        when(mockTrackingDAO.getMeals(userId, start, end)).thenReturn(Arrays.asList(meal1, meal2));
+        when(mockTrackingDAO.getMeals(userId, start, end))
+                .thenReturn(Arrays.asList(meal1, meal2));
 
-        TrackingOutputData result = healthDAO.getTrackingData(userId, start, end);
+        when(mockTrackingDAO.getExercises(userId, start, end))
+                .thenReturn(List.of(exercise));
+
+        TrackingOutputData result =
+                healthDAO.getTrackingData(userId, start, end);
 
         assertEquals(800.0, result.getCaloriesConsumed());
         assertEquals(200.0, result.getCaloriesBurned());

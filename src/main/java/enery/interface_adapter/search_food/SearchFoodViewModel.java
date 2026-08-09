@@ -1,6 +1,6 @@
 package enery.interface_adapter.search_food;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model shared by views that perform food searches.

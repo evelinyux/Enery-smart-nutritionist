@@ -1,6 +1,6 @@
 package enery.interface_adapter.progress;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.use_case.progress.ProgressOutputBoundary;
 import enery.use_case.progress.ProgressOutputData;
 

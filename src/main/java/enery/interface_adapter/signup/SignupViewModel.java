@@ -1,6 +1,6 @@
 package enery.interface_adapter.signup;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * The ViewModel for the Signup View.

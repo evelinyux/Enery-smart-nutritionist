@@ -1,23 +1,32 @@
 package enery.interface_adapter.change_password;
 
 /**
- * The State information representing the logged-in user.
+ * State representing the currently logged-in user.
  */
 public class LoggedInState {
-    private String username = "";
 
+    private String username = "";
     private String password = "";
     private String passwordError;
+    private boolean profileComplete;
 
-    public LoggedInState(LoggedInState copy) {
-        username = copy.username;
-        password = copy.password;
-        passwordError = copy.passwordError;
+    /**
+     * Creates an empty logged-in state.
+     */
+    public LoggedInState() {
+        // Default constructor.
     }
 
-    // Because of the previous copy constructor, the default constructor must be explicit.
-    public LoggedInState() {
-
+    /**
+     * Creates a copy of another logged-in state.
+     *
+     * @param copy the state to copy
+     */
+    public LoggedInState(LoggedInState copy) {
+        this.username = copy.username;
+        this.password = copy.password;
+        this.passwordError = copy.passwordError;
+        this.profileComplete = copy.profileComplete;
     }
 
     public String getUsername() {
@@ -28,16 +37,39 @@ public class LoggedInState {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordError() {
+        return passwordError;
     }
 
     public void setPasswordError(String passwordError) {
         this.passwordError = passwordError;
     }
 
-    public String getPassword() {
-        return password;
+    /**
+     * Returns whether the logged-in user has completed
+     * their profile.
+     *
+     * @return true if the profile exists
+     */
+    public boolean isProfileComplete() {
+        return profileComplete;
+    }
+
+    /**
+     * Sets whether the logged-in user has completed
+     * their profile.
+     *
+     * @param profileComplete profile completion status
+     */
+    public void setProfileComplete(boolean profileComplete) {
+        this.profileComplete = profileComplete;
     }
 }
-
