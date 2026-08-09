@@ -1,7 +1,7 @@
 package enery.use_case.progress;
 
 /**
- * Input boundary for logging a meal.
+ * Input boundary for tracking daily progress.
  */
 public interface ProgressInputBoundary {
 
