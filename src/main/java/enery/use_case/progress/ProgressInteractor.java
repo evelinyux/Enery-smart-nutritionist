@@ -33,11 +33,23 @@ public final class ProgressInteractor implements ProgressInputBoundary {
             return;
         }
 
-        double dailyProgressPercent = calculateDailyProgressPercent(todaysCalories, dailyCalorieGoal);
+        final double dailyProgressPercent = calculateDailyProgressPercent(todaysCalories, dailyCalorieGoal);
 
         final double todaysProtein = dataAccessObject.getTodaysProtein(username);
         final double todaysCarbohydrates = dataAccessObject.getTodaysCarbohydrates(username);
         final double todaysFats = dataAccessObject.getTodaysFats(username);
+
+        final double totalCalorieGoal = dataAccessObject.getTotalCalorieGoal(username);
+        final double totalCalorieConsumed = dataAccessObject.getTotalCaloriesConsumed(username);
+
+        if (totalCalorieGoal == 0) {
+            presenter.prepareFailView("Plan Calorie Goal is 0.");
+            return;
+        }
+
+        final double totalProgressPercent = totalCalorieConsumed / totalCalorieGoal;
+
+        final int daysSoFar = dataAccessObject.getDaysSoFar(username);
 
         presenter.prepareSuccessView(new ProgressOutputData(
                 todaysCalories,
@@ -45,7 +57,11 @@ public final class ProgressInteractor implements ProgressInputBoundary {
                 dailyProgressPercent,
                 todaysProtein,
                 todaysCarbohydrates,
-                todaysFats));
+                todaysFats,
+                totalCalorieGoal,
+                totalCalorieConsumed,
+                totalProgressPercent,
+                daysSoFar));
     }
 
     private double calculateDailyProgressPercent(double todaysCalories, double calorieGoal) {
