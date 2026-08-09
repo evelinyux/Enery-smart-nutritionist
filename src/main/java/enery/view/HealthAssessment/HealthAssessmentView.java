@@ -1,12 +1,12 @@
 package enery.view.HealthAssessment;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.health_assessment.HealthAssessmentController;
 import enery.interface_adapter.health_assessment.HealthAssessmentState;
 import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
 import enery.use_case.tracking.TrackingOutputData;
 import enery.interface_adapter.change_password.LoggedInViewModel;
-import enery.view.HomeView;
+import enery.view.home.HomeView;
 
 import javax.swing.*;
 import java.awt.*;

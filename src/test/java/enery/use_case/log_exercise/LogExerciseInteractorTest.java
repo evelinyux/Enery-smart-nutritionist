@@ -1,12 +1,11 @@
 package enery.use_case.log_exercise;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import enery.data_access.InMemoryExerciseDataAccessObject;
+import enery.data_access.in_memory.InMemoryExerciseDataAccessObject;
 import enery.entity.exercise.CommonExerciseEntryFactory;
 import enery.entity.exercise.ExerciseEntry;
 import enery.entity.exercise.ExerciseEntryFactory;

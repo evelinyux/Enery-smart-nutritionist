@@ -1,6 +1,6 @@
 package enery.interface_adapter.profile;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View Model for the Profile View.

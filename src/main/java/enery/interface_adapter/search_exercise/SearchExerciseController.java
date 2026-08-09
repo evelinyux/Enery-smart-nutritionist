@@ -16,15 +16,22 @@ public final class SearchExerciseController {
         this.interactor = interactor;
     }
 
+    /**
+     * Executes an exercise search.
+     *
+     * @param username logged-in username
+     * @param activityQuery exercise name/query
+     * @param durationInMinutes exercise duration
+     */
     public void execute(
+            String username,
             String activityQuery,
-            double weightInPounds,
             int durationInMinutes) {
 
         final SearchExerciseInputData inputData =
                 new SearchExerciseInputData(
+                        username,
                         activityQuery,
-                        weightInPounds,
                         durationInMinutes
                 );
 

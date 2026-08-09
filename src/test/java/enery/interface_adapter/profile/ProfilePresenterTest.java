@@ -5,7 +5,7 @@ import enery.entity.user.HealthGoal;
 import enery.entity.user.Sex;
 import enery.entity.user.UserProfile;
 import enery.entity.user.WeightGoalPlan;
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.use_case.profile.ProfileOutputData;
 import org.junit.jupiter.api.Test;
 

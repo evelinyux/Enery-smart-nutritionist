@@ -1,6 +1,6 @@
 package enery.interface_adapter.search_exercise;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model for the exercise-search screen.

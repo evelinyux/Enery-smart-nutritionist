@@ -1,6 +1,6 @@
 package enery.interface_adapter.login;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * The View Model for the Login View.
