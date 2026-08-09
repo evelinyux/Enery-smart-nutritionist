@@ -1,6 +1,6 @@
 package enery.view.tracking;
 
-import java.awt.Component;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -25,6 +25,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     private static final double TENTHS_ROUNDING_FACTOR = 10.0;
     private static final int SMALL_GAP = 5;
     private static final int MEDIUM_GAP = 10;
+    private static final Dimension PROGRESS_BAR_SIZE = new Dimension(250, 20);
 
     private final ProgressViewModel progressViewModel;
     private final ViewManagerModel viewManagerModel;
@@ -71,6 +72,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
 
         dailyProgressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         dailyProgressBar.setValue(0);
+        dailyProgressBar.setMaximumSize(PROGRESS_BAR_SIZE);
         dailyProgressBar.setStringPainted(true);
         dailyProgressBar.setVisible(false);
 
@@ -215,6 +217,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         recommendationButton.setVisible(dailyProgressPercent < 1);
 
         nutrientsLabel.setText(formatNutrientsLabel());
+        nutrientsLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, nutrientsLabel.getPreferredSize().height));
         nutrientsLabel.setVisible(true);
 
         if (progressViewModel.getState().getProgressError() == null) {
