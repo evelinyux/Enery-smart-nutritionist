@@ -1,20 +1,16 @@
 package enery.view.tracking;
 
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.*;
 
 import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.progress.ProgressController;
 import enery.interface_adapter.progress.ProgressViewModel;
+import enery.data_access.HealthAssessment_database.NutrientStandards;
 import enery.view.home.HomeView;
 
 /**
@@ -25,6 +21,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     private static final double PERCENTAGE_FACTOR = 100.0;
     private static final double TENTHS_ROUNDING_FACTOR = 10.0;
     private static final int SMALL_GAP = 5;
+    private static final int MEDIUM_GAP = 10;
 
     private final ProgressViewModel progressViewModel;
     private final ViewManagerModel viewManagerModel;
@@ -38,6 +35,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     private final JLabel recommendationLabel = new JLabel(
             "We can recommend you a meal to help you reach your goal.");
     private final JButton recommendationButton = new JButton("Recommend a meal");
+    private final JTextArea nutrientsLabel = new JTextArea();
     private final JButton recalculateButton = new JButton("Recalculate Daily Goal");
     private final JButton backButton = new JButton("Home");
     private final JLabel statusLabel = new JLabel();
@@ -59,30 +57,38 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     }
 
     private void configureView() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        dailyProgressLabel.setText(formatDailyProgressLabel(0.0));
+        updateProgressButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        final JPanel contents = new JPanel(new GridLayout(0, 1, 5, 5));
-
+        dailyProgressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         dailyProgressLabel.setVisible(false);
 
+        dailyProgressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         dailyProgressBar.setValue(0);
         dailyProgressBar.setStringPainted(true);
         dailyProgressBar.setVisible(false);
 
+        recommendationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         recommendationLabel.setVisible(false);
 
+        recommendationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         recommendationButton.setVisible(false);
 
-        contents.add(updateProgressButton);
-        contents.add(dailyProgressLabel);
-        contents.add(dailyProgressBar);
-        contents.add(recommendationLabel);
-        contents.add(recommendationButton);
-        contents.add(backButton);
-        contents.add(statusLabel);
+        nutrientsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nutrientsLabel.setLineWrap(true);
+        nutrientsLabel.setWrapStyleWord(true);
+        nutrientsLabel.setEditable(false);
+        nutrientsLabel.setOpaque(false);
+        nutrientsLabel.setFocusable(false);
+        nutrientsLabel.setVisible(false);
+        nutrientsLabel.setFont(UIManager.getFont("Label.font"));
+
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         updateProgressButton.addActionListener(event -> {
             updateProgress();
@@ -102,13 +108,29 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         });
 
         add(title);
+        add(Box.createVerticalStrut(MEDIUM_GAP));
+        add(updateProgressButton);
         add(Box.createVerticalStrut(SMALL_GAP));
-        add(contents);
+        add(dailyProgressLabel);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(dailyProgressBar);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(recommendationLabel);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(recommendationButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(nutrientsLabel);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(backButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(statusLabel);
     }
 
-    private String formatDailyProgressLabel(Double dailyProgressPercent) {
+    private String formatDailyProgressLabel() {
         final double todaysCalories = progressViewModel.getState().getTodaysCalories();
         final double dailyCalorieGoal = progressViewModel.getState().getDailyCalorieGoal();
+
+        final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
 
         String label = "";
 
@@ -129,14 +151,35 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         return label;
     }
 
+    private String formatNutrientsLabel() {
+        NutrientStandards standards = new NutrientStandards();
+
+        double protein = progressViewModel.getState().getTodaysProtein();
+        double carbohydrates = progressViewModel.getState().getTodaysCarboydrates();
+        double fats = progressViewModel.getState().getTodaysFats();
+
+        return "Here is a summary of your nutrient intake for today:\nProtein: "
+                + protein
+                + "g / "
+                + standards.getProteinInGrams()
+                + "g.\nCarbohydrates: "
+                + carbohydrates
+                + "g / "
+                + standards.getCarbohydratesInGrams()
+                + "g.\nFats: "
+                + fats
+                + "g / "
+                + standards.getFatInGrams()
+                + "g.";
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("error") && evt.getSource().equals(progressViewModel)) {
             statusLabel.setText(progressViewModel.getState().getProgressError());
         }
         else if (evt.getPropertyName().equals("data") && evt.getSource().equals(progressViewModel)) {
-            final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
-            updateProgressUi(dailyProgressPercent);
+            updateProgressUi();
         }
     }
 
@@ -153,8 +196,10 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         }
     }
 
-    private void updateProgressUi(double dailyProgressPercent) {
-        dailyProgressLabel.setText(formatDailyProgressLabel(dailyProgressPercent));
+    private void updateProgressUi() {
+        final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
+
+        dailyProgressLabel.setText(formatDailyProgressLabel());
         dailyProgressLabel.setVisible(true);
 
         dailyProgressBar.setValue((int) (dailyProgressPercent * PERCENTAGE_FACTOR));
@@ -162,6 +207,13 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
 
         recommendationLabel.setVisible(dailyProgressPercent < 1);
         recommendationButton.setVisible(dailyProgressPercent < 1);
+
+        nutrientsLabel.setText(formatNutrientsLabel());
+        nutrientsLabel.setVisible(true);
+
+        if (progressViewModel.getState().getProgressError() == null) {
+            statusLabel.setText("");
+        }
     }
 
     public String getViewName() {

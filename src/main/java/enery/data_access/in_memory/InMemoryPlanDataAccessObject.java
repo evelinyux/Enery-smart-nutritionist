@@ -29,10 +29,14 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
         return user.getUserProfile();
     }
 
+    private List<MealEntry> getMealEntries() {
+        final String username = userDataAccessObject.getCurrentUsername();
+        return mealDataAccessObject.getMeals(username, LocalDate.now());
+    }
+
     @Override
     public double getTodaysCalories() {
-        final String username = userDataAccessObject.getCurrentUsername();
-        final List<MealEntry> meals = mealDataAccessObject.getMeals(username, LocalDate.now());
+        final List<MealEntry> meals = getMealEntries();
 
         double calories = 0.0;
 
@@ -48,5 +52,44 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
         final UserProfile userProfile = getUserProfile();
         final WeightGoalPlan weightGoalPlan = userProfile.getActivePlan();
         return weightGoalPlan.getCurrentDailyCalorieGoal();
+    }
+
+    @Override
+    public double getTodaysProtein() {
+        final List<MealEntry> meals = getMealEntries();
+
+        double protein = 0.0;
+
+        for (MealEntry meal : meals) {
+            protein += meal.getTotalProteinInGrams();
+        }
+
+        return protein;
+    }
+
+    @Override
+    public double getTodaysCarbohydrates() {
+        final List<MealEntry> meals = getMealEntries();
+
+        double carbohydrates = 0.0;
+
+        for (MealEntry meal : meals) {
+            carbohydrates  += meal.getTotalCarbohydratesInGrams();
+        }
+
+        return carbohydrates;
+    }
+
+    @Override
+    public double getTodaysFats() {
+        final List<MealEntry> meals = getMealEntries();
+
+        double fats = 0.0;
+
+        for (MealEntry meal : meals) {
+            fats += meal.getTotalFatInGrams();
+        }
+
+        return fats;
     }
 }

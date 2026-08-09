@@ -33,7 +33,17 @@ public final class ProgressInteractor implements ProgressInputBoundary {
 
         double dailyProgressPercent = calculateDailyProgressPercent(todaysCalories, dailyCalorieGoal);
 
-        presenter.prepareSuccessView(new ProgressOutputData(todaysCalories, dailyCalorieGoal, dailyProgressPercent));
+        final double todaysProtein = dataAccessObject.getTodaysProtein();
+        final double todaysCarbohydrates = dataAccessObject.getTodaysCarbohydrates();
+        final double todaysFats = dataAccessObject.getTodaysFats();
+
+        presenter.prepareSuccessView(new ProgressOutputData(
+                todaysCalories,
+                dailyCalorieGoal,
+                dailyProgressPercent,
+                todaysProtein,
+                todaysCarbohydrates,
+                todaysFats));
     }
 
     private double calculateDailyProgressPercent(double todaysCalories, double calorieGoal) {

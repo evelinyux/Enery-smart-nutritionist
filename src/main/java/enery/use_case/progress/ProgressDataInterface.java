@@ -21,4 +21,10 @@ public interface ProgressDataInterface {
      * @return the daily calorie goal.
      */
     double getDailyCalorieGoal();
+
+    double getTodaysProtein();
+
+    double getTodaysCarbohydrates();
+
+    double getTodaysFats();
 }
