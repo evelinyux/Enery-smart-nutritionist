@@ -70,9 +70,8 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
         }
     }
 
-
     /**
-     * Overloaded helper method to fetch recipes with full calorie and macro range constraints.
+     * Helper method to fetch recipes with full calorie and macro range constraints.
      */
     public List<Recipe> fetchCandidateRecipes(double remainingCalories,
                                               double remainingProteins,
@@ -91,41 +90,30 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
             final StringBuilder urlBuilder = new StringBuilder(BASE_URL);
             urlBuilder.append("?");
 
-            // Set maximum calories for the meal recommendation
             urlBuilder.append("max_calories=").append(remainingCalories);
-
             urlBuilder.append("&max_protein=").append(remainingProteins);
-
             urlBuilder.append("&max_carbs=").append(remainingCarbs);
-
             urlBuilder.append("&max_fat=").append(remainingFats);
 
-//            // Add comma-separated dietary flags if present
-//            if (dietaryRestrictions != null && !dietaryRestrictions.isEmpty()) {
-//                final String flags = String.join(",", dietaryRestrictions);
-//                urlBuilder.append("&dietary=").append(URLEncoder.encode(flags, StandardCharsets.UTF_8));
-//            }
-            // Add comma-separated dietary flags if present
             if (dietaryRestrictions != null && !dietaryRestrictions.isEmpty()) {
                 final List<String> formattedFlags = dietaryRestrictions.stream()
                         .map(String::trim)
                         .filter(s -> !s.isBlank())
-                        .map(s -> s.replace(" ", "-")) // "Gluten Free" -> "Gluten-Free"
+                        .map(s -> s.replace(" ", "-"))
                         .toList();
 
                 if (!formattedFlags.isEmpty()) {
-                    final String flags = String.join(",", formattedFlags); // Joins with a clean literal comma
+                    final String flags = String.join(",", formattedFlags);
                     urlBuilder.append("&dietary=").append(flags);
                 }
             }
 
-            // Append page size limit to query parameters
             urlBuilder.append("&per_page=7");
             final String finalUrl = urlBuilder.toString();
             System.out.println("[DEBUG RecipeDAO] Built Request URL: " + finalUrl);
 
             final HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(urlBuilder.toString()))
+                    .uri(URI.create(finalUrl))
                     .header("X-API-Key", apiKey)
                     .header("Accept", "application/json")
                     .GET()
@@ -135,121 +123,25 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
 
             final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-//            if (response.statusCode() == 200) {
-//                final JSONObject jsonResponse = new JSONObject(response.body());
-////                final JSONArray recipeList = jsonResponse.optJSONArray("data");
-//                //re[lace ^ with belwo
-//                JSONArray recipeList = jsonResponse.optJSONArray("data");
-//                if (recipeList == null) {
-//                    recipeList = jsonResponse.optJSONArray("results");
-//                }
-//                if (recipeList == null) {
-//                    recipeList = jsonResponse.optJSONArray("recipes");
-//                }
-//                // instead ^^
-//
-//                if (recipeList != null) {
-//                    for (int i = 0; i < recipeList.length(); i++) {
-//                        final JSONObject item = recipeList.getJSONObject(i);
-//
-//                        final String id = item.optString("id", "r_" + i);
-//                        final String name = item.optString("name", "Unnamed Recipe");
-//                        final String description = item.optString("description", "");
-//
-//                        // Extract Nutrition
-//                        double calories = 0.0;
-//                        double protein = 0.0;
-//                        double sugar = 0.0;
-//                        double carbs = 0.0;
-//                        double fat = 0.0;
             if (response.statusCode() == 200) {
                 final JSONObject jsonResponse = new JSONObject(response.body());
                 final JSONArray recipeList = jsonResponse.optJSONArray("data");
                 System.out.println("[DEBUG RecipeDAO] JSON Keys in response: " + jsonResponse.keySet());
 
                 if (recipeList != null) {
-                    System.out.println("[DEBUG RecipeDAO] Extracted Recipe List Size: "
-                            + (recipeList != null ? recipeList.length() : "NULL"));
+                    System.out.println("[DEBUG RecipeDAO] Extracted Recipe List Size: " + recipeList.length());
+
                     for (int i = 0; i < recipeList.length(); i++) {
                         final JSONObject item = recipeList.getJSONObject(i);
+                        final String id = item.optString("id", "");
 
-                        final String id = item.optString("id", "r_" + i);
-                        final String name = item.optString("name", "Unnamed Recipe");
-                        final String description = item.optString("description", "");
-
-                        // Extract Nutrition Summary returned by GET /api/v1/recipes
-                        double calories = 0.0;
-                        double protein = 0.0;
-                        double sugar = 0.0;
-                        double carbs = 0.0;
-                        double fat = 0.0;
-
-                        final JSONObject summary = item.optJSONObject("nutrition_summary");
-                        if (summary != null) {
-                            calories = summary.optDouble("calories", 0.0);
-                            protein = summary.optDouble("protein_g", 0.0);
-                            carbs = summary.optDouble("carbohydrates_g", 0.0);
-                            fat = summary.optDouble("fat_g", 0.0);
-                        }
-
-                        final JSONObject nutrition = item.optJSONObject("nutrition");
-                        if (nutrition != null) {
-                            final JSONObject perServing = nutrition.optJSONObject("per_serving");
-                            if (perServing != null) {
-                                calories = perServing.optDouble("calories", 0.0);
-                                protein = perServing.optDouble("protein", perServing.optDouble("protein_g", 0.0));
-                                sugar = perServing.optDouble("sugar", perServing.optDouble("sugar_g", 0.0));
-                                carbs = perServing.optDouble("carbohydrates", perServing.optDouble("carbs_g", 0.0));
-                                fat = perServing.optDouble("fat", perServing.optDouble("fat_g", 0.0));
+                        if (!id.isBlank()) {
+                            // --- Clean Architecture: Fetch complete details via getRecipeById ---
+                            Recipe fullRecipe = getRecipeById(id);
+                            if (fullRecipe != null) {
+                                recipes.add(fullRecipe);
                             }
                         }
-
-                        // Extract Ingredients
-                        final List<String> ingredients = new ArrayList<>();
-                        final JSONArray ingredientArray = item.optJSONArray("ingredients");
-                        if (ingredientArray != null) {
-                            for (int j = 0; j < ingredientArray.length(); j++) {
-                                Object ingObj = ingredientArray.get(j);
-                                if (ingObj instanceof JSONObject) {
-                                    JSONObject ingJson = (JSONObject) ingObj;
-                                    JSONArray items = ingJson.optJSONArray("items");
-                                    if (items != null) {
-                                        for (int k = 0; k < items.length(); k++) {
-                                            ingredients.add(items.getJSONObject(k).optString("name", ""));
-                                        }
-                                    } else {
-                                        ingredients.add(ingJson.optString("name", ""));
-                                    }
-                                } else if (ingObj instanceof String) {
-                                    ingredients.add((String) ingObj);
-                                }
-                            }
-                        }
-
-                        // Extract Instructions
-                        StringBuilder instructionsBuilder = new StringBuilder();
-                        final JSONArray instructionsArray = item.optJSONArray("instructions");
-                        if (instructionsArray != null) {
-                            for (int j = 0; j < instructionsArray.length(); j++) {
-                                Object step = instructionsArray.get(j);
-                                if (step instanceof JSONObject) {
-                                    instructionsBuilder.append(j + 1).append(". ")
-                                            .append(((JSONObject) step).optString("text", ""))
-                                            .append("\n");
-                                } else {
-                                    instructionsBuilder.append(j + 1).append(". ")
-                                            .append(step.toString())
-                                            .append("\n");
-                                }
-                            }
-                        }
-                        final String instructions = instructionsBuilder.toString();
-                        final String sourceUrl = "https://recipe-api.com/recipes/" + id;
-
-                        recipes.add(new Recipe(
-                                id, name, calories, protein, sugar, carbs, fat,
-                                ingredients, sourceUrl, description, instructions
-                        ));
                     }
                 }
             } else {
@@ -260,8 +152,126 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
             System.err.println("[DEBUG RecipeDAO] EXCEPTION caught during API call:");
             e.printStackTrace();
         }
+
         System.out.println("[DEBUG RecipeDAO] Returning " + recipes.size() + " recipes to caller.");
         return recipes;
     }
 
+    /**
+     * Fetches full details for a recipe by ID and returns a fully populated Recipe entity.
+     */
+    public Recipe getRecipeById(String recipeId) {
+        try {
+            final String detailUrl = BASE_URL + "/" + recipeId;
+            final HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(detailUrl))
+                    .header("X-API-Key", apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                final JSONObject json = new JSONObject(response.body());
+                final JSONObject item = json.optJSONObject("data") != null ? json.optJSONObject("data") : json;
+
+                System.out.println("[DEBUG RecipeDAO] GET BY ID Response Code: " + response.statusCode());
+                System.out.println("[DEBUG RecipeDAO] Raw Detail JSON Payload:\n" + response.body());
+
+                final String id = item.optString("id", recipeId);
+                final String name = item.optString("name", "Unnamed Recipe");
+                final String description = item.optString("description", "");
+
+                // Extract Nutrition
+                double calories = 0.0, protein = 0.0, sugar = 0.0, carbs = 0.0, fat = 0.0;
+                final JSONObject summary = item.optJSONObject("nutrition_summary");
+                if (summary != null) {
+                    calories = summary.optDouble("calories", 0.0);
+                    protein = summary.optDouble("protein_g", 0.0);
+                    carbs = summary.optDouble("carbohydrates_g", 0.0);
+                    fat = summary.optDouble("fat_g", 0.0);
+                }
+
+                // Extract Ingredients with Quantity & Unit
+                final List<String> ingredients = new ArrayList<>();
+                final JSONArray ingredientGroups = item.optJSONArray("ingredients");
+                if (ingredientGroups != null) {
+                    for (int j = 0; j < ingredientGroups.length(); j++) {
+                        JSONObject group = ingredientGroups.optJSONObject(j);
+                        if (group != null) {
+                            JSONArray items = group.optJSONArray("items");
+                            if (items != null) {
+                                for (int k = 0; k < items.length(); k++) {
+                                    JSONObject ingObj = items.optJSONObject(k);
+                                    if (ingObj != null) {
+                                        String ingName = ingObj.optString("name", "");
+                                        double qty = ingObj.optDouble("quantity", 0.0);
+                                        String unit = ingObj.optString("unit", "");
+                                        String prep = ingObj.optString("preparation", "");
+
+                                        StringBuilder line = new StringBuilder();
+
+                                        // Append quantity if present
+                                        if (qty > 0) {
+                                            if (qty == (int) qty) {
+                                                line.append((int) qty).append(" ");
+                                            } else {
+                                                line.append(qty).append(" ");
+                                            }
+                                        }
+
+                                        // Append unit if present
+                                        if (unit != null && !unit.isBlank() && !"null".equalsIgnoreCase(unit)) {
+                                            line.append(unit).append(" ");
+                                        }
+
+                                        // Append ingredient name
+                                        line.append(ingName);
+
+                                        // Append preparation note (e.g. "rinsed and drained")
+                                        if (prep != null && !prep.isBlank() && !"null".equalsIgnoreCase(prep)) {
+                                            line.append(" (").append(prep).append(")");
+                                        }
+
+                                        if (!line.toString().isBlank()) {
+                                            ingredients.add(line.toString());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Extract Instructions
+                StringBuilder instructionsBuilder = new StringBuilder();
+                final JSONArray instructionsArray = item.optJSONArray("instructions");
+                if (instructionsArray != null) {
+                    for (int j = 0; j < instructionsArray.length(); j++) {
+                        JSONObject stepObj = instructionsArray.optJSONObject(j);
+                        if (stepObj != null) {
+                            int stepNum = stepObj.optInt("step_number", j + 1);
+                            String stepText = stepObj.optString("text", "");
+                            if (!stepText.isBlank()) {
+                                instructionsBuilder.append(stepNum).append(". ").append(stepText).append("\n");
+                            }
+                        }
+                    }
+                }
+
+                final String instructions = instructionsBuilder.toString().trim();
+                final String sourceUrl = "https://recipe-api.com/recipes/" + id;
+
+                return new Recipe(
+                        id, name, calories, protein, sugar, carbs, fat,
+                        ingredients, sourceUrl, description, instructions
+                );
+            }
+        } catch (Exception e) {
+            System.err.println("[DEBUG RecipeDAO] Exception in getRecipeById:");
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
