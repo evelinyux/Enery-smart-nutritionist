@@ -145,6 +145,8 @@ import java.util.List;
 
 
 public class RecommendationView extends JPanel implements PropertyChangeListener {
+
+
     private final LoggedInViewModel loggedInViewModel;
     public static final String VIEW_NAME = "recommendation";
     private final RecommendationViewModel viewModel;
@@ -187,7 +189,10 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
                 System.out.println("[DEBUG RecView] View shown on screen via CardLayout.");
-                fetchRecommendations();
+                RecommendationState state = viewModel.getState();
+                if (state == null || state.getRecommendedRecipes() == null || state.getRecommendedRecipes().isEmpty() || viewModel.isStale()) {
+                    fetchRecommendations();
+                }
             }
         });
 
@@ -234,6 +239,7 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
         System.out.println("[DEBUG RecView] Updating view UI components from state.");
         // --- Populate Recipes (as clickable links to RecipeView) ---
         recipesPanel.removeAll();
+        workoutsPanel.removeAll();
         List<Recipe> recipes = state.getRecommendedRecipes();
 
         if (recipes == null || recipes.isEmpty()) {
@@ -241,22 +247,7 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
             recipesPanel.add(new JLabel("No recipe recommendations available."));
         } else {
             System.out.println("Rendering " + recipes.size() + " recipes.");
-//            for (int i = 0; i < Math.min(3, recipes.size()); i++) {
-//                Recipe recipe = recipes.get(i);
-//
-//                JButton linkButton = new JButton("<html><a href=''>" + recipe.getName() + "</a></html>");
-//                linkButton.setHorizontalAlignment(SwingConstants.LEFT);
-//                linkButton.setBorderPainted(false);
-//                linkButton.setOpaque(false);
-//                linkButton.setBackground(Color.WHITE);
-//                linkButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//                // Click action: populate RecipeState and switch screen
-//                linkButton.addActionListener(e -> {
-//                    recipePresenter.prepareRecipeView(recipe);
-////                    cardLayout.show(viewsPanel, RecipeViewModel.VIEW_NAME);
-//                    switchView(RecipeViewModel.VIEW_NAME);
-//                });
+
             for (int i = 0; i < Math.min(3, recipes.size()); i++) {
                 Recipe recipe = recipes.get(i);
 
@@ -301,27 +292,12 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
                 workoutsPanel.add(workoutLabel);
             }
         }
-
         recipesPanel.revalidate();
         recipesPanel.repaint();
         workoutsPanel.revalidate();
         workoutsPanel.repaint();
     }
 
-    //    @Override
-//    public void propertyChange(PropertyChangeEvent evt) {
-//        if ("state".equals(evt.getPropertyName())) {
-//            if (evt.getSource() == viewModel) {
-//                RecommendationState state = (RecommendationState) evt.getNewValue();
-//
-//                if (state.getRecommendationError() != null) {
-//                    JOptionPane.showMessageDialog(this, state.getRecommendationError(), "Error", JOptionPane.ERROR_MESSAGE);
-//                    return;
-//                }
-//                updateViewFromState(state);
-//            }
-//        }
-//    }
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         System.out.println("[DEBUG RecView] PropertyChangeEvent received: propertyName="
@@ -337,9 +313,17 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
                 }
 
                 updateViewFromState(state);
+                // If successful state update received then update stale flag
+                viewModel.setStale(false);
+
+
             } else if (evt.getSource() == loggedInViewModel) {
-                fetchRecommendations();
-                System.out.println("fetching recommendations in propertyChange");
+                RecommendationState state = viewModel.getState();
+                if (state == null || state.getRecommendedRecipes() == null || state.getRecommendedRecipes().isEmpty()) {
+                    System.out.println("fetching recommendations in propertyChane");
+                    fetchRecommendations();
+                }
+
             }
         }
     }
@@ -350,30 +334,15 @@ public class RecommendationView extends JPanel implements PropertyChangeListener
 
         System.out.println("[DEBUG RecView] fetchRecommendations() invoked.");
         if (recommendationController != null&& loggedInViewModel != null) {
-            System.out.println("[DEBUG RecView] FAIL: recommendationController is null!");
             LoggedInState state = loggedInViewModel.getState();
             if (state != null && state.getUsername() != null && !state.getUsername().isBlank()) {
-                System.out.println("[DEBUG RecView] FAIL: loggedInViewModel is null!");
                 recommendationController.execute(state.getUsername());
             }
         }
-    }//    /**
-    //     * Triggers recommendation execution for the currently logged in user.
-//     */
-//    public void fetchRecommendations() {
-//        if (recommendationController != null && loggedInViewModel != null) {
-//            LoggedInState state = loggedInViewModel.getState();
-//            if (state != null && state.getUsername() != null) {
-//                recommendationController.execute(state.getUsername());
-//            }
-//        }
-//    }
-//    public void setRecommendationController(RecommendationController recommendationController) {
-//        this.recommendationController = recommendationController;
-//        fetchRecommendations();
-//    }
+    }
     public void setRecommendationController(RecommendationController recommendationController) {
         this.recommendationController = recommendationController;
         System.out.println("[DEBUG RecView] setRecommendationController() invoked.");
     }
+
 }

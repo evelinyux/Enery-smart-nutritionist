@@ -61,6 +61,8 @@ import java.beans.PropertyChangeSupport;
  * Manages the RecommendationState and notifies observers (Views) when state updates occur.
  */
 public class RecommendationViewModel {
+    // Track whether recommendations need to be re-fetched
+    private boolean isStale = true;
 
     public static final String VIEW_NAME = "recommendation";
     public static final String TITLE_LABEL = "Daily Recommendations View";
@@ -103,5 +105,19 @@ public class RecommendationViewModel {
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         support.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * If the daiyLog was updated with a new meal, the recipe APi
+     * should be called again to generate updated recipes based on the remainign calorie and nutrient restrictions left for that day
+     * @return True if dailyLog was updated, false otherwise
+     */
+
+    public boolean isStale() {
+        return isStale;
+    }
+
+    public void setStale(boolean stale) {
+        this.isStale = stale;
     }
 }

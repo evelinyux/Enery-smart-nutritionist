@@ -102,6 +102,7 @@
 //    }
 package enery.use_case.recommendation;
 
+import enery.entity.meal.MealEntry;
 import enery.entity.tracking.DailyLog;
 import enery.entity.exercise.ExerciseSearchResult;
 import enery.entity.user.NutritionGoal;
@@ -110,8 +111,10 @@ import enery.entity.user.User;
 import enery.entity.user.UserProfile;
 import enery.entity.user.WeightGoalPlan;
 import enery.entity.user.HealthGoal;
+import enery.use_case.log_meal.LogMealUserDataAccessInterface;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -122,19 +125,22 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
     private final RecommendationRecipeDataAccessInterface recipeDataAccess;
     private final RecommendationExerciseDataAccessInterface exerciseDataAccess;
     private final RecommendationOutputBoundary presenter;
+    private final LogMealUserDataAccessInterface mealDataAccess; // For the time being
 
 
     public RecommendationInteractor(
             RecommendationUserDataAccessInterface userDataAccess,
             RecommendationRecipeDataAccessInterface recipeDataAccess,
             RecommendationExerciseDataAccessInterface exerciseDataAccess,
-            //Only takes in  int targetCalories, List<String> dietaryRestrictions when I want to aslo pass nutrient amounts to API
-            RecommendationOutputBoundary presenter) {
+            RecommendationOutputBoundary presenter,
+            LogMealUserDataAccessInterface mealDataAccess) {
 
         this.userDataAccess = userDataAccess;
         this.recipeDataAccess = recipeDataAccess;
         this.exerciseDataAccess = exerciseDataAccess;
         this.presenter = presenter;
+        this.mealDataAccess = mealDataAccess;
+
     }
 
     @Override
@@ -155,34 +161,20 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
             return;
         }
         final NutritionGoal nutritionGoal = user.getNutritionGoal();
-//        final HealthGoal healthGoal = user.getUserProfile().getHealthGoal();
         final WeightGoalPlan weightGoalPlan = user.getUserProfile().getActivePlan();
-        final DailyLog dailyLog = user.getDailyLog(localDate);
-
-
-//        final List<String> dietaryRestrictions = (profile != null && profile.getDietaryRestrictions() != null)
-//                ? profile.getDietaryRestrictions()
-//                : List.of();
         final List<String> dietaryRestrictions = (profile != null)
                 ? profile.getDietaryRestrictions()
                 : List.of();
 
-//        final double targetDailyCalories = (nutritionGoal != null && nutritionGoal.getDailyCalories() > 0)
-//                ? nutritionGoal.getDailyCalories()
-//                : 2000.0;
         final double targetDailyCalories = (weightGoalPlan != null )
                 ? weightGoalPlan.getCurrentDailyCalorieGoal()
                 : 2000.0; // if currentDailyCalorieGOal doesnt retrun a valid response, default to 2K cls per day
 
 
 
-//        if (profile == null || nutritionGoal == null) {
-//            presenter.prepareFailView("Please complete your user profile and nutrition goals first.");
-//            return;
-//        }
-
         // 1. Fetch today's DailyLog from the user entity
         final DailyLog todayLog = user.getDailyLog(LocalDate.now());
+        // TODO : @Ethan logmealinteracotr is not currently saving meals to memory in DailyLog but for now ill acces it directly from the mealDAO
 
         // 2. Collect names of meals and exercises already logged today (to avoid duplicate recommendations)
         final Set<String> loggedMealNames = todayLog.getMealEntries().stream()
@@ -197,8 +189,9 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
 //        final double targetDailyCalories = nutritionGoal.getDailyCalories();
 //        final double netCaloriesToday = todayLog.getNetCalories();
 //        final int remainingCalories = (int) Math.max(0, targetDailyCalories - netCaloriesToday);
+
         final double targetCarbs = nutritionGoal.getDailyCarbsGrams();
-        final double todayCarbs = dailyLog.getTotalCarbohydratesInGrams();
+        final double todayCarbs = todayLog.getTotalCarbohydratesInGrams();
         final int remainingCarbs = (int) Math.max(0, targetCarbs - todayCarbs);
 
         final double targetFats = nutritionGoal.getDailyFatGrams();
@@ -211,14 +204,6 @@ public class RecommendationInteractor implements RecommendationInputBoundary {
 
         final double netCaloriesToday = todayLog.getNetCalories();
         final int remainingCalories = (int) Math.max(0, targetDailyCalories - netCaloriesToday);
-
-
-//        // 4. Fetch candidate recipes and exercises from external APIs/DAOs
-//        List<Recipe> candidateRecipes = recipeDataAccess.fetchCandidateRecipes(
-//                remainingCalories,
-//                profile.getDietaryRestrictions()
-//        );
-        // Debug inputs before calling DAO
         System.out.println("[DEBUG Interactor] remainingCalories: " + remainingCalories);
         System.out.println("[DEBUG Interactor] remainingProteins: " + remainingProteins);
         System.out.println("[DEBUG Interactor] remainingCarbs: " + remainingCarbs);
