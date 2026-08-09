@@ -1,6 +1,6 @@
 package enery.interface_adapter.logout;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInState;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.interface_adapter.login.LoginState;

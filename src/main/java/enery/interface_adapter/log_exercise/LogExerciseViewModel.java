@@ -1,6 +1,6 @@
 package enery.interface_adapter.log_exercise;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model for exercise logging.

@@ -1,11 +1,12 @@
 package enery.view.HealthAssessment;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.health_assessment.HealthAssessmentController;
 import enery.interface_adapter.health_assessment.HealthAssessmentState;
 import enery.interface_adapter.health_assessment.HealthAssessmentViewModel;
 import enery.use_case.tracking.TrackingOutputData;
-import enery.view.HomeView;
+import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.view.home.HomeView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,21 +24,23 @@ public class HealthAssessmentView extends JPanel implements ActionListener, Prop
     private final ViewManagerModel viewManagerModel;
     private final JButton backButton = new JButton("Back to Home");
 
-    private final JLabel overallScoreLabel = new JLabel("Overall Score: -");
-    private final JLabel severityLabel = new JLabel("Severity: -");
+//    private final JLabel overallScoreLabel = new JLabel("Overall Score: -");
     private final JLabel dietScoreLabel = new JLabel("Diet Score: -");
+    private final JLabel severityLabel = new JLabel("Severity: -");
     // private final JLabel exerciseScoreLabel = new JLabel("Diet Score: -");
+    private final LoggedInViewModel loggedInViewModel;
 
 
     private final JTextArea dietInsightsArea = new JTextArea(5, 30);
     private final JTextArea dietActionableItemsArea = new JTextArea(5, 30);
 
-    private final JButton generateButton = new JButton("Generate Assessment");
+    private final JButton generateButton = new JButton("Assess");
 
-    public HealthAssessmentView(HealthAssessmentViewModel viewModel, HealthAssessmentController controller, ViewManagerModel viewManagerModel) {
+    public HealthAssessmentView(HealthAssessmentViewModel viewModel, HealthAssessmentController controller, ViewManagerModel viewManagerModel, LoggedInViewModel loggedInViewModel) {
         this.viewModel = viewModel;
         this.controller = controller;
         this.viewManagerModel = viewManagerModel;
+        this.loggedInViewModel = loggedInViewModel;
 
         this.viewModel.addPropertyChangeListener(this);
 
@@ -56,9 +59,9 @@ public class HealthAssessmentView extends JPanel implements ActionListener, Prop
 
         JPanel resultPanel = new JPanel();
         resultPanel.setLayout(new GridLayout(3, 1));
-        resultPanel.add(overallScoreLabel);
-        resultPanel.add(severityLabel);
+//        resultPanel.add(overallScoreLabel);
         resultPanel.add(dietScoreLabel);
+        resultPanel.add(severityLabel);
         this.add(resultPanel);
 
         this.add(new JLabel("Diet Insights:"));
@@ -76,9 +79,10 @@ public class HealthAssessmentView extends JPanel implements ActionListener, Prop
                     @Override
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(generateButton)) {
-                            String assessmentId = viewModel.getState().getAssessmentId();
+                            String userId = loggedInViewModel.getState().getUsername();
                             TrackingOutputData trackingData = viewModel.getState().getTrackingData();
-                            controller.execute(assessmentId, trackingData);
+
+                            controller.execute(userId, trackingData);
                         }
                     }
                 }
@@ -92,6 +96,7 @@ public class HealthAssessmentView extends JPanel implements ActionListener, Prop
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (e.getSource().equals(backButton)) {
+                            resetUI();
                             viewManagerModel.setState(HomeView.VIEW_NAME);
                             viewManagerModel.firePropertyChanged();
                         }
@@ -112,19 +117,34 @@ public class HealthAssessmentView extends JPanel implements ActionListener, Prop
 
         if (state.getAssessmentError() != null) {
             JOptionPane.showMessageDialog(this, state.getAssessmentError());
+            state.setAssessmentError(null);
             return;
         }
 
-        overallScoreLabel.setText("Overall Score: " + state.getOverallScore());
+        dietScoreLabel.setText("Overall Score: " + state.getDietScore());
         severityLabel.setText("Severity: " + state.getSeverity());
-        dietScoreLabel.setText("Diet Score: " + state.getDietScore());
 
         if (state.getDietInsights() != null) {
-            dietInsightsArea.setText(String.join("\n- ", state.getDietInsights()));
+            dietInsightsArea.setText(String.join("\n", state.getDietInsights()));
         }
 
         if (state.getDietActionableItems() != null) {
-            dietActionableItemsArea.setText(String.join("\n- ", state.getDietActionableItems()));
+            dietActionableItemsArea.setText(String.join("\n", state.getDietActionableItems()));
         }
+    }
+    private void resetUI() {
+        dietScoreLabel.setText("Overall Score: ");
+        severityLabel.setText("Severity: ");
+        dietInsightsArea.setText("");
+        dietActionableItemsArea.setText("");
+
+        HealthAssessmentState currentState = viewModel.getState();
+        HealthAssessmentState emptyState = new HealthAssessmentState();
+
+        if (currentState != null) {
+            emptyState.setUserId(currentState.getUserId());
+        }
+        viewModel.setState(emptyState);
+
     }
 }

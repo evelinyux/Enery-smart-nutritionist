@@ -1,6 +1,6 @@
 package enery.interface_adapter.progress;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 public class ProgressViewModel extends ViewModel<ProgressState> {
     public static final String VIEW_NAME = "progress";

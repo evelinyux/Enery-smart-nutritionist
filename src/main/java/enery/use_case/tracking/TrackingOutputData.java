@@ -65,6 +65,8 @@ public final class TrackingOutputData {
         this.dailySummaries = List.copyOf(dailySummaries);
     }
 
+
+
     public TrackingPeriod getPeriod() {
         return period;
     }

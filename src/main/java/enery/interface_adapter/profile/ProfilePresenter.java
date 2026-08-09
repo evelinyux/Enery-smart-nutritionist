@@ -2,148 +2,189 @@ package enery.interface_adapter.profile;
 
 import enery.entity.user.UserProfile;
 import enery.entity.user.WeightGoalPlan;
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
+import enery.interface_adapter.change_password.LoggedInState;
 import enery.interface_adapter.change_password.LoggedInViewModel;
 import enery.use_case.profile.ProfileOutputBoundary;
 import enery.use_case.profile.ProfileOutputData;
+import enery.view.home.HomeView;
 
 /**
- * The Presenter for the Profile Use Case.
+ * Presenter for the Profile Use Case.
  */
-public class ProfilePresenter
-        implements ProfileOutputBoundary {
+public class ProfilePresenter implements ProfileOutputBoundary {
 
     private final ViewManagerModel viewManagerModel;
     private final ProfileViewModel profileViewModel;
+    private final LoggedInViewModel loggedInViewModel;
 
+    /**
+     * Constructor used by existing tests.
+     *
+     * @param viewManagerModel the view manager model
+     * @param profileViewModel the profile view model
+     */
     public ProfilePresenter(
             ViewManagerModel viewManagerModel,
             ProfileViewModel profileViewModel) {
 
-        this.viewManagerModel = viewManagerModel;
-        this.profileViewModel = profileViewModel;
-    }
-
-    @Override
-    public void prepareSuccessView(
-            ProfileOutputData outputData) {
-
-        final ProfileState profileState =
-                profileViewModel.getState();
-
-        final UserProfile userProfile =
-                outputData.getUserProfile();
-
-        profileState.setUsername(
-                outputData.getUsername());
-
-        profileState.setAge(
-                userProfile.getAge());
-
-        profileState.setHeightInCentimetres(
-                userProfile.getHeightInCentimetres());
-
-        profileState.setWeightInKilograms(
-                userProfile.getWeightInKilograms());
-
-        profileState.setSex(
-                userProfile.getSex());
-
-        profileState.setActivityLevel(
-                userProfile.getActivityLevel());
-
-        profileState.setHealthGoal(
-                userProfile.getHealthGoal());
-
-        profileState.setDietaryRestrictions(
-                userProfile.getDietaryRestrictions());
-
-        updatePlanState(
-                profileState,
-                userProfile.getActivePlan());
-
-        profileState.setProfileError(null);
-
-        profileState.setSuccessMessage(
-                "Profile and plan saved successfully.");
-
-        profileViewModel.setState(profileState);
-        profileViewModel.firePropertyChanged();
+        this(
+                viewManagerModel,
+                profileViewModel,
+                null
+        );
     }
 
     /**
-     * Copies the active plan information into the view state.
+     * Constructor used by the application.
      *
-     * @param profileState state used by the Profile View
-     * @param activePlan user's active weight-goal plan
+     * @param viewManagerModel the view manager model
+     * @param profileViewModel the profile view model
+     * @param loggedInViewModel the logged-in view model
      */
-    private void updatePlanState(
-            ProfileState profileState,
-            WeightGoalPlan activePlan) {
+    public ProfilePresenter(
+            ViewManagerModel viewManagerModel,
+            ProfileViewModel profileViewModel,
+            LoggedInViewModel loggedInViewModel) {
 
-        if (activePlan == null) {
-            profileState.setTargetWeightInKilograms(
-                    0.0);
+        this.viewManagerModel = viewManagerModel;
+        this.profileViewModel = profileViewModel;
+        this.loggedInViewModel = loggedInViewModel;
+    }
 
-            profileState.setDurationDays(
-                    0);
+    @Override
+    public void prepareSuccessView(ProfileOutputData outputData) {
 
-            profileState.setStartDate(
-                    "");
+        final ProfileState state =
+                profileViewModel.getState();
 
-            profileState.setEndDate(
-                    "");
+        final UserProfile profile =
+                outputData.getUserProfile();
 
-            profileState.setDailyCalorieGoal(
-                    null);
+        // Basic user/profile information.
+        state.setUsername(outputData.getUsername());
+
+        state.setAge(profile.getAge());
+
+        state.setHeightInCentimetres(
+                profile.getHeightInCentimetres()
+        );
+
+        state.setWeightInKilograms(
+                profile.getWeightInKilograms()
+        );
+
+        state.setSex(profile.getSex());
+
+        state.setActivityLevel(
+                profile.getActivityLevel()
+        );
+
+        state.setHealthGoal(
+                profile.getHealthGoal()
+        );
+
+        state.setDietaryRestrictions(
+                profile.getDietaryRestrictions()
+        );
+
+        /*
+         * Populate weight-plan information when
+         * the user has an active plan.
+         */
+        final WeightGoalPlan plan =
+                profile.getActivePlan();
+
+        if (plan != null) {
+
+            state.setTargetWeightInKilograms(
+                    plan.getTargetWeightInKilograms()
+            );
+
+            state.setDurationDays(
+                    plan.getDurationDays()
+            );
+
+            state.setStartDate(
+                    plan.getStartDate().toString()
+            );
+
+            state.setEndDate(
+                    plan.getEndDate().toString()
+            );
+
+            state.setDailyCalorieGoal(
+                    plan.getCurrentDailyCalorieGoal()
+            );
         }
         else {
-            profileState.setTargetWeightInKilograms(
-                    activePlan
-                            .getTargetWeightInKilograms());
 
-            profileState.setDurationDays(
-                    activePlan.getDurationDays());
+            state.setTargetWeightInKilograms(0.0);
 
-            profileState.setStartDate(
-                    activePlan
-                            .getStartDate()
-                            .toString());
+            state.setDurationDays(0);
 
-            profileState.setEndDate(
-                    activePlan
-                            .getEndDate()
-                            .toString());
+            state.setStartDate("");
 
-            profileState.setDailyCalorieGoal(
-                    activePlan
-                            .getCurrentDailyCalorieGoal());
+            state.setEndDate("");
+
+            state.setDailyCalorieGoal(null);
+        }
+
+        // Clear any previous error.
+        state.setProfileError(null);
+
+        state.setSuccessMessage(
+                "Profile and plan saved successfully."
+        );
+
+        profileViewModel.setState(state);
+        profileViewModel.firePropertyChanged();
+
+        /*
+         * NEW BEHAVIOUR:
+         *
+         * Once the profile has successfully been
+         * created/saved, mark the logged-in user as
+         * having a completed profile.
+         *
+         * HomeView can use this value to enable the
+         * other feature buttons.
+         */
+        if (loggedInViewModel != null) {
+
+            final LoggedInState loggedInState =
+                    loggedInViewModel.getState();
+
+            loggedInState.setProfileComplete(true);
+
+            loggedInViewModel.setState(
+                    loggedInState
+            );
+
+            loggedInViewModel.firePropertyChanged();
         }
     }
 
     @Override
-    public void prepareFailView(
-            String errorMessage) {
+    public void prepareFailView(String error) {
 
-        final ProfileState profileState =
+        final ProfileState state =
                 profileViewModel.getState();
 
-        profileState.setProfileError(
-                errorMessage);
+        state.setProfileError(error);
 
-        profileState.setSuccessMessage(
-                null);
+        state.setSuccessMessage(null);
 
-        profileViewModel.setState(
-                profileState);
-
+        profileViewModel.setState(state);
         profileViewModel.firePropertyChanged();
     }
 
     @Override
     public void switchToHomeView() {
+
         viewManagerModel.setState(
-                LoggedInViewModel.VIEW_NAME);
+                HomeView.VIEW_NAME
+        );
 
         viewManagerModel.firePropertyChanged();
     }

@@ -1,58 +1,102 @@
 package enery.interface_adapter.login;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInState;
 import enery.interface_adapter.change_password.LoggedInViewModel;
+import enery.interface_adapter.signup.SignupViewModel;
 import enery.use_case.login.LoginOutputBoundary;
 import enery.use_case.login.LoginOutputData;
-import enery.interface_adapter.signup.SignupViewModel;
+import enery.view.home.HomeView;
 
 /**
- * The Presenter for the Login Use Case.
+ * Presenter for the Login Use Case.
  */
-public class LoginPresenter implements LoginOutputBoundary {
+public class LoginPresenter
+        implements LoginOutputBoundary {
 
-    private final LoginViewModel loginViewModel;
-    private final LoggedInViewModel loggedInViewModel;
     private final ViewManagerModel viewManagerModel;
+    private final LoggedInViewModel loggedInViewModel;
+    private final LoginViewModel loginViewModel;
     private final SignupViewModel signupViewModel;
 
-    public LoginPresenter(ViewManagerModel viewManagerModel,
-                          LoggedInViewModel loggedInViewModel,
-                          LoginViewModel loginViewModel,
-                          SignupViewModel signupViewModel) {
-        this.viewManagerModel = viewManagerModel;
-        this.loggedInViewModel = loggedInViewModel;
-        this.loginViewModel = loginViewModel;
-        this.signupViewModel = signupViewModel;
+    public LoginPresenter(
+            ViewManagerModel viewManagerModel,
+            LoggedInViewModel loggedInViewModel,
+            LoginViewModel loginViewModel,
+            SignupViewModel signupViewModel) {
+
+        this.viewManagerModel =
+                viewManagerModel;
+
+        this.loggedInViewModel =
+                loggedInViewModel;
+
+        this.loginViewModel =
+                loginViewModel;
+
+        this.signupViewModel =
+                signupViewModel;
     }
 
     @Override
-    public void prepareSuccessView(LoginOutputData response) {
+    public void prepareSuccessView(
+            LoginOutputData outputData) {
+
         final LoggedInState loggedInState =
                 loggedInViewModel.getState();
 
-        loggedInState.setUsername(response.getUsername());
-        loggedInViewModel.setState(loggedInState);
+        loggedInState.setUsername(
+                outputData.getUsername()
+        );
+
+        loggedInState.setProfileComplete(
+                outputData.isProfileComplete()
+        );
+
+        loggedInState.setPassword("");
+        loggedInState.setPasswordError(null);
+
+        loggedInViewModel.setState(
+                loggedInState
+        );
+
         loggedInViewModel.firePropertyChanged();
 
+        final LoginState loginState =
+                loginViewModel.getState();
+
+        loginState.setLoginError(null);
+        loginState.setPassword("");
+
+        loginViewModel.setState(loginState);
+        loginViewModel.firePropertyChanged();
+
         viewManagerModel.setState(
-                loggedInViewModel.getViewName());
+                HomeView.VIEW_NAME
+        );
+
         viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void prepareFailView(String error) {
-        final LoginState loginState = loginViewModel.getState();
+
+        final LoginState loginState =
+                loginViewModel.getState();
+
         loginState.setLoginError(error);
+
+        loginViewModel.setState(loginState);
         loginViewModel.firePropertyChanged();
     }
 
     @Override
     public void switchToSignupView() {
+
         viewManagerModel.setState(
-                signupViewModel.getViewName());
+                signupViewModel.getViewName()
+        );
+
         viewManagerModel.firePropertyChanged();
     }
 }
-

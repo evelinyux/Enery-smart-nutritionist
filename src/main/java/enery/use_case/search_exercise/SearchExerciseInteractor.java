@@ -3,6 +3,7 @@ package enery.use_case.search_exercise;
 import java.util.List;
 
 import enery.entity.exercise.ExerciseSearchResult;
+import enery.entity.user.UserProfile;
 
 /**
  * Interactor for searching exercise calorie information.
@@ -10,61 +11,92 @@ import enery.entity.exercise.ExerciseSearchResult;
 public final class SearchExerciseInteractor
         implements SearchExerciseInputBoundary {
 
-    private final CaloriesBurnedDataAccessInterface dataAccessObject;
+    private static final double POUNDS_PER_KILOGRAM =
+            2.2046226218;
+
+    private final CaloriesBurnedDataAccessInterface
+            caloriesDataAccess;
+
+    private final SearchExerciseUserDataAccessInterface
+            userDataAccess;
+
     private final SearchExerciseOutputBoundary presenter;
 
     public SearchExerciseInteractor(
-            CaloriesBurnedDataAccessInterface dataAccessObject,
+            CaloriesBurnedDataAccessInterface caloriesDataAccess,
+            SearchExerciseUserDataAccessInterface userDataAccess,
             SearchExerciseOutputBoundary presenter) {
 
-        this.dataAccessObject = dataAccessObject;
+        this.caloriesDataAccess = caloriesDataAccess;
+        this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }
 
     @Override
     public void execute(SearchExerciseInputData inputData) {
-        if (inputData.getActivityQuery() == null
-                || inputData.getActivityQuery().isBlank()) {
+
+        if (inputData.getUsername() == null
+                || inputData.getUsername().isBlank()) {
 
             presenter.prepareFailView(
-                    "Enter an exercise name.");
+                    "A logged-in user is required."
+            );
             return;
         }
 
-        if (inputData.getWeightInPounds() < 50.0
-                || inputData.getWeightInPounds() > 500.0) {
+        if (inputData.getExerciseName() == null
+                || inputData.getExerciseName().isBlank()) {
 
             presenter.prepareFailView(
-                    "Weight must be between 50 and 500 pounds.");
+                    "Please enter an exercise."
+            );
             return;
         }
 
         if (inputData.getDurationInMinutes() <= 0) {
             presenter.prepareFailView(
-                    "Duration must be greater than zero.");
+                    "Duration must be greater than 0."
+            );
             return;
         }
 
+        final UserProfile profile =
+                userDataAccess.getUserProfile(
+                        inputData.getUsername()
+                );
+
+        if (profile == null) {
+            presenter.prepareFailView(
+                    "Please complete your profile "
+                            + "before searching exercises."
+            );
+            return;
+        }
+
+        final double weightInKilograms =
+                profile.getWeightInKilograms();
+
+        final double weightInPounds =
+                weightInKilograms
+                        * POUNDS_PER_KILOGRAM;
+
         try {
             final List<ExerciseSearchResult> results =
-                    dataAccessObject.search(
-                            inputData.getActivityQuery(),
-                            inputData.getWeightInPounds(),
+                    caloriesDataAccess.search(
+                            inputData.getExerciseName(),
+                            weightInPounds,
                             inputData.getDurationInMinutes()
                     );
 
-            if (results.isEmpty()) {
-                presenter.prepareFailView(
-                        "No matching exercises were found.");
-            }
-            else {
-                presenter.prepareSuccessView(
-                        new SearchExerciseOutputData(results));
-            }
+            final SearchExerciseOutputData outputData =
+                    new SearchExerciseOutputData(results);
+
+            presenter.prepareSuccessView(outputData);
         }
         catch (RuntimeException exception) {
             presenter.prepareFailView(
-                    "Unable to search exercises right now.");
+                    "Unable to retrieve exercise information."
+            );
         }
     }
 }

@@ -10,7 +10,7 @@ public class HealthAssessmentState {
     private String assessmentId = "";
     private TrackingOutputData trackingData = null;
     private int overallScore = 0;
-    private String severity = "";
+    private String severity = "critical";
 
     // Dietary Data
     private int dietScore = 0;

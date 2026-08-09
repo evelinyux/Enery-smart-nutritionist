@@ -1,6 +1,6 @@
 package enery.interface_adapter.change_password;
 
-import enery.interface_adapter.ViewModel;
+import enery.interface_adapter.shared.ViewModel;
 
 /**
  * View model for the home screen displayed after login.
