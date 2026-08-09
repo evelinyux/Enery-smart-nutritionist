@@ -5,26 +5,44 @@ import enery.entity.user.UserProfile;
 public interface ProgressDataInterface {
 
     /**
-     * Obtains the UserProfile of the user currently logged in.
+     * Obtains the UserProfile of a given user.
+     * @param username the username of the profile
      * @return the UserProfile of the user currently logged in.
      */
-    UserProfile getUserProfile();
+    UserProfile getUserProfile(String username);
 
     /**
-     * Obtains the calories consumed by the user today.
+     * Obtains the calories consumed a given user.
+     * @param username the username of the profile
      * @return the calories consumed.
      */
-    double getTodaysCalories();
+    double getTodaysCalories(String username);
 
     /**
-     * Obtains the daily calorie goal set by the user's plan.
+     * Obtains the daily calorie goal of a given user set by their plan.
+     * @param username the username of the profile
      * @return the daily calorie goal.
      */
-    double getDailyCalorieGoal();
+    double getDailyCalorieGoal(String username);
 
-    double getTodaysProtein();
+    /**
+     * Obtains the protein, in g, consumed a given user.
+     * @param username the username of the profile
+     * @return the calories consumed.
+     */
+    double getTodaysProtein(String username);
 
-    double getTodaysCarbohydrates();
+    /**
+     * Obtains the carbohydrates, in g, consumed a given user.
+     * @param username the username of the profile
+     * @return the calories consumed.
+     */
+    double getTodaysCarbohydrates(String username);
 
-    double getTodaysFats();
+    /**
+     * Obtains the fats, in g, consumed a given user.
+     * @param username the username of the profile
+     * @return the calories consumed.
+     */
+    double getTodaysFats(String username);
 }

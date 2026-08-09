@@ -13,18 +13,20 @@ public final class ProgressInteractor implements ProgressInputBoundary {
 
     @Override
     public void execute(ProgressInputData inputData) {
-        if (inputData.getUsername() == null) {
+        String username = inputData.getUsername();
+
+        if (username == null) {
             presenter.prepareFailView("A logged-in user is required.");
             return;
         }
 
-        if (dataAccessObject.getUserProfile() == null) {
+        if (dataAccessObject.getUserProfile(username) == null) {
             presenter.prepareFailView("A plan is required.");
             return;
         }
 
-        final double todaysCalories = dataAccessObject.getTodaysCalories();
-        final double dailyCalorieGoal = dataAccessObject.getDailyCalorieGoal();
+        final double todaysCalories = dataAccessObject.getTodaysCalories(username);
+        final double dailyCalorieGoal = dataAccessObject.getDailyCalorieGoal(username);
 
         if (dailyCalorieGoal == 0) {
             presenter.prepareFailView("Calorie Goal is 0.");
@@ -33,9 +35,9 @@ public final class ProgressInteractor implements ProgressInputBoundary {
 
         double dailyProgressPercent = calculateDailyProgressPercent(todaysCalories, dailyCalorieGoal);
 
-        final double todaysProtein = dataAccessObject.getTodaysProtein();
-        final double todaysCarbohydrates = dataAccessObject.getTodaysCarbohydrates();
-        final double todaysFats = dataAccessObject.getTodaysFats();
+        final double todaysProtein = dataAccessObject.getTodaysProtein(username);
+        final double todaysCarbohydrates = dataAccessObject.getTodaysCarbohydrates(username);
+        final double todaysFats = dataAccessObject.getTodaysFats(username);
 
         presenter.prepareSuccessView(new ProgressOutputData(
                 todaysCalories,

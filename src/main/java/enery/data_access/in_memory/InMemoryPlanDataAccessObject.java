@@ -23,20 +23,18 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
     }
 
     @Override
-    public UserProfile getUserProfile() {
-        final String username = userDataAccessObject.getCurrentUsername();
+    public UserProfile getUserProfile(String username) {
         final User user = userDataAccessObject.get(username);
         return user.getUserProfile();
     }
 
-    private List<MealEntry> getMealEntries() {
-        final String username = userDataAccessObject.getCurrentUsername();
+    private List<MealEntry> getMealEntries(String username) {
         return mealDataAccessObject.getMeals(username, LocalDate.now());
     }
 
     @Override
-    public double getTodaysCalories() {
-        final List<MealEntry> meals = getMealEntries();
+    public double getTodaysCalories(String username) {
+        final List<MealEntry> meals = getMealEntries(username);
 
         double calories = 0.0;
 
@@ -48,15 +46,15 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
     }
 
     @Override
-    public double getDailyCalorieGoal() {
-        final UserProfile userProfile = getUserProfile();
+    public double getDailyCalorieGoal(String username) {
+        final UserProfile userProfile = getUserProfile(username);
         final WeightGoalPlan weightGoalPlan = userProfile.getActivePlan();
         return weightGoalPlan.getCurrentDailyCalorieGoal();
     }
 
     @Override
-    public double getTodaysProtein() {
-        final List<MealEntry> meals = getMealEntries();
+    public double getTodaysProtein(String username) {
+        final List<MealEntry> meals = getMealEntries(username);
 
         double protein = 0.0;
 
@@ -68,8 +66,8 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
     }
 
     @Override
-    public double getTodaysCarbohydrates() {
-        final List<MealEntry> meals = getMealEntries();
+    public double getTodaysCarbohydrates(String username) {
+        final List<MealEntry> meals = getMealEntries(username);
 
         double carbohydrates = 0.0;
 
@@ -81,8 +79,8 @@ public class InMemoryPlanDataAccessObject implements ProgressDataInterface {
     }
 
     @Override
-    public double getTodaysFats() {
-        final List<MealEntry> meals = getMealEntries();
+    public double getTodaysFats(String username) {
+        final List<MealEntry> meals = getMealEntries(username);
 
         double fats = 0.0;
 
