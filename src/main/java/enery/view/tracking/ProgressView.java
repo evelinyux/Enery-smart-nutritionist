@@ -5,6 +5,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.change_password.LoggedInViewModel;
@@ -35,7 +38,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     private final JLabel recommendationLabel = new JLabel(
             "We can recommend you a meal to help you reach your goal.");
     private final JButton recommendationButton = new JButton("Recommend a meal");
-    private final JTextArea nutrientsLabel = new JTextArea();
+    private final JTextPane nutrientsLabel = new JTextPane();
     private final JButton recalculateButton = new JButton("Recalculate Daily Goal");
     private final JButton backButton = new JButton("Home");
     private final JLabel statusLabel = new JLabel();
@@ -78,13 +81,16 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         recommendationButton.setVisible(false);
 
         nutrientsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nutrientsLabel.setLineWrap(true);
-        nutrientsLabel.setWrapStyleWord(true);
         nutrientsLabel.setEditable(false);
         nutrientsLabel.setOpaque(false);
         nutrientsLabel.setFocusable(false);
         nutrientsLabel.setVisible(false);
         nutrientsLabel.setFont(UIManager.getFont("Label.font"));
+
+        StyledDocument doc = nutrientsLabel.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
