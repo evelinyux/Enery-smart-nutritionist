@@ -1,93 +1,131 @@
-# ENERY SMART NUTRITIONIST
-made by Evelyn, Nicole, Ethan, Roel, Yael.
+# ENERY Smart Nutritionist
 
-## What is ENERY?
-ENERY is a smart nutritionist app. The app can create a plan for users based on their age, height, current weight, and the weight they want to achieve. Once a plan is created, users can then use the app to track their meals and excercises; view their progress towards their plan; and recommend meals based on what they have already eaten and any dietary restrictions they may have. ENERY was created to help people learn how much calories their taking in, track them, as well as help them find meals that achieve their weight journey. 
+ENERY Smart Nutritionist is a Java Swing desktop application developed for the
+University of Toronto CSC207 course.
 
-## Table of Contents
-* [What is ENERY?](#what-is-enery)
-* [Table of Contents](#table-of-contents)
-* [Features](#features)
-* [Usage Guide](#usage-guide)
-  * [Signing Up](#signing-up)
-  * [Logging In](#logging-in)
-  * [Setting Up A Profile](#setting-up-a-profile)
-  * [Logging A Meal](#logging-a-meal)
-  * [Logging Exercise](#logging-exercise)
+The application helps users manage nutrition, exercise, personal goals, meal
+logging, recommendations, and progress through a collection of interconnected
+use cases implemented using Clean Architecture.
 
 ## Features
-* Create a plan for the user
-* Log meals and exercises
-* View daily and total progresses
-* Recommend a meal
-* Health assessment
-* Allows for multiple users to make and use the app
 
-## Usage Guide
-### Signing Up
-Upon opening the app, you will be prompted to sign up. Choose a username and password to sign up. Ensure that you enter your password correctly twice.
+### User Profile
 
-### Logging In
-After signing up, you will be prompted to log in. Using the username and password you used to sign up, log in.
+Users can maintain personal information used by other ENERY features.
 
-### Setting Up A Profile
-Before you can do anything else, you will be asked to make a plan. Click on the `Profile` button to set up a profile.
+Profile information is used to establish health and nutrition goals and can include
+information such as physical characteristics, goals, and dietary restrictions.
 
-<img width="367" height="396" alt="image" src="https://github.com/user-attachments/assets/abe6cccf-b0c0-46cd-80c8-feab84badd3d" />
+### Meal and Exercise Tracking
 
-Enter the your information and then click `Save Profile and Plan` once your done to create a plan. 
+Users can record meals and exercise activities.
 
-If your weight target is greater than your current weight while you selected `LOSE_WEIGHT` for your health goal *OR* if your weight target is less than your current weight while you selected `GAIN_WEIGHT` as your health goal *OR* if your weight target is not equal to your current WEIGHT while you selected `MAINTAIN_WEIGHT` as your health goal, you will be given an error message. Ensure you enter an appropriate target weight for your health goal.
+The tracking system records information used to calculate nutritional intake and
+exercise-related values. Logged information can then be reused by other parts of
+the application, including progress tracking.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/878d6af2-a78f-47b1-9252-25db19a55dda" />
+### Recommendations
 
+ENERY provides meal and exercise recommendations based on information available
+about the user.
 
-If your goal is not achievable in the given time frame, it will tell you `"The requested weight change is too large for the selected plan duration"`. If you receive this message, increase the plan duration.
+Meal recommendations can consider nutritional requirements and dietary restrictions,
+while exercise recommendations can consider the type, level, or amount of exercise
+appropriate to the user's needs.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/54f4b21c-3222-47b4-a4a1-709d13daec5e" />
+### Progress Tracking
 
-Once ENERY is able to create a plan, this page will update to show you the start and end dates of your plan as well as your estimated daily calorie goal.
+The Progress feature displays information about the user's progress toward daily
+and longer-term goals.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e79fb4ef-6f0c-475a-acf1-7b57a3913167" />
+Tracked calorie and nutrient information can be compared with the user's goals,
+allowing the application to indicate whether goals have been achieved.
 
-**NOTE:** Once you make a plan, you cannot edit the information. If you want to change info, you can edit the information and click `Save Profile and Plan` again to make a new plan. Doing so discards the previous plan.
+### Search
 
-Now that you have a plan you can return home via `Back to Home`. With a plan you can use the other features.
+Users can search for recipes and exercises.
 
-### Logging A Meal
+Search functionality provides information that can be used by other features,
+including recommendations and logging.
 
-To log a Meal click on the `Log Meal` button on the Home screen.
+### Health Assessment
 
-<img width="358" height="396" alt="image" src="https://github.com/user-attachments/assets/c7dc4d80-c29c-436e-b82a-1f5c29d30d1b" />
+The Health Assessment feature evaluates aspects of the user's eating and exercise
+patterns and provides an additional way for users to understand their habits.
 
+## Application Workflow
 
-Enter the food you ate into the food query text field and then click `Search` to search for the nutritional information of that food.
+The ENERY features are designed to work together rather than operate as completely
+independent tools.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0f7e2a3b-4e47-4116-b609-62fa15c295c6" />
+A typical workflow is:
 
-Each query will provide 10 results that best fit your query. Click the drop down menu next `Search Results` to view these results.
+1. The user creates an account or logs in.
+2. The user completes their profile and establishes personal goals.
+3. The user logs meals and exercise.
+4. ENERY uses the available profile and tracking information when producing
+   recommendations.
+5. The Progress feature summarizes the user's progress toward their goals.
+6. The user can continue updating their information as their needs change.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dbc532d7-c588-4236-abd1-a96111b6bfbb" />
+## Architecture
 
-Once you selected the result that fits best, enter your portion size. The default portion size is `100.0g`. You can also select the type of meal: `Breakfast`, `Lunch` or `Dinner`.
+ENERY follows the Clean Architecture principles taught in CSC207.
 
-Once you have inputted your portion size and meal type, click `Save Meal` to log your meal. You will know your meal was logged successfully if you see the message `"[Food] was logged successfully."`.
+The application is separated into layers including:
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/41baca54-d5ac-4f68-a07b-8f26133efab5" />
+- Entities
+- Use Cases
+- Interface Adapters
+- Data Access
+- Views
+- Application wiring
 
-### Logging Exercise
+A typical use-case flow is:
 
-To log your exercise click on the `Log Exercise` button on the Home screen.
+View
+→ Controller
+→ Input Boundary
+→ Interactor
+→ Data Access Interface / Entities
+→ Output Boundary
+→ Presenter
+→ View Model
+→ Updated View
 
-<img width="370" height="390" alt="image" src="https://github.com/user-attachments/assets/a740140d-d50f-46d9-b77e-7a058f0f9104" />
+This structure follows the Dependency Rule: inner application layers do not depend
+directly on Swing views or concrete external data sources.
 
-Type in the type of exericse you did as well as the duration you did it for. Click on `Search` to look for info matches.
+## Team Development
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/57fc5870-0c9a-43a0-8a79-dba11611d4e9" />
+ENERY was developed as a team project with major functionality divided among team
+members.
 
-Click on the dropdown menu next to `Matches` to view the matches we found. Select the result that best matches your exercise.
+The original feature division included:
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/471dfcc3-b2ea-467b-b877-3fcb00ea8f06" />
+- User Profile
+- Tracking and Logging
+- Recommendations
+- Progress
+- Search and Home functionality
+- Health Assessment
 
-Click on `Log Exercise` to log your exercise. You will know your exercise was logged succesfully if you see the message `"[Exercise] was logged successfully."`.
+Although these features were divided among team members, they were designed to
+interact through shared application architecture.
 
+For example, profile information can influence recommendations and goals; logging
+produces information used by progress tracking; and search functionality provides
+recipes and exercises that can be used by other use cases.
+
+The team therefore worked not only on individual features but also on integrating
+shared entities, data access, navigation, and application wiring.
+
+## Testing
+
+The project includes automated unit tests for entities, use cases, interface
+adapters, and data-access functionality.
+
+To run the test suite with Maven:
+
+```shell
+mvn clean test

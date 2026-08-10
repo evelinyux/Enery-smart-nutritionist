@@ -1,4 +1,4 @@
-package enery.view.HealthAssessment;
+package enery.view.health_assessment;
 
 import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.health_assessment.HealthAssessmentController;
