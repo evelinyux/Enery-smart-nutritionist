@@ -1,6 +1,6 @@
 package enery.interface_adapter.forgot_password;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.use_case.forgot_password.ForgotPasswordOutputBoundary;
 import enery.use_case.forgot_password.ForgotPasswordOutputData;
 

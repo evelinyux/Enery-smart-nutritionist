@@ -4,8 +4,16 @@ public class ProgressState {
     private double todaysCalories;
     private double dailyCalorieGoal;
     private double dailyProgressPercent;
+    private double todaysProtein;
+    private double todaysCarbohydrates;
+    private double todaysFats;
+    private double totalCalorieGoal;
+    private double totalCaloriesConsumed;
+    private double totalProgressPercent;
+    private int planDuration;
+    private int daysSoFar;
 
-    private String ProgressError;
+    private String progressError;
     private String successMessage;
 
     public double getTodaysCalories() {
@@ -32,12 +40,36 @@ public class ProgressState {
         this.dailyProgressPercent = dailyProgressPercent;
     }
 
+    public double getTodaysProtein() {
+        return todaysProtein;
+    }
+
+    public void setTodaysProtein(double protein) {
+        this.todaysProtein = protein;
+    }
+
+    public double getTodaysCarboydrates() {
+        return todaysCarbohydrates;
+    }
+
+    public void setTodaysCarbohydrates(double carboydrates) {
+        this.todaysCarbohydrates = carboydrates;
+    }
+
+    public double getTodaysFats() {
+        return todaysFats;
+    }
+
+    public void setTodaysFats(double fats) {
+        this.todaysFats = fats;
+    }
+
     public String getProgressError() {
-        return ProgressError;
+        return progressError;
     }
 
     public void setProgressError(String progressError) {
-        ProgressError = progressError;
+        this.progressError = progressError;
     }
 
     public String getSuccessMessage() {
@@ -46,5 +78,37 @@ public class ProgressState {
 
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public double getTotalCalorieGoal() {
+        return totalCalorieGoal;
+    }
+
+    public void setTotalCalorieGoal(double totalCalorieGoal) {
+        this.totalCalorieGoal = totalCalorieGoal;
+    }
+
+    public double getTotalCaloriesConsumed() {
+        return totalCaloriesConsumed;
+    }
+
+    public void setTotalCaloriesConsumed(double totalCaloriesConsumed) {
+        this.totalCaloriesConsumed = totalCaloriesConsumed;
+    }
+
+    public double getTotalProgressPercent() {
+        return totalProgressPercent;
+    }
+
+    public void setTotalProgressPercent(double totalProgressPercent) {
+        this.totalProgressPercent = totalProgressPercent;
+    }
+
+    public int getDaysSoFar() {
+        return daysSoFar;
+    }
+
+    public void setDaysSoFar(int daysSoFar) {
+        this.daysSoFar = daysSoFar;
     }
 }

@@ -1,242 +1,438 @@
 package enery.entity;
 
-import java.time.LocalDate;
-
 import enery.entity.user.HealthGoal;
 import enery.entity.user.WeightGoalPlan;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.time.LocalDate;
 
-/**
- * Tests for WeightGoalPlan.
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 class WeightGoalPlanTest {
-
-    private static final LocalDate START_DATE =
-            LocalDate.of(2026, 7, 30);
-
-    private static final double INITIAL_CALORIE_GOAL =
-            2100.0;
-
-    private static final double TOLERANCE =
-            0.001;
 
     @Test
     void validWeightLossPlanTest() {
-        final WeightGoalPlan plan =
+        LocalDate startDate =
+                LocalDate.of(2026, 8, 8);
+
+        WeightGoalPlan plan =
                 new WeightGoalPlan(
-                        START_DATE,
-                        70,
+                        startDate,
+                        60,
+                        70.0,
                         65.0,
-                        62.0,
                         HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
+                        2000.0
                 );
 
         assertEquals(
-                START_DATE,
+                startDate,
                 plan.getStartDate());
 
         assertEquals(
-                START_DATE.plusDays(69),
+                LocalDate.of(2026, 10, 6),
                 plan.getEndDate());
 
         assertEquals(
-                70,
+                60,
                 plan.getDurationDays());
 
         assertEquals(
-                65.0,
+                70.0,
                 plan.getStartingWeightInKilograms(),
-                TOLERANCE);
+                0.001);
 
         assertEquals(
-                62.0,
+                65.0,
                 plan.getTargetWeightInKilograms(),
-                TOLERANCE);
+                0.001);
 
         assertEquals(
                 HealthGoal.LOSE_WEIGHT,
                 plan.getHealthGoal());
 
         assertEquals(
-                INITIAL_CALORIE_GOAL,
+                2000.0,
                 plan.getInitialDailyCalorieGoal(),
-                TOLERANCE);
+                0.001);
 
         assertEquals(
-                INITIAL_CALORIE_GOAL,
+                2000.0,
                 plan.getCurrentDailyCalorieGoal(),
-                TOLERANCE);
+                0.001);
     }
 
     @Test
     void validMaintenancePlanTest() {
-        final WeightGoalPlan plan =
+        WeightGoalPlan plan =
                 new WeightGoalPlan(
-                        START_DATE,
+                        LocalDate.of(2026, 8, 8),
                         30,
-                        65.0,
-                        65.0,
+                        70.0,
+                        70.0,
                         HealthGoal.MAINTAIN_WEIGHT,
-                        INITIAL_CALORIE_GOAL
+                        2200.0
                 );
 
         assertEquals(
-                65.0,
+                70.0,
                 plan.getTargetWeightInKilograms(),
-                TOLERANCE);
+                0.001);
+
+        assertEquals(
+                HealthGoal.MAINTAIN_WEIGHT,
+                plan.getHealthGoal());
+    }
+
+    @Test
+    void validWeightGainPlanTest() {
+        WeightGoalPlan plan =
+                new WeightGoalPlan(
+                        LocalDate.of(2026, 8, 8),
+                        60,
+                        70.0,
+                        74.0,
+                        HealthGoal.GAIN_WEIGHT,
+                        2400.0
+                );
+
+        assertEquals(
+                74.0,
+                plan.getTargetWeightInKilograms(),
+                0.001);
+
+        assertEquals(
+                HealthGoal.GAIN_WEIGHT,
+                plan.getHealthGoal());
+    }
+
+    @Test
+    void endDateIncludesFirstAndLastDayTest() {
+        LocalDate startDate =
+                LocalDate.of(2026, 8, 8);
+
+        WeightGoalPlan plan =
+                new WeightGoalPlan(
+                        startDate,
+                        14,
+                        70.0,
+                        70.0,
+                        HealthGoal.MAINTAIN_WEIGHT,
+                        2000.0
+                );
+
+        assertEquals(
+                startDate.plusDays(13),
+                plan.getEndDate());
+    }
+
+    @Test
+    void minimumDurationIsAllowedTest() {
+        assertDoesNotThrow(() ->
+                new WeightGoalPlan(
+                        LocalDate.now(),
+                        14,
+                        70.0,
+                        70.0,
+                        HealthGoal.MAINTAIN_WEIGHT,
+                        2000.0
+                ));
+    }
+
+    @Test
+    void maximumDurationIsAllowedTest() {
+        assertDoesNotThrow(() ->
+                new WeightGoalPlan(
+                        LocalDate.now(),
+                        180,
+                        70.0,
+                        70.0,
+                        HealthGoal.MAINTAIN_WEIGHT,
+                        2000.0
+                ));
+    }
+
+    @Test
+    void nullStartDateTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                null,
+                                30,
+                                70.0,
+                                70.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A plan start date is required.",
+                exception.getMessage());
     }
 
     @Test
     void durationTooShortTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        7,
-                        65.0,
-                        64.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                13,
+                                70.0,
+                                70.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "Plan duration must be between 14 and 180 days.",
+                exception.getMessage());
     }
 
     @Test
     void durationTooLongTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        181,
-                        65.0,
-                        64.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                181,
+                                70.0,
+                                70.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "Plan duration must be between 14 and 180 days.",
+                exception.getMessage());
     }
 
     @Test
-    void excessiveTotalWeightChangeTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        180,
-                        65.0,
-                        55.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+    void invalidStartingWeightTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                30,
+                                0.0,
+                                70.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "Starting and target weight must be greater than zero.",
+                exception.getMessage());
     }
 
     @Test
-    void excessiveWeeklyWeightChangeTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        14,
-                        65.0,
-                        60.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+    void invalidTargetWeightTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                30,
+                                70.0,
+                                0.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "Starting and target weight must be greater than zero.",
+                exception.getMessage());
     }
 
     @Test
-    void weightLossDirectionMismatchTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        60,
-                        65.0,
-                        66.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+    void nullHealthGoalTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                30,
+                                70.0,
+                                70.0,
+                                null,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A health goal is required.",
+                exception.getMessage());
     }
 
     @Test
-    void weightGainDirectionMismatchTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        60,
-                        65.0,
-                        64.0,
-                        HealthGoal.GAIN_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+    void invalidInitialDailyCalorieGoalTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                30,
+                                70.0,
+                                70.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                0.0
+                        ));
+
+        assertEquals(
+                "The daily calorie goal must be greater than zero.",
+                exception.getMessage());
     }
 
     @Test
-    void maintenanceDirectionMismatchTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new WeightGoalPlan(
-                        START_DATE,
-                        60,
-                        65.0,
-                        64.0,
-                        HealthGoal.MAINTAIN_WEIGHT,
-                        INITIAL_CALORIE_GOAL
-                )
-        );
+    void weightLossTargetMustBeLowerTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                60,
+                                70.0,
+                                70.0,
+                                HealthGoal.LOSE_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A weight-loss target must be below the starting weight.",
+                exception.getMessage());
+    }
+
+    @Test
+    void weightGainTargetMustBeHigherTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                60,
+                                70.0,
+                                70.0,
+                                HealthGoal.GAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A weight-gain target must be above the starting weight.",
+                exception.getMessage());
+    }
+
+    @Test
+    void maintenanceTargetMustEqualStartingWeightTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                60,
+                                70.0,
+                                69.0,
+                                HealthGoal.MAINTAIN_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A maintenance target must equal the starting weight.",
+                exception.getMessage());
+    }
+
+    @Test
+    void totalWeightChangeCannotExceedFifteenPercentTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                180,
+                                70.0,
+                                55.0,
+                                HealthGoal.LOSE_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "A single plan cannot change more than 15% "
+                        + "of the starting weight.",
+                exception.getMessage());
+    }
+
+    @Test
+    void weeklyWeightChangeCannotBeTooLargeTest() {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new WeightGoalPlan(
+                                LocalDate.now(),
+                                14,
+                                70.0,
+                                63.0,
+                                HealthGoal.LOSE_WEIGHT,
+                                2000.0
+                        ));
+
+        assertEquals(
+                "The requested weight change is too large "
+                        + "for the selected plan duration.",
+                exception.getMessage());
     }
 
     @Test
     void updateCurrentDailyCalorieGoalTest() {
-        final WeightGoalPlan plan =
+        WeightGoalPlan plan =
                 new WeightGoalPlan(
-                        START_DATE,
-                        70,
-                        65.0,
-                        62.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
+                        LocalDate.now(),
+                        30,
+                        70.0,
+                        70.0,
+                        HealthGoal.MAINTAIN_WEIGHT,
+                        2000.0
                 );
 
         plan.updateCurrentDailyCalorieGoal(
-                2050.0);
+                2100.0);
 
         assertEquals(
-                INITIAL_CALORIE_GOAL,
+                2000.0,
                 plan.getInitialDailyCalorieGoal(),
-                TOLERANCE);
+                0.001);
 
         assertEquals(
-                2050.0,
+                2100.0,
                 plan.getCurrentDailyCalorieGoal(),
-                TOLERANCE);
+                0.001);
     }
 
     @Test
     void invalidUpdatedDailyCalorieGoalTest() {
-        final WeightGoalPlan plan =
+        WeightGoalPlan plan =
                 new WeightGoalPlan(
-                        START_DATE,
-                        70,
-                        65.0,
-                        62.0,
-                        HealthGoal.LOSE_WEIGHT,
-                        INITIAL_CALORIE_GOAL
+                        LocalDate.now(),
+                        30,
+                        70.0,
+                        70.0,
+                        HealthGoal.MAINTAIN_WEIGHT,
+                        2000.0
                 );
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> plan.updateCurrentDailyCalorieGoal(
-                        0.0)
-        );
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> plan
+                                .updateCurrentDailyCalorieGoal(0.0));
+
+        assertEquals(
+                "The daily calorie goal must be greater than zero.",
+                exception.getMessage());
+
+        assertEquals(
+                2000.0,
+                plan.getCurrentDailyCalorieGoal(),
+                0.001);
     }
 }

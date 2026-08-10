@@ -9,11 +9,11 @@ import javax.swing.WindowConstants;
 import enery.use_case.recommendation.*;
 import okhttp3.OkHttpClient;
 
-import enery.data_access.DailyTrackingDataAccessObject;
-import enery.data_access.InMemoryExerciseDataAccessObject;
-import enery.data_access.InMemoryMealDataAccessObject;
-import enery.data_access.InMemoryPlanDataAccessObject;
-import enery.data_access.InMemoryUserDataAccessObject;
+import enery.data_access.tracking.DailyTrackingDataAccessObject;
+import enery.data_access.in_memory.InMemoryExerciseDataAccessObject;
+import enery.data_access.in_memory.InMemoryMealDataAccessObject;
+import enery.data_access.in_memory.InMemoryPlanDataAccessObject;
+import enery.data_access.in_memory.InMemoryUserDataAccessObject;
 import enery.data_access.api.ApiNinjasCaloriesBurnedDataAccessObject;
 import enery.data_access.api.UsdaNutritionDataAccessObject;
 import enery.entity.exercise.CommonExerciseEntryFactory;
@@ -22,7 +22,7 @@ import enery.entity.meal.CommonMealEntryFactory;
 import enery.entity.meal.MealEntryFactory;
 import enery.entity.user.CommonUserFactory;
 import enery.entity.user.UserFactory;
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.interface_adapter.change_password.ChangePasswordController;
 import enery.interface_adapter.change_password.ChangePasswordPresenter;
 import enery.interface_adapter.change_password.LoggedInViewModel;
@@ -98,25 +98,25 @@ import enery.use_case.tracking.TrackingDataAccessInterface;
 import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
-import enery.view.ForgotPasswordView;
-import enery.view.HomeView;
-import enery.view.LogExerciseView;
-import enery.view.LogMealView;
-import enery.view.LoginView;
-import enery.view.ProfileView;
-import enery.view.ProgressView;
-import enery.view.ChangePasswordView;
-import enery.view.SignupView;
-import enery.view.TrackingView;
-import enery.view.ViewManager;
+import enery.view.auth.ForgotPasswordView;
+import enery.view.home.HomeView;
+import enery.view.exercise.LogExerciseView;
+import enery.view.meal.LogMealView;
+import enery.view.auth.LoginView;
+import enery.view.profile.ProfileView;
+import enery.view.tracking.ProgressView;
+import enery.view.auth.ChangePasswordView;
+import enery.view.auth.SignupView;
+import enery.view.tracking.TrackingView;
+import enery.view.shared.ViewManager;
 import enery.data_access.api.RecipeApiDataAccessObject;
 import enery.interface_adapter.recipe.RecipePresenter;
 import enery.interface_adapter.recipe.RecipeViewModel;
-import enery.interface_adapter.recommendation.RecommendationController;
-import enery.interface_adapter.recommendation.RecommendationPresenter;
-import enery.interface_adapter.recommendation.RecommendationViewModel;
-import enery.view.RecipeView;
-import enery.view.RecommendationView;
+import enery.interface_adapter.recommendation.*;
+import enery.view.recommendation.*;
+//import enery.view.recommendation.RecipeView;
+//import enery.view.recommendation.RecommendationView;
+
 
 /**
  * Builds and wires the ENERY Smart Nutritionist application.
@@ -635,10 +635,12 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addProfileUseCase() {
+
         final ProfileOutputBoundary presenter =
                 new ProfilePresenter(
                         viewManagerModel,
-                        profileViewModel
+                        profileViewModel,
+                        loggedInViewModel
                 );
 
         final ProfileInputBoundary interactor =
@@ -648,7 +650,9 @@ public final class AppBuilder {
                 );
 
         profileView.setProfileController(
-                new ProfileController(interactor)
+                new ProfileController(
+                        interactor
+                )
         );
 
         return this;
@@ -719,7 +723,9 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addSearchExerciseUseCase() {
-        final CaloriesBurnedDataAccessInterface dataAccessObject =
+
+        final CaloriesBurnedDataAccessInterface
+                dataAccessObject =
                 new ApiNinjasCaloriesBurnedDataAccessObject(
                         httpClient,
                         getRequiredEnvironmentVariable(
@@ -735,11 +741,14 @@ public final class AppBuilder {
         final SearchExerciseInputBoundary interactor =
                 new SearchExerciseInteractor(
                         dataAccessObject,
+                        userDataAccessObject,
                         presenter
                 );
 
         logExerciseView.setSearchController(
-                new SearchExerciseController(interactor)
+                new SearchExerciseController(
+                        interactor
+                )
         );
 
         return this;
@@ -887,8 +896,14 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addHealthAssessmentModule() {
+        enery.use_case.tracking.TrackingDataAccessInterface trackingDAO =
+                new DailyTrackingDataAccessObject(
+                        mealDataAccessObject,
+                        exerciseDataAccessObject
+                );
+
         enery.use_case.health_assessment.HealthAssessmentDataAccessInterface healthDataAccess =
-                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject();
+                new enery.data_access.HealthAssessment_database.HealthAssessmentDataAccessObject(trackingDAO);
 
         enery.interface_adapter.health_assessment.HealthAssessmentViewModel healthAssessmentViewModel =
                 new enery.interface_adapter.health_assessment.HealthAssessmentViewModel();
@@ -903,7 +918,11 @@ public final class AppBuilder {
                 new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
 
         enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
-                new enery.view.HealthAssessment.HealthAssessmentView(healthAssessmentViewModel, controller, viewManagerModel);
+                new enery.view.HealthAssessment.HealthAssessmentView(
+                        healthAssessmentViewModel,
+                        controller,
+                        viewManagerModel,
+                        loggedInViewModel);
 
         cardPanel.add(healthAssessmentView,enery.interface_adapter.health_assessment.HealthAssessmentViewModel.VIEW_NAME
         );

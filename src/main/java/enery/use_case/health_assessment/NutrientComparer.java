@@ -33,41 +33,38 @@ public class NutrientComparer {
 
     // Comparing TackingOutputData and Standards
 
-    public DietaryEvaluationSummary evaluateDiet(TrackingOutputData trackingData, NutrientStandards standards) {
+    public DietaryEvaluationSummary evaluateDiet(double totalProtein, double totalCarbs, double totalFat,
+                                                 int days, NutrientStandards nutrientStandards) {
         List<String> allInsights = new ArrayList<>();
         List<String> allActionableItems = new ArrayList<>();
-        int totalScore = 0;
-        int nutrientCount = 0;
 
-        // Period Total -> Daily Average
-        int days = trackingData.getDailySummaries() != null && !trackingData.getDailySummaries().isEmpty()
-                ? trackingData.getDailySummaries().size()
-                : 1;
+        if (days >= 0) {
+            days = 1;
+        }
 
-        double avgProtein = trackingData.getProteinInGrams() / days;
-        double avgCarbs = trackingData.getCarbohydratesInGrams() / days;
-        double avgFat = trackingData.getFatInGrams() / days;
+        double avgProtein = totalProtein / days;
+        double avgCarbs = totalCarbs / days;
+        double avgFat = totalFat / days;
 
         // 1. Protein
-        SingleNutrientResult proteinRes = compareMetric("Protein", avgProtein, standards.getProteinInGrams(), "g");
-        totalScore += proteinRes.rating;
+        SingleNutrientResult proteinRes = compareMetric("Protein", avgProtein, nutrientStandards.getProteinInGrams(), "g");
         appendResults(allInsights, allActionableItems, proteinRes);
-        nutrientCount++;
 
         // 2. Carbohydrates
-        SingleNutrientResult carbsRes = compareMetric("Carbohydrates", avgCarbs, standards.getCarbohydratesInGrams(), "g");
-        totalScore += carbsRes.rating;
+        SingleNutrientResult carbsRes = compareMetric("Carbohydrates", avgCarbs, nutrientStandards.getCarbohydratesInGrams(), "g");
         appendResults(allInsights, allActionableItems, carbsRes);
-        nutrientCount++;
 
         // 3. Fat
-        SingleNutrientResult fatRes = compareMetric("Fat", avgFat, standards.getFatInGrams(), "g");
-        totalScore += fatRes.rating;
+        SingleNutrientResult fatRes = compareMetric("Fat", avgFat, nutrientStandards.getFatInGrams(), "g");
         appendResults(allInsights, allActionableItems, fatRes);
-        nutrientCount++;
+
+        // Nutrients weighed differently
+        double weightedProtein = proteinRes.rating * 0.50;
+        double weightedCarbs = carbsRes.rating * 0.30;
+        double weightedFat = fatRes.rating * 0.20;
 
         // Dietary Score
-        int averageScore = Math.round((float) totalScore / nutrientCount);
+        int averageScore = (int) Math.round(weightedProtein + weightedCarbs + weightedFat);
 
         return new DietaryEvaluationSummary(averageScore, allInsights, allActionableItems);
     }
@@ -87,27 +84,48 @@ public class NutrientComparer {
         double diff = actual - standard;
         double percentageDiff = Math.abs(diff) / standard;
 
-        int rating = 100;
+        int rating;
         String riskInsight = null;
         String actionableItem = null;
 
-        if (actual > standard) {
-            if (percentageDiff >= 0.5) {
-                rating = 0;
-                riskInsight = metricName + " intake is too high, posing a health risk";
-            } else {
-                rating = 80;
-                riskInsight = metricName + " intake is slightly high, but no immediate health risk";
-            }
-            actionableItem = metricName + " intake needs to be reduced by (" + String.format("%.1f", diff) + unit + ")";
+        // below 10%
+        if (percentageDiff <= 0.10) {
+            rating = 100;
+            riskInsight = metricName + " intake is optimal. Great job maintaining the standard!";
+        }
 
-        } else if (actual < standard) {
-            if (percentageDiff >= 0.5) {
-                rating = 0;
-                riskInsight = metricName + " intake is too low, posing a health risk";
-                actionableItem = metricName + " intake needs to be increased by (" + String.format("%.1f", Math.abs(diff)) + unit + ")";
+        // 10%-25%
+        else if (percentageDiff <= 0.25) {
+            rating = 85;
+            if (actual > standard) {
+                riskInsight = metricName + " intake is slightly high, but within an acceptable range.";
+                actionableItem = "Consider slightly reducing " + metricName + " intake by roughly " + String.format("%.1f", diff) + unit;
             } else {
-                rating = 80;
+                riskInsight = metricName + " intake is slightly low, but no immediate health risk.";
+                actionableItem = "Consider slightly increasing " + metricName + " intake by roughly " + String.format("%.1f", Math.abs(diff)) + unit;
+            }
+        }
+        // 25%-50%
+        else if (percentageDiff <= 0.50) {
+            rating = 60;
+            if (actual > standard) {
+                riskInsight = metricName + " intake is moderately high, which may hinder your health goals.";
+                actionableItem = "Aim to cut back " + metricName + " by " + String.format("%.1f", diff) + unit;
+            } else {
+                riskInsight = metricName + " intake is moderately low. You are missing essential nutrients.";
+                actionableItem = "Aim to add " + String.format("%.1f", Math.abs(diff)) + unit + " of " + metricName + " to your meals.";
+            }
+        }
+        // over 50%
+        else {
+            rating = Math.max(0, 40 - (int)((percentageDiff - 0.5) * 50));
+
+            if (actual > standard) {
+                riskInsight = metricName + " intake is excessively high, posing a significant health risk.";
+                actionableItem = "Needs immediate reduction by " + String.format("%.1f", diff) + unit;
+            } else {
+                riskInsight = metricName + " intake is severely deficient, which can impact bodily functions.";
+                actionableItem = "Needs immediate increase by " + String.format("%.1f", Math.abs(diff)) + unit;
             }
         }
 

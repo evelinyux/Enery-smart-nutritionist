@@ -1,6 +1,6 @@
 package enery.interface_adapter.progress;
 
-import enery.interface_adapter.ViewManagerModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 import enery.use_case.progress.ProgressOutputBoundary;
 import enery.use_case.progress.ProgressOutputData;
 
@@ -20,6 +20,13 @@ public class ProgressPresenter implements ProgressOutputBoundary {
         progressState.setTodaysCalories(outputData.getTodaysCalories());
         progressState.setDailyCalorieGoal(outputData.getDailyCalorieGoal());
         progressState.setDailyProgressPercent(outputData.getDailyProgressPercent());
+        progressState.setTodaysProtein(outputData.getProteinInGrams());
+        progressState.setTodaysCarbohydrates(outputData.getCarbohydratesInGrams());
+        progressState.setTodaysFats(outputData.getFatInGrams());
+        progressState.setTotalCalorieGoal(outputData.getTotalCalorieGoal());
+        progressState.setTotalCaloriesConsumed(outputData.getTotalCalories());
+        progressState.setTotalProgressPercent(outputData.getTotalProgressPercent());
+        progressState.setDaysSoFar(outputData.getDaysSoFar());
 
         progressState.setProgressError(null);
         progressState.setSuccessMessage("");
