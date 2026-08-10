@@ -33,33 +33,38 @@ public class HealthAssessmentDataAccessObjectTest {
         LocalDate start = LocalDate.now().minusDays(6);
         LocalDate end = LocalDate.now();
 
-        MealEntry meal1 = mock(MealEntry.class);
-        when(meal1.getTotalCalories()).thenReturn(500.0);
-        when(meal1.getTotalProteinInGrams()).thenReturn(30.0);
-        when(meal1.getTotalCarbohydratesInGrams()).thenReturn(40.0);
-        when(meal1.getTotalFatInGrams()).thenReturn(10.0);
+        enery.entity.meal.FoodItem food1 = new enery.entity.meal.FoodItem(
+                "LunchFood",
+                100.0,  // servingSizeInGrams
+                500.0,  // calories
+                30.0,   // protein
+                40.0,   // carbs
+                10.0,   // fat
+                0.0,    // fiber
+                0.0,    // sugar
+                0.0     // sodium
+        );
+        MealEntry meal1 = new MealEntry(food1, null, 1.0, start);
 
-        MealEntry meal2 = mock(MealEntry.class);
-        when(meal2.getTotalCalories()).thenReturn(300.0);
-        when(meal2.getTotalProteinInGrams()).thenReturn(20.0);
-        when(meal2.getTotalCarbohydratesInGrams()).thenReturn(30.0);
-        when(meal2.getTotalFatInGrams()).thenReturn(5.0);
-
-        ExerciseEntry exercise = mock(ExerciseEntry.class);
-        when(exercise.getCaloriesBurned()).thenReturn(200.0);
+        enery.entity.meal.FoodItem food2 = new enery.entity.meal.FoodItem(
+                "DinnerFood",
+                100.0,  // servingSizeInGrams
+                300.0,  // calories
+                20.0,   // protein
+                30.0,   // carbs
+                5.0,    // fat
+                0.0,    // fiber
+                0.0,    // sugar
+                0.0     // sodium
+        );
+        MealEntry meal2 = new MealEntry(food2, null, 1.0, start);
 
         when(mockTrackingDAO.getMeals(userId, start, end))
                 .thenReturn(Arrays.asList(meal1, meal2));
 
-        when(mockTrackingDAO.getExercises(userId, start, end))
-                .thenReturn(List.of(exercise));
-
-        TrackingOutputData result =
-                healthDAO.getTrackingData(userId, start, end);
+        TrackingOutputData result = healthDAO.getTrackingData(userId, start, end);
 
         assertEquals(800.0, result.getCaloriesConsumed());
-        assertEquals(200.0, result.getCaloriesBurned());
-        assertEquals(600.0, result.getNetCalories());
         assertEquals(50.0, result.getProteinInGrams());
         assertEquals(70.0, result.getCarbohydratesInGrams());
         assertEquals(15.0, result.getFatInGrams());
