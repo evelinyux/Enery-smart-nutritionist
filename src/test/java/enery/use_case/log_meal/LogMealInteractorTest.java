@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import enery.data_access.in_memory.InMemoryMealDataAccessObject;
+import enery.data_access.in_memory.InMemoryUserDataAccessObject;
 import enery.entity.meal.CommonMealEntryFactory;
 import enery.entity.meal.FoodItem;
 import enery.entity.meal.MealEntry;
@@ -20,8 +21,11 @@ class LogMealInteractorTest {
 
     @Test
     void successTest() {
+        final InMemoryUserDataAccessObject userRepository =
+                new InMemoryUserDataAccessObject();
+
         final InMemoryMealDataAccessObject repository =
-                new InMemoryMealDataAccessObject();
+                new InMemoryMealDataAccessObject(userRepository);
 
         final FoodItem apple = new FoodItem(
                 "Apple",
@@ -79,7 +83,8 @@ class LogMealInteractorTest {
                             String errorMessage) {
 
                         fail(
-                                "Use case failure is unexpected.");
+                                "Use case failure is unexpected."
+                        );
                     }
                 };
 
@@ -108,13 +113,19 @@ class LogMealInteractorTest {
                 );
 
         assertEquals(1, meals.size());
-        assertEquals(apple, meals.get(0).getFoodItem());
+        assertEquals(
+                apple,
+                meals.get(0).getFoodItem()
+        );
     }
 
     @Test
     void rejectsNonPositiveServings() {
+        final InMemoryUserDataAccessObject userRepository =
+                new InMemoryUserDataAccessObject();
+
         final InMemoryMealDataAccessObject repository =
-                new InMemoryMealDataAccessObject();
+                new InMemoryMealDataAccessObject(userRepository);
 
         final FoodItem apple = new FoodItem(
                 "Apple",
@@ -144,7 +155,8 @@ class LogMealInteractorTest {
                             LogMealOutputData outputData) {
 
                         fail(
-                                "Use case success is unexpected.");
+                                "Use case success is unexpected."
+                        );
                     }
 
                     @Override
