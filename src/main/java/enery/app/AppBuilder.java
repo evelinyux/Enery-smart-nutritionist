@@ -889,6 +889,23 @@ public final class AppBuilder {
         return this;
     }
 
+    public AppBuilder addDailyCheckUseCase() {
+        final DailyCheckDataAccessInterface dailyCheckDAO =
+                new enery.data_access.daily_check.DailyCheckDataAccessObject(); // teammate's DAO
+
+        final DailyCheckOutputBoundary presenter =
+                new DailyCheckPresenter(homeViewModel);
+
+        final DailyCheckInputBoundary interactor =
+                new DailyCheckInteractor(dailyCheckDAO, presenter);
+
+        homeView.setDailyCheckController(
+                new DailyCheckController(interactor)
+        );
+
+        return this;
+    }
+
 
     /**
      * Wires and registers the Health Assessment module.
