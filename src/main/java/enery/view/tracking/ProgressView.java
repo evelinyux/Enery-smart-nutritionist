@@ -242,7 +242,8 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         dailyProgressLabel.setText(formatDailyProgressLabel());
         dailyProgressLabel.setVisible(true);
 
-        dailyProgressBar.setValue((int) (dailyProgressPercent * PERCENTAGE_FACTOR));
+        dailyProgressBar.setValue((int) (Math.round(dailyProgressPercent * PERCENTAGE_FACTOR)
+                * TENTHS_ROUNDING_FACTOR / TENTHS_ROUNDING_FACTOR));
         dailyProgressBar.setVisible(true);
 
         recommendationLabel.setVisible(dailyProgressPercent < 1);
