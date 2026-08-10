@@ -29,7 +29,11 @@ public class HealthAssessmentInteractor implements HealthAssessmentInputBoundary
             java.time.LocalDate startDate = endDate.minusDays(6);
             TrackingOutputData trackingData = healthDataAccess.getTrackingData(userId, startDate, endDate);
 
-            if (trackingData == null) {
+            if (trackingData == null||
+                    (trackingData.getCaloriesConsumed() == 0.0 &&
+                            trackingData.getProteinInGrams() == 0.0 &&
+                            trackingData.getCarbohydratesInGrams() == 0.0 &&
+                            trackingData.getFatInGrams() == 0.0)) {
                 outputBoundary.prepareFailView("No meal records found in the database for the past 7 days. Please log data first.");
                 return;
             }
