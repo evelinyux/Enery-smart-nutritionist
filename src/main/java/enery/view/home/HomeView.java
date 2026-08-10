@@ -23,8 +23,7 @@ import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.view.auth.ChangePasswordView;
 import enery.interface_adapter.recommendation.RecommendationViewModel;
-import enery.interface_adapter.shared.ViewManagerModel;
-
+import enery.interface_adapter.daily_check.DailyCheckViewModel;
 /**
  * Main navigation screen displayed after login.
  */
@@ -63,6 +62,9 @@ public final class HomeView extends JPanel
             );
     private final JButton recommendationButton =
             new JButton("Recommendations");
+
+    private final JButton dailyCheckButton =
+            new JButton("Daily Check");
 
     private final JButton trackingButton =
             new JButton(
@@ -141,6 +143,9 @@ public final class HomeView extends JPanel
                 Component.CENTER_ALIGNMENT
         );
 
+        dailyCheckButton.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
         trackingButton.setAlignmentX(
                 Component.CENTER_ALIGNMENT
         );
@@ -180,6 +185,11 @@ public final class HomeView extends JPanel
                                 LogExerciseViewModel.VIEW_NAME
                         )
         );
+
+        dailyCheckButton.addActionListener(
+                event ->
+                        switchView(
+                            DailyCheckViewModel.VIEW_NAME));
 
         progressButton.addActionListener(
                 event ->
@@ -288,6 +298,9 @@ public final class HomeView extends JPanel
         add(recommendationButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
+        add(dailyCheckButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+
         add(trackingButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
@@ -325,6 +338,9 @@ public final class HomeView extends JPanel
                 profileComplete
         );
 
+        dailyCheckButton.setEnabled(
+                profileComplete);
+
         healthAssessmentButton.setEnabled(
                 profileComplete
         );
@@ -347,6 +363,7 @@ public final class HomeView extends JPanel
             mealButton.setToolTipText(null);
             exerciseButton.setToolTipText(null);
             progressButton.setToolTipText(null);
+            dailyCheckButton.setToolTipText(null);
             trackingButton.setToolTipText(null);
             healthAssessmentButton
                     .setToolTipText(null);
@@ -368,6 +385,8 @@ public final class HomeView extends JPanel
             exerciseButton.setToolTipText(
                     tooltip
             );
+
+            dailyCheckButton.setToolTipText(tooltip);
 
             progressButton.setToolTipText(
                     tooltip

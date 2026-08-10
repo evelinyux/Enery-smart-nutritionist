@@ -11,6 +11,15 @@ import enery.view.recommendation.RecipeView;
 import enery.view.recommendation.RecommendationView;
 import okhttp3.OkHttpClient;
 
+import enery.interface_adapter.daily_check.DailyCheckController;
+import enery.interface_adapter.daily_check.DailyCheckPresenter;
+import enery.interface_adapter.daily_check.DailyCheckViewModel;
+import enery.use_case.daily_check.DailyCheckInputBoundary;
+import enery.use_case.daily_check.DailyCheckInteractor;
+import enery.use_case.daily_check.DailyCheckOutputBoundary;
+import enery.use_case.daily_check.DailyCheckExerciseDataAccessInterface;
+import enery.use_case.daily_check.DailyCheckMealDataAccessInterface;
+import enery.view.daily_check.DailyCheckView;
 import enery.data_access.tracking.DailyTrackingDataAccessObject;
 import enery.data_access.in_memory.InMemoryExerciseDataAccessObject;
 import enery.data_access.in_memory.InMemoryMealDataAccessObject;
@@ -160,6 +169,9 @@ public final class AppBuilder {
 
     private final InMemoryMealDataAccessObject mealDataAccessObject =
             new InMemoryMealDataAccessObject(userDataAccessObject);
+
+    private DailyCheckView dailyCheckView;
+    private DailyCheckViewModel dailyCheckViewModel;
 
     private final InMemoryExerciseDataAccessObject
             exerciseDataAccessObject =
@@ -682,6 +694,25 @@ public final class AppBuilder {
     }
 
     /**
+     * Creates and registers the Daily Check view.
+     *
+     * @return this builder
+     */
+    public AppBuilder addDailyCheckView() {
+        dailyCheckViewModel = new DailyCheckViewModel();
+
+        // Assuming your DailyCheckView takes the ViewModel and ViewManagerModel in its constructor
+        dailyCheckView = new DailyCheckView(dailyCheckViewModel, viewManagerModel, loggedInViewModel);
+
+        cardPanel.add(
+                dailyCheckView,
+                DailyCheckViewModel.VIEW_NAME
+        );
+
+        return this;
+    }
+
+    /**
      * Wires the USDA-backed food-search use case.
      *
      * @return this builder
@@ -772,6 +803,29 @@ public final class AppBuilder {
 
         logExerciseView.setLogController(
                 new LogExerciseController(interactor)
+        );
+
+        return this;
+    }
+
+    /**
+     * Wires the Daily Check use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addDailyCheckUseCase() {
+        final DailyCheckOutputBoundary presenter =
+                new DailyCheckPresenter(viewManagerModel, dailyCheckViewModel);
+
+        final DailyCheckInputBoundary interactor =
+                new DailyCheckInteractor(
+                        (DailyCheckMealDataAccessInterface) mealDataAccessObject,
+                        (DailyCheckExerciseDataAccessInterface) exerciseDataAccessObject,
+                        presenter
+                );
+
+        dailyCheckView.setDailyCheckController(
+                new DailyCheckController(interactor)
         );
 
         return this;
@@ -887,22 +941,6 @@ public final class AppBuilder {
         return this;
     }
 
-    public AppBuilder addDailyCheckUseCase() {
-        final DailyCheckDataAccessInterface dailyCheckDAO =
-                new enery.data_access.daily_check.DailyCheckDataAccessObject(); // teammate's DAO
-
-        final DailyCheckOutputBoundary presenter =
-                new DailyCheckPresenter(homeViewModel);
-
-        final DailyCheckInputBoundary interactor =
-                new DailyCheckInteractor(dailyCheckDAO, presenter);
-
-        homeView.setDailyCheckController(
-                new DailyCheckController(interactor)
-        );
-
-        return this;
-    }
 
 
     /**
