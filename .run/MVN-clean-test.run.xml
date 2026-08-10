@@ -8,8 +8,9 @@
           <option name="environmentProperties">
             <map>
               <entry key="API_NINJAS_KEY" value="ILVuOs128Y6EMyee1dQIl4S3X1KfpvOLSOsS6wUK" />
-              <entry key="RECIPE_API_KEY" value="rapi_966a04053c350497135e0c41001d3ba0a91741b7d294503a" />
+              <entry key="RECIPE_API_KEY" value="rapi_2185a02f31ce562dd16329cf12bae7653fa3253a5c46ebf2" />
               <entry key="USDA_API_KEY" value="bFEIqbaxlObeu7tp2S32HVZdCUWtIlllMNbyjh65" />
+              <entry key="WORKOUT_API_KEY" value="98c8f55b9913bd89da29b5e2383276e24e9a4dd67457f135e6fb013c377aac40" />
             </map>
           </option>
           <option name="jreName" value="#USE_PROJECT_JDK" />

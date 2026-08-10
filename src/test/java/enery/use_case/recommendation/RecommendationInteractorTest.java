@@ -13,6 +13,8 @@ import enery.entity.tracking.DailyLog;
 import enery.entity.user.NutritionGoal;
 import enery.entity.user.User;
 import enery.entity.user.UserProfile;
+import enery.use_case.log_meal.LogMealUserDataAccessInterface;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +22,7 @@ import org.mockito.ArgumentCaptor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,6 +43,8 @@ class RecommendationInteractorTest {
             exerciseDataAccess;
 
     private RecommendationOutputBoundary presenter;
+
+    private LogMealUserDataAccessInterface mealDataAccess;
 
     private RecommendationInteractor interactor;
 
@@ -65,12 +70,18 @@ class RecommendationInteractorTest {
                         RecommendationOutputBoundary.class
                 );
 
+        mealDataAccess =
+                mock(
+                        LogMealUserDataAccessInterface.class
+                );
+
         interactor =
                 new RecommendationInteractor(
                         userDataAccess,
                         recipeDataAccess,
                         exerciseDataAccess,
-                        presenter
+                        presenter,
+                        mealDataAccess
                 );
     }
 
@@ -82,6 +93,7 @@ class RecommendationInteractorTest {
                 new RecommendationInputData(username);
 
         final User user = mock(User.class);
+
         final UserProfile profile =
                 mock(UserProfile.class);
 
@@ -111,11 +123,12 @@ class RecommendationInteractorTest {
                         List.of("Vegetarian")
                 );
 
-        final Recipe recipe = createRecipe(
-                "r1",
-                "Avocado Toast",
-                350.0
-        );
+        final Recipe recipe =
+                createRecipe(
+                        "r1",
+                        "Avocado Toast",
+                        350.0
+                );
 
         final ExerciseSearchResult exercise =
                 new ExerciseSearchResult(
@@ -125,14 +138,24 @@ class RecommendationInteractorTest {
                         300.0
                 );
 
-        when(recipeDataAccess.fetchCandidateRecipes(
-                anyInt(),
-                anyList()
-        )).thenReturn(List.of(recipe));
+        when(
+                recipeDataAccess.fetchCandidateRecipes(
+                        anyDouble(),
+                        anyDouble(),
+                        anyDouble(),
+                        anyDouble(),
+                        anyList()
+                )
+        ).thenReturn(
+                List.of(recipe)
+        );
 
-        when(exerciseDataAccess
-                .fetchCandidateExercises(anyInt()))
-                .thenReturn(List.of(exercise));
+        when(
+                exerciseDataAccess
+                        .fetchCandidateExercises(anyInt())
+        ).thenReturn(
+                List.of(exercise)
+        );
 
         interactor.execute(inputData);
 
@@ -143,10 +166,16 @@ class RecommendationInteractorTest {
                 );
 
         verify(presenter)
-                .prepareSuccessView(captor.capture());
+                .prepareSuccessView(
+                        captor.capture()
+                );
 
-        verify(presenter, never())
-                .prepareFailView(anyString());
+        verify(
+                presenter,
+                never()
+        ).prepareFailView(
+                anyString()
+        );
 
         final RecommendationOutputData outputData =
                 captor.getValue();
@@ -155,14 +184,16 @@ class RecommendationInteractorTest {
 
         assertEquals(
                 "Avocado Toast",
-                outputData.getRecommendedRecipes()
+                outputData
+                        .getRecommendedRecipes()
                         .get(0)
                         .getName()
         );
 
         assertEquals(
                 "Running",
-                outputData.getRecommendedExercises()
+                outputData
+                        .getRecommendedExercises()
                         .get(0)
                         .getExerciseName()
         );
@@ -175,32 +206,45 @@ class RecommendationInteractorTest {
                         "missing_user"
                 );
 
-        when(userDataAccess.get(
-                "missing_user"
-        )).thenReturn(null);
+        when(
+                userDataAccess.get(
+                        "missing_user"
+                )
+        ).thenReturn(null);
 
         interactor.execute(inputData);
 
-        verify(presenter).prepareFailView(
-                "User account was not found."
-        );
+        verify(presenter)
+                .prepareFailView(
+                        "User account was not found."
+                );
 
-        verify(presenter, never())
-                .prepareSuccessView(any());
+        verify(
+                presenter,
+                never()
+        ).prepareSuccessView(
+                any()
+        );
     }
 
     @Test
     void executeFailsWhenProfileIncomplete() {
-        final User user = mock(User.class);
+        final User user =
+                mock(User.class);
 
-        when(userDataAccess.get("new_user"))
-                .thenReturn(user);
+        when(
+                userDataAccess.get(
+                        "new_user"
+                )
+        ).thenReturn(user);
 
-        when(user.getUserProfile())
-                .thenReturn(null);
+        when(
+                user.getUserProfile()
+        ).thenReturn(null);
 
-        when(user.getNutritionGoal())
-                .thenReturn(null);
+        when(
+                user.getNutritionGoal()
+        ).thenReturn(null);
 
         interactor.execute(
                 new RecommendationInputData(
@@ -208,20 +252,27 @@ class RecommendationInteractorTest {
                 )
         );
 
-        verify(presenter).prepareFailView(
-                "Please complete your user profile "
-                        + "and nutrition goals first."
-        );
+        verify(presenter)
+                .prepareFailView(
+                        "Please complete your user profile first."
+                );
 
-        verify(presenter, never())
-                .prepareSuccessView(any());
+        verify(
+                presenter,
+                never()
+        ).prepareSuccessView(
+                any()
+        );
     }
 
     @Test
     void executeFiltersLoggedItems() {
-        final String username = "test_user";
+        final String username =
+                "test_user";
 
-        final User user = mock(User.class);
+        final User user =
+                mock(User.class);
+
         final UserProfile profile =
                 mock(UserProfile.class);
 
@@ -229,7 +280,9 @@ class RecommendationInteractorTest {
                 mock(NutritionGoal.class);
 
         final DailyLog dailyLog =
-                new DailyLog(LocalDate.now());
+                new DailyLog(
+                        LocalDate.now()
+                );
 
         final FoodItem loggedFood =
                 new FoodItem(
@@ -262,23 +315,33 @@ class RecommendationInteractorTest {
                 )
         );
 
-        when(userDataAccess.get(username))
-                .thenReturn(user);
+        when(
+                userDataAccess.get(username)
+        ).thenReturn(user);
 
-        when(user.getUserProfile())
-                .thenReturn(profile);
+        when(
+                user.getUserProfile()
+        ).thenReturn(profile);
 
-        when(user.getNutritionGoal())
-                .thenReturn(goal);
+        when(
+                user.getNutritionGoal()
+        ).thenReturn(goal);
 
-        when(user.getDailyLog(LocalDate.now()))
-                .thenReturn(dailyLog);
+        when(
+                user.getDailyLog(
+                        LocalDate.now()
+                )
+        ).thenReturn(dailyLog);
 
-        when(goal.getDailyCalories())
-                .thenReturn(2000.0);
+        when(
+                goal.getDailyCalories()
+        ).thenReturn(2000.0);
 
-        when(profile.getDietaryRestrictions())
-                .thenReturn(List.of());
+        when(
+                profile.getDietaryRestrictions()
+        ).thenReturn(
+                List.of()
+        );
 
         final Recipe duplicateRecipe =
                 createRecipe(
@@ -310,27 +373,37 @@ class RecommendationInteractorTest {
                         400.0
                 );
 
-        when(recipeDataAccess.fetchCandidateRecipes(
-                anyInt(),
-                anyList()
-        )).thenReturn(
+        when(
+                recipeDataAccess.fetchCandidateRecipes(
+                        anyDouble(),
+                        anyDouble(),
+                        anyDouble(),
+                        anyDouble(),
+                        anyList()
+                )
+        ).thenReturn(
                 List.of(
                         duplicateRecipe,
                         newRecipe
                 )
         );
 
-        when(exerciseDataAccess
-                .fetchCandidateExercises(anyInt()))
-                .thenReturn(
-                        List.of(
-                                duplicateExercise,
-                                newExercise
+        when(
+                exerciseDataAccess
+                        .fetchCandidateExercises(
+                                anyInt()
                         )
-                );
+        ).thenReturn(
+                List.of(
+                        duplicateExercise,
+                        newExercise
+                )
+        );
 
         interactor.execute(
-                new RecommendationInputData(username)
+                new RecommendationInputData(
+                        username
+                )
         );
 
         final ArgumentCaptor<RecommendationOutputData>
@@ -340,31 +413,39 @@ class RecommendationInteractorTest {
                 );
 
         verify(presenter)
-                .prepareSuccessView(captor.capture());
+                .prepareSuccessView(
+                        captor.capture()
+                );
 
         final RecommendationOutputData outputData =
                 captor.getValue();
 
         assertEquals(
                 1,
-                outputData.getRecommendedRecipes().size()
+                outputData
+                        .getRecommendedRecipes()
+                        .size()
         );
 
         assertEquals(
                 "Oatmeal Bowl",
-                outputData.getRecommendedRecipes()
+                outputData
+                        .getRecommendedRecipes()
                         .get(0)
                         .getName()
         );
 
         assertEquals(
                 1,
-                outputData.getRecommendedExercises().size()
+                outputData
+                        .getRecommendedExercises()
+                        .size()
         );
 
         assertEquals(
                 "Swimming",
-                outputData.getRecommendedExercises()
+                outputData
+                        .getRecommendedExercises()
                         .get(0)
                         .getExerciseName()
         );
