@@ -42,7 +42,6 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
     private final JTextPane nutrientsLabel = new JTextPane();
     private final JLabel planProgressLabel = new JLabel("");
     private final JProgressBar planProgressBar = new JProgressBar(0, 100);
-    private final JButton recalculateButton = new JButton("Recalculate Daily Goal?");
     private final JButton backButton = new JButton("Home");
     private final JLabel statusLabel = new JLabel();
 
