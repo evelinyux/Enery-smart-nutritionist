@@ -238,6 +238,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
 
     private void updateProgressUi() {
         final double dailyProgressPercent = progressViewModel.getState().getDailyProgressPercent();
+        final double totalProgressPercent = progressViewModel.getState().getTotalProgressPercent();
 
         dailyProgressLabel.setText(formatDailyProgressLabel());
         dailyProgressLabel.setVisible(true);
@@ -256,7 +257,7 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         planProgressLabel.setText(formatPlanProgressLabel());
         planProgressLabel.setVisible(true);
 
-        planProgressBar.setValue((int) (dailyProgressPercent * PERCENTAGE_FACTOR));
+        planProgressBar.setValue((int) (totalProgressPercent * PERCENTAGE_FACTOR));
         planProgressBar.setVisible(true);
 
         if (progressViewModel.getState().getProgressError() == null) {
