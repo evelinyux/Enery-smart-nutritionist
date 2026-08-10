@@ -7,6 +7,11 @@ public class ProgressState {
     private double todaysProtein;
     private double todaysCarbohydrates;
     private double todaysFats;
+    private double totalCalorieGoal;
+    private double totalCaloriesConsumed;
+    private double totalProgressPercent;
+    private int planDuration;
+    private int daysSoFar;
 
     private String progressError;
     private String successMessage;
@@ -73,5 +78,37 @@ public class ProgressState {
 
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public double getTotalCalorieGoal() {
+        return totalCalorieGoal;
+    }
+
+    public void setTotalCalorieGoal(double totalCalorieGoal) {
+        this.totalCalorieGoal = totalCalorieGoal;
+    }
+
+    public double getTotalCaloriesConsumed() {
+        return totalCaloriesConsumed;
+    }
+
+    public void setTotalCaloriesConsumed(double totalCaloriesConsumed) {
+        this.totalCaloriesConsumed = totalCaloriesConsumed;
+    }
+
+    public double getTotalProgressPercent() {
+        return totalProgressPercent;
+    }
+
+    public void setTotalProgressPercent(double totalProgressPercent) {
+        this.totalProgressPercent = totalProgressPercent;
+    }
+
+    public int getDaysSoFar() {
+        return daysSoFar;
+    }
+
+    public void setDaysSoFar(int daysSoFar) {
+        this.daysSoFar = daysSoFar;
     }
 }

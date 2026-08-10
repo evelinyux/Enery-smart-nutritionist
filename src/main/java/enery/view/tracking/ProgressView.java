@@ -40,7 +40,8 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
             "We can recommend you a meal to help you reach your goal.");
     private final JButton recommendationButton = new JButton("Recommend a meal");
     private final JTextPane nutrientsLabel = new JTextPane();
-    private final JButton recalculateButton = new JButton("Recalculate Daily Goal");
+    private final JLabel planProgressLabel = new JLabel("");
+    private final JProgressBar planProgressBar = new JProgressBar(0, 100);
     private final JButton backButton = new JButton("Home");
     private final JLabel statusLabel = new JLabel();
 
@@ -94,6 +95,15 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
+        planProgressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        planProgressLabel.setVisible(false);
+
+        planProgressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        planProgressBar.setValue(0);
+        planProgressBar.setMaximumSize(PROGRESS_BAR_SIZE);
+        planProgressBar.setStringPainted(true);
+        planProgressBar.setVisible(false);
+
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -128,6 +138,10 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         add(recommendationButton);
         add(Box.createVerticalStrut(SMALL_GAP));
         add(nutrientsLabel);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(planProgressLabel);
+        add(Box.createVerticalStrut(SMALL_GAP));
+        add(planProgressBar);
         add(Box.createVerticalStrut(SMALL_GAP));
         add(backButton);
         add(Box.createVerticalStrut(SMALL_GAP));
@@ -181,6 +195,24 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
                 + "g.";
     }
 
+    private String formatPlanProgressLabel() {
+        final int daysSoFar = progressViewModel.getState().getDaysSoFar();
+        final double totalCalories = progressViewModel.getState().getTotalCaloriesConsumed();
+        final double totalCalorieGoal = progressViewModel.getState().getTotalCalorieGoal();
+        final double totalProgressPercent = progressViewModel.getState().getTotalProgressPercent();
+
+        return "Your total calorie goal is "
+                + totalCalorieGoal
+                + " kcal. Over the course of "
+                + daysSoFar
+                + " days, you consumed "
+                + totalCalories
+                + " kcal. This is "
+                + Math.round((totalProgressPercent * PERCENTAGE_FACTOR)
+                * TENTHS_ROUNDING_FACTOR / TENTHS_ROUNDING_FACTOR)
+                + "% of your plan.";
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("error") && evt.getSource().equals(progressViewModel)) {
@@ -219,6 +251,12 @@ public final class ProgressView extends JPanel implements PropertyChangeListener
         nutrientsLabel.setText(formatNutrientsLabel());
         nutrientsLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, nutrientsLabel.getPreferredSize().height));
         nutrientsLabel.setVisible(true);
+
+        planProgressLabel.setText(formatPlanProgressLabel());
+        planProgressLabel.setVisible(true);
+
+        planProgressBar.setValue((int) (dailyProgressPercent * PERCENTAGE_FACTOR));
+        planProgressBar.setVisible(true);
 
         if (progressViewModel.getState().getProgressError() == null) {
             statusLabel.setText("");

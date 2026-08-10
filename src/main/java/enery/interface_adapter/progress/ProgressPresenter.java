@@ -23,6 +23,10 @@ public class ProgressPresenter implements ProgressOutputBoundary {
         progressState.setTodaysProtein(outputData.getProteinInGrams());
         progressState.setTodaysCarbohydrates(outputData.getCarbohydratesInGrams());
         progressState.setTodaysFats(outputData.getFatInGrams());
+        progressState.setTotalCalorieGoal(outputData.getTotalCalorieGoal());
+        progressState.setTotalCaloriesConsumed(outputData.getTotalCalories());
+        progressState.setTotalProgressPercent(outputData.getTotalProgressPercent());
+        progressState.setDaysSoFar(outputData.getDaysSoFar());
 
         progressState.setProgressError(null);
         progressState.setSuccessMessage("");
