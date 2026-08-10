@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import enery.interface_adapter.daily_check.DailyCheckPresenter;
+import enery.interface_adapter.daily_check.DailyCheckViewModel;
+import enery.use_case.daily_check.*;
 import enery.use_case.recommendation.*;
 import enery.view.recommendation.RecipeView;
 import enery.view.recommendation.RecommendationView;
@@ -808,28 +811,28 @@ public final class AppBuilder {
         return this;
     }
 
-    /**
-     * Wires the Daily Check use case.
-     *
-     * @return this builder
-     */
-    public AppBuilder addDailyCheckUseCase() {
-        final DailyCheckOutputBoundary presenter =
-                new DailyCheckPresenter(viewManagerModel, dailyCheckViewModel);
-
-        final DailyCheckInputBoundary interactor =
-                new DailyCheckInteractor(
-                        (DailyCheckMealDataAccessInterface) mealDataAccessObject,
-                        (DailyCheckExerciseDataAccessInterface) exerciseDataAccessObject,
-                        presenter
-                );
-
-        dailyCheckView.setDailyCheckController(
-                new DailyCheckController(interactor)
-        );
-
-        return this;
-    }
+//    /**
+//     * Wires the Daily Check use case.
+//     *
+//     * @return this builder
+//     */
+//    public AppBuilder addDailyCheckUseCase() {
+//        final DailyCheckOutputBoundary presenter =
+//                new DailyCheckPresenter(viewManagerModel, dailyCheckViewModel);
+//
+//        final DailyCheckInputBoundary interactor =
+//                new DailyCheckInteractor(
+//                        (DailyCheckMealDataAccessInterface) mealDataAccessObject,
+//                        (DailyCheckExerciseDataAccessInterface) exerciseDataAccessObject,
+//                        presenter
+//                );
+//
+//        dailyCheckView.setDailyCheckController(
+//                new DailyCheckController(interactor)
+//        );
+//
+//        return this;
+//    }
 
     /**
      * Wires the progress use case.
@@ -942,6 +945,33 @@ public final class AppBuilder {
     }
 
 
+    /**
+     * Wires the Daily Check use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addDailyCheckUseCase() {
+        // 1. Cast existing DAOs from AppBuilder fields
+        final DailyCheckMealDataAccessInterface mealDAO =
+                (DailyCheckMealDataAccessInterface) mealDataAccessObject;
+        final DailyCheckExerciseDataAccessInterface exerciseDAO =
+                (DailyCheckExerciseDataAccessInterface) exerciseDataAccessObject;
+
+        // 2. Create Presenter with ViewManagerModel and DailyCheckViewModel
+        final DailyCheckOutputBoundary presenter =
+                new DailyCheckPresenter(viewManagerModel, dailyCheckViewModel);
+
+        // 3. Instantiate Interactor with both DAOs + Presenter
+        final DailyCheckInputBoundary interactor =
+                new DailyCheckInteractor(mealDAO, exerciseDAO, presenter);
+
+        // 4. Set Controller on dailyCheckView (NOT homeView)
+        dailyCheckView.setDailyCheckController(
+                new DailyCheckController(interactor)
+        );
+
+        return this;
+    }
 
     /**
      * Wires and registers the Health Assessment module.
