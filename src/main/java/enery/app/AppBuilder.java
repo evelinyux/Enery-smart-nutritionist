@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import enery.use_case.recommendation.*;
+import enery.view.recommendation.RecipeView;
+import enery.view.recommendation.RecommendationView;
 import okhttp3.OkHttpClient;
 
 import enery.data_access.tracking.DailyTrackingDataAccessObject;
@@ -99,7 +101,6 @@ import enery.use_case.tracking.TrackingInputBoundary;
 import enery.use_case.tracking.TrackingInteractor;
 import enery.use_case.tracking.TrackingOutputBoundary;
 import enery.view.auth.ForgotPasswordView;
-import enery.view.home.HomeView;
 import enery.view.exercise.LogExerciseView;
 import enery.view.meal.LogMealView;
 import enery.view.auth.LoginView;
@@ -113,9 +114,9 @@ import enery.data_access.api.RecipeApiDataAccessObject;
 import enery.interface_adapter.recipe.RecipePresenter;
 import enery.interface_adapter.recipe.RecipeViewModel;
 import enery.interface_adapter.recommendation.*;
-import enery.view.recommendation.*;
-//import enery.view.recommendation.RecipeView;
-//import enery.view.recommendation.RecommendationView;
+import enery.view.home.HomeView;
+import enery.view.recommendation.RecipeView;
+import enery.view.recommendation.RecommendationView;
 
 
 /**
@@ -489,7 +490,6 @@ public final class AppBuilder {
      * @return this builder
      */
     public AppBuilder addRecipeView() {
-//        recipeView = new RecipeView(recipeViewModel, viewManagerModel);
         RecipeView recipeView = new RecipeView(recipeViewModel, viewManagerModel);
 
         cardPanel.add(
@@ -979,30 +979,53 @@ public final class AppBuilder {
         return value;
     }
 
-    /**
-     * Creates an OkHttpClient that trusts all SSL certificates to bypass local SSL verification issues.
-     */
-    private static OkHttpClient getUnsafeOkHttpClient() {
-        try {
-            final javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[]{
-                    new javax.net.ssl.X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[0];
-                        }
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+//    /**
+//     * Creates an OkHttpClient that trusts all SSL certificates to bypass local SSL verification issues.
+//     */
+//    private static OkHttpClient getUnsafeOkHttpClient() {
+//        try {
+//            final javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[]{
+//                    new javax.net.ssl.X509TrustManager() {
+//                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+//                            return new java.security.cert.X509Certificate[0];
+//                        }
+//                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+//                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+//                    }
+//            };
+//
+//            final javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+//            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+//
+//            return new OkHttpClient.Builder()
+//                    .sslSocketFactory(sslContext.getSocketFactory(), (javax.net.ssl.X509TrustManager) trustAllCerts[0])
+//                    .hostnameVerifier((hostname, session) -> true)
+//                    .build();
+//        } catch (Exception e) {
+//            return new OkHttpClient();
+//        }
+//    }
+private static OkHttpClient getUnsafeOkHttpClient() {
+    try {
+        final javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[]{
+                new javax.net.ssl.X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[0];
                     }
-            };
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                }
+        };
 
-            final javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        final javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            return new OkHttpClient.Builder()
-                    .sslSocketFactory(sslContext.getSocketFactory(), (javax.net.ssl.X509TrustManager) trustAllCerts[0])
-                    .hostnameVerifier((hostname, session) -> true)
-                    .build();
-        } catch (Exception e) {
-            return new OkHttpClient();
-        }
+        return new OkHttpClient.Builder()
+                .sslSocketFactory(sslContext.getSocketFactory(), (javax.net.ssl.X509TrustManager) trustAllCerts[0])
+                .hostnameVerifier((hostname, session) -> true)
+                .build();
+    } catch (Exception e) {
+        throw new RuntimeException(e);
     }
+}
 }

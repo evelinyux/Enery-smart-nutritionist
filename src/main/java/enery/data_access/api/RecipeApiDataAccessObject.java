@@ -35,7 +35,7 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
      */
     public RecipeApiDataAccessObject(String apiKey) {
         this.apiKey = apiKey;
-//        this.httpClient = HttpClient.newHttpClient();
+//      this.httpClient = HttpClient.newHttpClient();
         this.httpClient = createInsecureHttpClient();
     }
 
@@ -192,140 +192,6 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
         return recipes;
     }
 
-//    /**
-//     * Fetches full details for a recipe by ID and returns a fully populated Recipe entity.
-//     */
-//    public Recipe getRecipeById(String recipeId) {
-//        try {
-//            final String detailUrl = BASE_URL + "/" + recipeId;
-//            final HttpRequest request = HttpRequest.newBuilder()
-//                    .uri(URI.create(detailUrl))
-//                    .header("X-API-Key", apiKey)
-//                    .header("Accept", "application/json")
-//                    .GET()
-//                    .build();
-//
-//            final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-//
-//            if (response.statusCode() == 200) {
-//                System.out.println(response.body());
-//                final JSONObject json = new JSONObject(response.body());
-//                final JSONObject item = json.optJSONObject("data") != null ? json.optJSONObject("data") : json;
-//
-//                System.out.println("[DEBUG RecipeDAO] GET BY ID Response Code: " + response.statusCode());
-//                System.out.println("[DEBUG RecipeDAO] Raw Detail JSON Payload:\n" + response.body());
-//
-//                final String id = item.optString("id", recipeId);
-//                final String name = item.optString("name", "Unnamed Recipe");
-//                final String description = item.optString("description", "");
-//
-////                // Extract Nutrition
-////                double calories = 0.0, protein = 0.0, sugar = 0.0, carbs = 0.0, fat = 0.0;
-////                final JSONObject summary = item.optJSONObject("nutrition_summary");
-////                if (summary != null) {
-////                    calories = summary.optDouble("calories", 0.0);
-////                    protein = summary.optDouble("protein_g", 0.0);
-////                    carbs = summary.optDouble("carbohydrates_g", 0.0);
-////                    fat = summary.optDouble("fat_g", 0.0);
-////                }
-//                // Extract Nutrition (Handles both detail endpoint and search endpoint keys)
-//                double calories = 0.0, protein = 0.0, sugar = 0.0, carbs = 0.0, fat = 0.0;
-//                JSONObject summary = item.optJSONObject("nutrition_summary");
-//                if (summary == null && item.optJSONObject("nutrition") != null) {
-//                    summary = item.optJSONObject("nutrition").optJSONObject("per_serving");
-//                }
-//
-//                if (summary != null) {
-//                    calories = summary.optDouble("calories", 0.0);
-//                    protein = summary.optDouble("protein_g", 0.0);
-//                    carbs = summary.optDouble("carbohydrates_g", 0.0);
-//                    fat = summary.optDouble("fat_g", 0.0);
-//                    sugar = summary.optDouble("sugar_g", 0.0);
-//                }
-//
-//                // Extract Ingredients with Quantity & Unit
-//                final List<String> ingredients = new ArrayList<>();
-//                final JSONArray ingredientGroups = item.optJSONArray("ingredients");
-//                if (ingredientGroups != null) {
-//                    for (int j = 0; j < ingredientGroups.length(); j++) {
-//                        JSONObject group = ingredientGroups.optJSONObject(j);
-//                        if (group != null) {
-//                            JSONArray items = group.optJSONArray("items");
-//                            if (items != null) {
-//                                for (int k = 0; k < items.length(); k++) {
-//                                    JSONObject ingObj = items.optJSONObject(k);
-//                                    if (ingObj != null) {
-//                                        String ingName = ingObj.optString("name", "");
-//                                        double qty = ingObj.optDouble("quantity", 0.0);
-//                                        String unit = ingObj.optString("unit", "");
-//                                        String prep = ingObj.optString("preparation", "");
-//
-//                                        StringBuilder line = new StringBuilder();
-//
-//                                        // Append quantity if present
-//                                        if (qty > 0) {
-//                                            if (qty == (int) qty) {
-//                                                line.append((int) qty).append(" ");
-//                                            } else {
-//                                                line.append(qty).append(" ");
-//                                            }
-//                                        }
-//
-//                                        // Append unit if present
-//                                        if (unit != null && !unit.isBlank() && !"null".equalsIgnoreCase(unit)) {
-//                                            line.append(unit).append(" ");
-//                                        }
-//
-//                                        // Append ingredient name
-//                                        line.append(ingName);
-//
-//                                        // Append preparation note (e.g. "rinsed and drained")
-//                                        if (prep != null && !prep.isBlank() && !"null".equalsIgnoreCase(prep)) {
-//                                            line.append(" (").append(prep).append(")");
-//                                        }
-//
-//                                        if (!line.toString().isBlank()) {
-//                                            ingredients.add(line.toString());
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                // Extract Instructions
-//                StringBuilder instructionsBuilder = new StringBuilder();
-//                final JSONArray instructionsArray = item.optJSONArray("instructions");
-//                if (instructionsArray != null) {
-//                    for (int j = 0; j < instructionsArray.length(); j++) {
-//                        JSONObject stepObj = instructionsArray.optJSONObject(j);
-//                        if (stepObj != null) {
-//                            int stepNum = stepObj.optInt("step_number", j + 1);
-//                            String stepText = stepObj.optString("text", "");
-//                            if (!stepText.isBlank()) {
-//                                instructionsBuilder.append(stepNum).append(". ").append(stepText).append("\n");
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                final String instructions = instructionsBuilder.toString().trim();
-//                final String sourceUrl = "https://recipe-api.com/recipes/" + id;
-//
-//                return new Recipe(
-//                        id, name, calories, protein, sugar, carbs, fat,
-//                        ingredients, sourceUrl, description, instructions
-//                );
-//            }
-//        } catch (Exception e) {
-//            System.err.println("[DEBUG RecipeDAO] Exception in getRecipeById:");
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//}
-
     /**
      * Fetches full details for a recipe by ID and returns a fully populated Recipe entity.
      */
@@ -377,7 +243,7 @@ public class RecipeApiDataAccessObject implements RecommendationRecipeDataAccess
                                     JSONObject ingObj = items.optJSONObject(k);
                                     if (ingObj != null) {
                                         String ingName = ingObj.optString("name", "");
-                                        double qty = ingObj.optDouble("quantity", 0.0);
+                                        double qty = ingObj.isNull("amount") ? 0.0 : ingObj.optDouble("amount", 0.0);
                                         String unit = ingObj.optString("unit", "");
                                         String prep = ingObj.optString("preparation", "");
 
