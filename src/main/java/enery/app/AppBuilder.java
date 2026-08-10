@@ -115,8 +115,6 @@ import enery.interface_adapter.recipe.RecipePresenter;
 import enery.interface_adapter.recipe.RecipeViewModel;
 import enery.interface_adapter.recommendation.*;
 import enery.view.home.HomeView;
-import enery.view.recommendation.RecipeView;
-import enery.view.recommendation.RecommendationView;
 
 
 /**
@@ -917,8 +915,8 @@ public final class AppBuilder {
         enery.interface_adapter.health_assessment.HealthAssessmentController controller =
                 new enery.interface_adapter.health_assessment.HealthAssessmentController(interactor);
 
-        enery.view.HealthAssessment.HealthAssessmentView healthAssessmentView =
-                new enery.view.HealthAssessment.HealthAssessmentView(
+        enery.view.health_assessment.HealthAssessmentView healthAssessmentView =
+                new enery.view.health_assessment.HealthAssessmentView(
                         healthAssessmentViewModel,
                         controller,
                         viewManagerModel,
