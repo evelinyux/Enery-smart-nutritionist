@@ -49,6 +49,7 @@ public final class SearchFoodInteractor
             }
         }
         catch (RuntimeException exception) {
+            System.out.println(exception.getMessage());
             presenter.prepareFailView(
                     "Unable to search for nutrition information.");
         }

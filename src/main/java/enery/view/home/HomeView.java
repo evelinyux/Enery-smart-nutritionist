@@ -22,6 +22,8 @@ import enery.interface_adapter.profile.ProfileViewModel;
 import enery.interface_adapter.progress.ProgressViewModel;
 import enery.interface_adapter.tracking.TrackingViewModel;
 import enery.view.auth.ChangePasswordView;
+import enery.interface_adapter.recommendation.RecommendationViewModel;
+import enery.interface_adapter.shared.ViewManagerModel;
 
 /**
  * Main navigation screen displayed after login.
@@ -59,6 +61,8 @@ public final class HomeView extends JPanel
             new JButton(
                     "View Daily Goal Progress"
             );
+    private final JButton recommendationButton =
+            new JButton("Recommendations");
 
     private final JButton trackingButton =
             new JButton(
@@ -133,6 +137,10 @@ public final class HomeView extends JPanel
                 Component.CENTER_ALIGNMENT
         );
 
+        recommendationButton.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
         trackingButton.setAlignmentX(
                 Component.CENTER_ALIGNMENT
         );
@@ -177,6 +185,13 @@ public final class HomeView extends JPanel
                 event ->
                         switchView(
                                 ProgressViewModel.VIEW_NAME
+                        )
+        );
+
+        recommendationButton.addActionListener(
+                event ->
+                        switchView(
+                                RecommendationViewModel.VIEW_NAME
                         )
         );
 
@@ -270,6 +285,9 @@ public final class HomeView extends JPanel
         add(progressButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
+        add(recommendationButton);
+        add(Box.createVerticalStrut(SMALL_GAP));
+
         add(trackingButton);
         add(Box.createVerticalStrut(SMALL_GAP));
 
@@ -308,6 +326,10 @@ public final class HomeView extends JPanel
         );
 
         healthAssessmentButton.setEnabled(
+                profileComplete
+        );
+
+        recommendationButton.setEnabled(
                 profileComplete
         );
 

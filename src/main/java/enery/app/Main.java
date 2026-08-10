@@ -22,6 +22,8 @@ public class Main {
                                             .addLogMealView()
                                             .addLogExerciseView()
                                             .addProgressView()
+                                            .addRecommendationView()
+                                            .addRecipeView()
                                             .addTrackingView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -36,9 +38,11 @@ public class Main {
                                             .addProgressUseCase()
                                             .addTrackingUseCase()
                                             .addHealthAssessmentModule()
+                                            .addRecommendationUseCase()
                                             .build();
 
         application.pack();
         application.setVisible(true);
     }
+
 }

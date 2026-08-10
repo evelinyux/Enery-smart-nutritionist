@@ -61,6 +61,7 @@ public final class UsdaNutritionDataAccessObject
         this.apiKey = apiKey;
     }
 
+
     /**
      * Searches USDA FoodData Central for matching foods.
      *
@@ -247,4 +248,5 @@ public final class UsdaNutritionDataAccessObject
 
         return 0.0;
     }
+
 }
