@@ -1,19 +1,25 @@
 package enery.use_case.daily_check;
 
-import enery.entity.meal.MealEntry;
-import enery.entity.exercise.ExerciseEntry;
+import java.time.LocalDate;
 
-import java.util.List;
+import enery.entity.meal.MealType;
 
-public final class DailyCheckInteractor implements DailyCheckInputBoundary {
+/**
+ * Interactor for the Daily Check use case.
+ * Determines logged vs. missing entries for today's meals and exercise.
+ */
+public class DailyCheckInteractor implements DailyCheckInputBoundary {
 
-    private final DailyCheckDataAccessInterface dataAccessObject;
+    private final DailyCheckMealDataAccessInterface mealDataAccessObject;
+    private final DailyCheckExerciseDataAccessInterface exerciseDataAccessObject;
     private final DailyCheckOutputBoundary presenter;
 
     public DailyCheckInteractor(
-            DailyCheckDataAccessInterface dataAccessObject,
+            DailyCheckMealDataAccessInterface mealDataAccessObject,
+            DailyCheckExerciseDataAccessInterface exerciseDataAccessObject,
             DailyCheckOutputBoundary presenter) {
-        this.dataAccessObject = dataAccessObject;
+        this.mealDataAccessObject = mealDataAccessObject;
+        this.exerciseDataAccessObject = exerciseDataAccessObject;
         this.presenter = presenter;
     }
 
@@ -26,28 +32,32 @@ public final class DailyCheckInteractor implements DailyCheckInputBoundary {
             return;
         }
 
-        // Fetch today's records using your teammate's DAO methods
-        final List<MealEntry> todayMeals = dataAccessObject.getTodayMeals(username);
-        final List<ExerciseEntry> todayExercises = dataAccessObject.getTodayExercises(username);
+        final LocalDate today = LocalDate.now();
 
-        boolean breakfast = false;
-        boolean lunch = false;
-        boolean dinner = false;
+        // Query meal logs for today
+        final boolean breakfast = mealDataAccessObject.hasMeal(
+                username,
+                today,
+                MealType.BREAKFAST
+        );
 
-        if (todayMeals != null) {
-            for (MealEntry meal : todayMeals) {
-                final String type = meal.getMealType(); // e.g. "Breakfast", "Lunch", "Dinner"
-                if ("Breakfast".equalsIgnoreCase(type)) {
-                    breakfast = true;
-                } else if ("Lunch".equalsIgnoreCase(type)) {
-                    lunch = true;
-                } else if ("Dinner".equalsIgnoreCase(type)) {
-                    dinner = true;
-                }
-            }
-        }
+        final boolean lunch = mealDataAccessObject.hasMeal(
+                username,
+                today,
+                MealType.LUNCH
+        );
 
-        final boolean exercise = todayExercises != null && !todayExercises.isEmpty();
+        final boolean dinner = mealDataAccessObject.hasMeal(
+                username,
+                today,
+                MealType.DINNER
+        );
+
+        // Query exercise logs for today
+        final boolean exercise = exerciseDataAccessObject.hasExercise(
+                username,
+                today
+        );
 
         final DailyCheckOutputData outputData = new DailyCheckOutputData(
                 breakfast,
