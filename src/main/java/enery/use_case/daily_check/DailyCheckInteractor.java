@@ -28,7 +28,7 @@ public class DailyCheckInteractor implements DailyCheckInputBoundary {
         final String username = inputData.getUsername();
 
         if (username == null || username.isBlank()) {
-            presenter.prepareFailView("User is not logged in.");
+            presenter.prepareFailureView("User is not logged in.");
             return;
         }
 

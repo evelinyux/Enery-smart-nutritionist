@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import enery.interface_adapter.daily_check.DailyCheckPresenter;
+import enery.interface_adapter.daily_check.DailyCheckViewModel;
+import enery.use_case.daily_check.*;
 import enery.use_case.recommendation.*;
 import enery.view.recommendation.RecipeView;
 import enery.view.recommendation.RecommendationView;
@@ -115,6 +118,14 @@ import enery.interface_adapter.recipe.RecipePresenter;
 import enery.interface_adapter.recipe.RecipeViewModel;
 import enery.interface_adapter.recommendation.*;
 import enery.view.home.HomeView;
+import enery.use_case.daily_check.DailyCheckMealDataAccessInterface;
+import enery.use_case.daily_check.DailyCheckExerciseDataAccessInterface;
+import enery.use_case.daily_check.DailyCheckInputBoundary;
+import enery.use_case.daily_check.DailyCheckInteractor;
+import enery.use_case.daily_check.DailyCheckOutputBoundary;
+import enery.interface_adapter.daily_check.DailyCheckPresenter;
+import enery.interface_adapter.daily_check.DailyCheckViewModel;
+import enery.interface_adapter.daily_check.DailyCheckController;
 
 
 /**
@@ -212,6 +223,9 @@ public final class AppBuilder {
     private RecommendationViewModel recommendationViewModel;
     private RecipeViewModel recipeViewModel;
     private RecipeView recipeView;
+
+    // DailyCheck components
+    private final DailyCheckViewModel dailyCheckViewModel = new DailyCheckViewModel();
 
     /**
      * Creates the builder and configures the shared card panel.
@@ -888,18 +902,25 @@ public final class AppBuilder {
     }
 
     public AppBuilder addDailyCheckUseCase() {
-        final DailyCheckDataAccessInterface dailyCheckDAO =
-                new enery.data_access.daily_check.DailyCheckDataAccessObject(); // teammate's DAO
+        // 1. Cast the app's existing DAO fields (or instantiate File/InMemory DAOs)
+        final DailyCheckMealDataAccessInterface mealDAO = (DailyCheckMealDataAccessInterface) mealUserDataAccessObject;
+        final DailyCheckExerciseDataAccessInterface exerciseDAO = (DailyCheckExerciseDataAccessInterface) exerciseUserDataAccessObject;
 
-        final DailyCheckOutputBoundary presenter =
-                new DailyCheckPresenter(homeViewModel);
-
-        final DailyCheckInputBoundary interactor =
-                new DailyCheckInteractor(dailyCheckDAO, presenter);
-
-        homeView.setDailyCheckController(
-                new DailyCheckController(interactor)
+        // 2. Create Presenter using viewManagerModel and dailyCheckViewModel
+        final DailyCheckOutputBoundary presenter = new DailyCheckPresenter(
+                viewManagerModel,
+                dailyCheckViewModel
         );
+
+        // 3. Instantiate Interactor with both DAOs + Presenter
+        final DailyCheckInputBoundary interactor = new DailyCheckInteractor(
+                mealDAO,
+                exerciseDAO,
+                presenter
+        );
+
+        // 4. Set Controller on HomeView (or DailyCheckView)
+        homeView.setDailyCheckController(new DailyCheckController(interactor));
 
         return this;
     }
