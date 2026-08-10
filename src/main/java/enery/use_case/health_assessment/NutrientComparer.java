@@ -122,10 +122,10 @@ public class NutrientComparer {
 
             if (actual > standard) {
                 riskInsight = metricName + " intake is excessively high, posing a significant health risk.";
-                actionableItem = "Needs immediate reduction by " + String.format("%.1f", diff) + unit;
+                actionableItem = metricName + "Needs immediate reduction by " + String.format("%.1f", diff) + unit;
             } else {
                 riskInsight = metricName + " intake is severely deficient, which can impact bodily functions.";
-                actionableItem = "Needs immediate increase by " + String.format("%.1f", Math.abs(diff)) + unit;
+                actionableItem = metricName + "Needs immediate increase by " + String.format("%.1f", Math.abs(diff)) + unit;
             }
         }
 
