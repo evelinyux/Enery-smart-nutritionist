@@ -4,6 +4,7 @@ import enery.entity.exercise.ExerciseEntry;
 import enery.entity.exercise.ExerciseSearchResult;
 import enery.use_case.log_exercise.LogExerciseUserDataAccessInterface;
 import enery.use_case.recommendation.RecommendationExerciseDataAccessInterface;
+import enery.use_case.daily_check.DailyCheckExerciseDataAccessInterface;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ import java.util.Map;
 
 public class InMemoryExerciseDataAccessObject
         implements LogExerciseUserDataAccessInterface,
-        RecommendationExerciseDataAccessInterface {
+        RecommendationExerciseDataAccessInterface ,
+        DailyCheckExerciseDataAccessInterface {
     private final Map<String, List<ExerciseEntry>> exerciseEntries =
             new HashMap<>();
 
@@ -45,5 +47,13 @@ public class InMemoryExerciseDataAccessObject
         exerciseEntries
                 .computeIfAbsent(username, key -> new ArrayList<>())
                 .add(exerciseEntry);
+    }
+
+    @Override
+    public boolean hasExercise(
+            String username,
+            LocalDate date) {
+
+        return !getExercises(username, date).isEmpty();
     }
 }
