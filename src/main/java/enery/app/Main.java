@@ -39,6 +39,8 @@ public class Main {
                                             .addTrackingUseCase()
                                             .addHealthAssessmentModule()
                                             .addRecommendationUseCase()
+                                            .addDailyCheckView()
+                                            .addDailyCheckUseCase()
                                             .build();
 
         application.pack();
