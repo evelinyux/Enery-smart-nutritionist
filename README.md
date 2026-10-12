@@ -1,7 +1,6 @@
 # ENERY Smart Nutritionist
 
-ENERY Smart Nutritionist is a Java Swing desktop application developed
-for the University of Toronto CSC207 course.
+ENERY Smart Nutritionist is a Java Swing desktop application.
 
 The application helps users manage nutrition, exercise, personal goals,
 meal logging, recommendations, and progress through a collection of
